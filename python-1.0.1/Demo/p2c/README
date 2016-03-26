@@ -1,0 +1,26 @@
+Here I am trying to see how far I can get translating Python to C.
+
+
+Currently the assumptions are:
+
+- all variables and arguments are of type int
+
+- no reliance on tricky semantics, e.g.:
+
+	= status of for loop variable after loop
+
+	= effect of modifying for loop variable
+
+- generating C only
+
+
+In the future we need to:
+
+- guess the argument and local variable types
+
+- generate .h and .c files corresponding to module files
+
+- generate not only C but other languages as well
+
+- etc., etc., etc.
+

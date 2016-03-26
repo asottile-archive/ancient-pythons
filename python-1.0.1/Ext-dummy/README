@@ -1,0 +1,28 @@
+This directory is a placeholder for the Extensions directory.
+
+Some extensions to Python are not placed in the "core" distribution,
+because they are big, old, only relevant to a small number of people,
+buggy, incomplete, or (most likely) have a number of these attributes.
+
+I am busy reorganizing the extensions to make it easier to build them;
+when they are ready this will be announced on the Python mailing list.
+
+The extensions are distributed as the tar file "extensions.tar.Z", to
+be found at the same ftp sites in the same directory as the core
+distribution tar file.  This file is not updated as regularly as the
+core distribution; the README file there will tell which Python it was
+last tested with.  The tar file extracts everything into a
+subdirectory named Extensions; this should be a direct subdirectory of
+the toplevel directory (i.e. a sibling of Ext-dummy).
+
+Available extensions:
+
+X11 		Guess what?  (Unfortunately this is not stable yet)
+af		DEC CRL's AudioFile (probably incomplete)
+amoeba		Free University's Amoeba distributed operating system
+dos		MS-DOS
+gsm		"GSM" audio encoding
+jpeg		JPEG image compression
+mac		Macintosh OS
+ptx		Pseudo TTYs (doesn't work)
+suit		U of Virginia's Simple UI Toolkit (not finished)

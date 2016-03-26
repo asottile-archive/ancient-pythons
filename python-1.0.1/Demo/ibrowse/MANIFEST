@@ -1,0 +1,11 @@
+   File Name		Archive #	Description
+-----------------------------------------------------------
+ MANIFEST                   1	This shipping list
+ dir                        1	
+ ib                         1	
+ ib.py                      1	
+ ibrowse                    1	
+ ibrowse.py                 1	
+ icache.py                  1	
+ ifile.py                   1	
+ itags.py                   1	

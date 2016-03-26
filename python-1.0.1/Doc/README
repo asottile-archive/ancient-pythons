@@ -1,0 +1,82 @@
+Python main documentation -- in LaTeX
+-------------------------------------
+
+This directory contains the LaTeX sources to the Python documentation
+and a published article about Python.
+
+The following are the LaTeX source files:
+
+	tut.tex				The tutorial
+	lib.tex, lib*.tex		The library reference
+	ref.tex, ref[1-8].tex		The reference manual
+	ext.tex				How to extend Python
+	qua.tex, quabib.bib		Article published in CWI Quarterly
+
+All except qua.tex (which isn't built by the default target) use the
+style option file "myformat.sty".  This contains some macro
+definitions and sets some style parameters.
+
+The style parameters are set up for European paper size (21 x 29.7 cm,
+a.k.a. A4, or roughly 8.27 x 11.7 inch) by default.  To use US paper,
+comment out the line saying \input{a4wide.sty} in myformat.sty (you
+may want to fiddle with lay-out parameters like \textwidth and
+\textheight, since the default format uses rather wide margins).
+
+You need the makeindex utility to produce the index for ref.tex
+lib.tex; you need bibtex to produce the references list for qua.tex.
+
+There's a Makefile to call latex and the other utilities in the right
+order and the right number of times.  This will produce dvi files for
+each document made; to preview them, use xdvi.  Printing depends on
+local conventions; at my site, I use dvips and lpr.  For example:
+
+	make ref			# creates ref.dvi
+	xdvi ref			# preview it
+	dvips -Ppsc ref | lpr -Ppsc	# print it on printer "psc".
+
+If you don't have latex, you can ftp the pre-formatted PosytScript
+versions of the documents.  It should be in the same place where you
+fetched the main Python distribution, if you got it by ftp.  (See
+"../Misc/FAQ" for information about ftp-ing Python files.)
+
+
+Making the INFO version of the Library Reference
+------------------------------------------------
+
+The Library Reference can now also be read in hypertext form using the
+Emacs INFO system.  This uses Texinfo format as an intermediate step.
+It requires texinfo version 2 (we have used 2.14).
+
+To build the info files (python-lib.info*), say "make libinfo".  This
+takes a while, even on machines with 33 MIPS and 16 Mbytes :-) You can
+ignore the output.
+
+But first you'll have to change a site dependency in fix.el: if
+texinfo 2.xx isn't installed by default at your site, you'll have to
+install it (use archie to locate a version and ftp to fetch it).  If
+you can't install it in the standard Emacs load path, uncomment the
+line containing a "(setq load-path ...)" statement, and fill in the
+path where you put it.
+
+The files used by the conversion process are:
+
+partparse.py            Python script that converts LaTeX sources to
+			texi files.
+
+texi{pre,post}.dat      Files placed before and after the result.
+
+fix.el                  Elisp file executed by Emacs. Two calls to
+                        'texinfo-all-menus-update are necessary in
+			some cases.
+
+fix_hack		Shell script to fix the results of the
+                        "underscore hack". {\ptt \char'137} is
+                        back-translated to a simple underscore.  This
+                        is needed for the texindex program.
+
+whichlibs		Shell script to print a list of lib*.tex files
+			to be processed.
+
+A Million thanks for Jan-Hein B\"uhrman for writing and debugging the
+convertor and related scripts, and for fixing the LaTeX sources and
+writing new macros for myformat.sty!

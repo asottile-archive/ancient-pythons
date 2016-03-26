@@ -1,0 +1,90 @@
+# NOTE: Makefile.in is converted into Makefile by the configure script
+# in the parent directory.  Once configure has run, you can recreate
+# the Makefile by running just config.status.
+
+# === Variables set by config.stat ===
+
+srcdir=		@srcdir@
+VPATH=		@srcdir@
+
+CC=		@CC@
+RANLIB=		@RANLIB@
+AR=		@AR@
+
+DEFS=		@DEFS@
+
+
+# === Other things that are customizable but not by configure ===
+
+INCLDIR=	$(srcdir)/../Include
+OPT=		-O
+CFLAGS=		$(OPT) -I$(INCLDIR) -I.. $(DEFS)
+
+MKDEP=		mkdep
+SHELL=		/bin/sh
+
+
+# === Fixed definitions ===
+
+PARSEROBJS=	acceler.o grammar1.o \
+		intrcheck.o listnode.o myreadline.o node.o parser.o \
+		parsetok.o tokenizer.o bitset.o \
+		firstsets.o grammar.o metagrammar.o pgen.o \
+		printgrammar.o
+
+PGENOBJS=	pgenmain.o
+
+OBJS=		$(PGENOBJS) $(PARSEROBJS)
+
+PGEN=		pgen
+
+LIB=		libParser.a
+
+
+# === Rules ===
+
+all:		$(LIB) $(PGEN)
+
+$(LIB):		$(PARSEROBJS)
+		$(AR) cr $(LIB) $(PARSEROBJS)
+		$(RANLIB) $(LIB)
+
+$(PGEN):	$(PGENOBJS) $(LIB)
+		$(CC) $(PGENOBJS) $(LIB) -o $(PGEN)
+
+clean:
+		-rm -f *.o core *~ [@,#]* *.old *.orig *.rej
+
+clobber:	clean
+		-rm -f $(PGEN) *.a tags TAGS
+
+Makefile:	$(srcdir)/Makefile.in ../config.status
+		(cd ..; CONFIG_FILES=Parser/Makefile CONFIG_HEADERS= \
+		$(SHELL) config.status)
+
+depend:
+		$(MKDEP) $(CFLAGS) `echo $(OBJS) | tr ' ' '\012' | \
+					sed 's|\(.*\)\.o|$(srcdir)/\1.c|'`
+
+.PRECIOUS:	Makefile
+
+acceler.o: acceler.c
+grammar1.o: grammar1.c
+intrcheck.o: intrcheck.c
+listnode.o: listnode.c
+myreadline.o: myreadline.c
+node.o: node.c
+parser.o: parser.c
+parsetok.o: parsetok.c
+tokenizer.o: tokenizer.c
+bitset.o: bitset.c
+firstsets.o: firstsets.c
+grammar.o: grammar.c
+metagrammar.o: metagrammar.c
+pgen.o: pgen.c
+printgrammar.o: printgrammar.c
+pgenmain.o: pgenmain.c
+
+# DO NOT DELETE THIS LINE -- mkdep uses it.
+# DO NOT PUT ANYTHING AFTER THIS LINE, IT WILL GO AWAY.
+# IF YOU PUT ANYTHING HERE IT WILL GO AWAY

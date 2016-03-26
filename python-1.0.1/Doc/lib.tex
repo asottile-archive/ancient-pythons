@@ -1,0 +1,114 @@
+\documentstyle[twoside,11pt,myformat]{report}
+
+\title{Python Library Reference}
+
+\author{
+	Guido van Rossum \\
+	Dept. CST, CWI, P.O. Box 94079 \\
+	1090 GB Amsterdam, The Netherlands \\
+	E-mail: {\tt guido@cwi.nl}
+}
+
+\date{26 Januari 1994 \\ Release 1.0.0} % XXX update before release!
+
+\makeindex			% tell \index to actually write the .idx file
+
+
+\begin{document}
+
+\pagenumbering{roman}
+
+\maketitle
+
+\begin{abstract}
+
+\noindent
+This document describes the built-in types, exceptions and functions
+and the standard modules that come with the Python system.  It assumes
+basic knowledge about the Python language.  For an informal
+introduction to the language, see the {\em Python Tutorial}.  The {\em
+Python Reference Manual} gives a more formal definition of the
+language.
+
+\end{abstract}
+
+\pagebreak
+
+{
+\parskip = 0mm
+\tableofcontents
+}
+
+\pagebreak
+
+\pagenumbering{arabic}
+
+				% Chapter title:
+
+\input{libintro}		% Introduction
+
+\input{libobjs}			% Built-in Types, Exceptions and Functions
+\input{libtypes}
+\input{libexcs}
+\input{libfuncs}
+
+\input{libmods}			% Built-in modules
+\input{libsys}
+\input{libbltin}		% really __builtin__
+\input{libmain}			% really __main__
+\input{libarray}
+\input{libmath}
+\input{libtime}
+\input{libregex}
+\input{libmarshal}
+\input{libstruct}
+
+\input{libstd}			% Standard Modules
+\input{libgetopt}
+\input{libos}
+\input{librand}
+\input{libregsub}
+\input{libstring}
+\input{libwhrandom}
+
+\input{libunix}			% UNIX ONLY
+\input{libdbm}
+\input{libgrp}
+\input{libposix}
+\input{libppath}		% really posixpath
+\input{libpwd}
+\input{libselect}
+\input{libsocket}
+\input{libthread}
+
+\input{libmm}			% MULTIMEDIA EXTENSIONS
+\input{libaudioop}
+\input{libimageop}
+\input{libjpeg}
+\input{librgbimg}
+
+\input{libcrypto}		% CRYPTOGRAPHIC EXTENSIONS
+\input{libmd5}
+\input{libmpz}
+\input{librotor}
+
+%\input{libamoeba}		% AMOEBA ONLY
+
+%\input{libmac}			% MACINTOSH ONLY
+
+\input{libstdwin}		% STDWIN ONLY
+
+\input{libsgi}			% SGI IRIX ONLY
+\input{libal}
+%\input{libaudio}
+\input{libfl}
+\input{libfm}
+\input{libgl}
+\input{libimgfile}
+%\input{libpanel}
+
+\input{libsun}			% SUNOS ONLY
+
+\input{lib.ind}			% Index
+
+\end{document}

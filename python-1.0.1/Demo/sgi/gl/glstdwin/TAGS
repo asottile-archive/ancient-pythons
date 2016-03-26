@@ -1,0 +1,94 @@
+
+fontchart.py,15
+def main(6,59
+
+glstdwdraw.py,498
+class DrawingObject:8,120
+	def _init(10,144
+	def setfont(20,355
+	def setsize(23,445
+	def setfgcolor(28,575
+	def setbgcolor(32,646
+	def cliprect(35,697
+	def noclip(40,854
+	def paint(44,940
+	def box(47,1028
+	def circle(51,1160
+	def elarc(54,1222
+	def erase(57,1282
+	def invert(63,1459
+	def line(71,1670
+	def xorline(78,1812
+	def point(89,2042
+	def text(95,2143
+	def shade(111,2604
+	def baseline(114,2655
+	def lineheight(119,2811
+	def textbreak(124,2961
+	def textwidth(133,3160
+
+glstdwin.py,461
+class Struct:43,1073
+def open(100,2314
+def setdefwinpos(122,2884
+def setdefwinsize(128,2986
+def fleep(134,3084
+def setfgcolor(140,3155
+def setbgcolor(146,3235
+def getfgcolor(152,3315
+def getbgcolor(158,3394
+def getevent(219,4378
+def _mouseevent(325,7074
+def baseline(338,7309
+def lineheight(343,7452
+def textbreak(348,7590
+def textwidth(357,7763
+def setfont(363,7860
+def setsize(366,7934
+def xor(376,8092
+def bits(386,8281
+def stib(394,8429
+
+glstdwmenu.py,192
+class MenuObject:6,81
+	def _init(8,102
+	def close(14,208
+	def additem(18,270
+	def setitem(27,488
+	def enable(30,547
+	def check(33,605
+	def _makepup(36,662
+	def _checkshortcut(56,1174
+
+glstdwwin.py,466
+class WindowObject:8,167
+	def _init(10,190
+	def close(24,505
+	def _needredraw(29,598
+	def begindrawing(34,706
+	def change(38,810
+	def gettitle(42,903
+	def getdocsize(45,948
+	def getorigin(48,997
+	def getwinsize(51,1045
+	def scroll(54,1094
+	def setdocsize(59,1201
+	def setorigin(62,1262
+	def settimer(65,1308
+	def settitle(68,1355
+	def show(72,1429
+	def _fixviewport(75,1468
+	def menucreate(97,2175
+	def _domenu(103,2326
+	def _doshortcut(133,3059
+
+stdwingl.py,0
+
+tcolor.py,17
+def main(11,155
+
+tglsw.py,17
+def main(16,233
+
+tmenu.py,15
+def main(8,73

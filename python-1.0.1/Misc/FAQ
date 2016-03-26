@@ -1,0 +1,651 @@
+Subject: FAQ: Python -- an object-oriented language
+Newsgroups: comp.lang.misc,comp.answers,news.answers
+Followup-to: comp.lang.misc
+From: guido@cwi.nl (Guido van Rossum)
+Reply-to: guido@cwi.nl (Guido van Rossum)
+Approved: news-answers-request@MIT.Edu
+
+Archive-name: python-faq/part1
+Version: 1.5
+Last-modified: 15 Feb 1994
+
+This article contains answers to Frequently Asked Questions about
+Python (an object-oriented interpreted programming language -- see
+the answer to question 1.1 for a short overview).
+
+Copyright 1993, 1994 Guido van Rossum.  Unchanged electronic
+redistribution of this FAQ is allowed.  Printed redistribution only
+with permission of the author.  No warranties.
+
+Author's address:
+	Guido van Rossum
+	CWI, dept. CST
+	Kruislaan 413
+	P.O. Box 94079
+	1090 GB  Amsterdam
+	The Netherlands
+Email:	guido@cwi.nl
+
+The latest version of this FAQ is available by anonymous ftp from
+ftp.cwi.nl [192.16.184.180] in the directory /pub/python, with
+filename python-FAQ.  It will also be posted regularly to the
+newsgroups comp.answers and comp.lang.misc.
+
+Many FAQs, including this one, are available by anonymous ftp from
+rtfm.mit.edu [18.70.0.209] in the directory pub/usenet/news.answers.  
+The name under which a FAQ is archived appears in the Archive-name line 
+at the top of the article.  This FAQ is archived as python-faq/part1.
+
+There's a mail server on that machine which will send you files from
+the archive by e-mail if you have no ftp access.  You send a e-mail
+message to mail-server@rtfm.mit.edu containing the single word help in
+the message body to receive instructions.
+
+This FAQ is divided in the following chapters:
+
+ 1. General information and availability
+ 2. Python in the real world
+ 3. Building Python
+ 4. Programming in Python
+ 5. Extending Python
+ 6. Python's design
+ 7. Using Python on non-UNIX platforms
+
+To find the start of a particular chapter, search for the chapter number
+followed by a dot and a space at the beginning of a line (e.g. to
+find chapter 4 in vi, type /^4\. /).
+
+Here's an overview of the questions per chapter:
+
+ 1. General information and availability
+  1.1. Q. What is Python?
+  1.2. Q. Why is it called Python?
+  1.3. Q. How do I obtain a copy of the Python source?
+  1.4. Q. How do I get documentation on Python?
+  1.5. Q. Is there a newsgroup or mailing list devoted to Python?
+  1.6. Q. Is there a book on Python, or will there be one out soon?
+  1.7. Q. Are there any published articles about Python that I can quote?
+  1.8. Q. How does the Python version numbering scheme work?
+
+ 2. Python in the real world
+  2.1. Q. How many people are using Python?
+  2.2. Q. Have any significant projects been done in Python?
+  2.3. Q. Are there any commercial projects going on using Python?
+  2.4. Q. How stable is Python?
+  2.5. Q. What new developments are expected for Python in the future?
+
+ 3. Building Python
+  3.1. Q. Is there a test set?
+  3.2. Q. When running the test set, I get complaints about floating point
+       operations, but when playing with floating point operations I cannot
+       find anything wrong with them.
+  3.3. Q. Link errors building Python with STDWIN on SGI IRIX.
+  3.4. Q. Link errors after rerunning the configure script.
+  3.5. Q. The python interpreter complains about options passed to a
+       script (after the script name).
+  3.6. Q. When building on the SGI, make tries to run python to create
+        glmodule.c, but python hasn't been built or installed yet.
+  3.7. Q. Other trouble building Python 1.0.1 on platform X.
+
+ 4. Programming in Python
+  4.1. Q. Is there a source code level debugger with breakpoints, step,
+       etc.?
+  4.2. Q. Can I create an object class with some methods implemented in
+       C and others in Python (e.g. through inheritance)?  (Also phrased as:
+       Can I use a built-in type as base class?)
+  4.3. Q. Is there a curses/termcap package for Python?
+  4.4. Q. Is there an equivalent to C's onexit() in Python?
+  4.5. Q. When I define a function nested inside another function, the
+       nested function seemingly can't access the local variables of the
+       outer function.  What is going on?  How do I pass local data to a
+       nested function?
+  4.6. Q. How do I iterate over a sequence in reverse order?
+  4.7. Q. My program is too slow.  How do I speed it up?
+  4.8. Q. When I have imported a module, then edit it, and import it
+       again (into the same Python process), the changes don't seem to take
+       place.  What is going on?
+  4.9. Q. I have a module in which I want to execute some extra code when it
+       is run as a script.  How do I find out whether I am running as a
+       script?
+
+ 5. Extending Python
+  5.1. Q. Can I create my own functions in C?
+  5.2. Q. Can I create my own functions in C++?
+
+ 6. Python's design
+  6.1. Q. Why isn't there a generic copying operation for objects in
+       Python?
+  6.2. Q. Why isn't there a generic way to implement persistent objects
+       in Python?  (Persistent == automatically saved to and restored from
+       disk.)
+  6.3. Q. Why isn't there a switch or case statement in Python?
+
+ 7. Using Python on non-UNIX platforms
+  7.1. Q. Is there a Mac version of Python?
+  7.2. Q. Is there a DOS version of Python?
+  7.3. Q. Is there a Windows version of Python?
+  7.4. Q. Is there a Windows NT version of Python?
+  7.5. Q. I have the DOS or Windows version but it appears to be only a
+       binary.  Where's the library?
+  7.6. Q. Where's the documentation for the Mac or PC version?
+  7.7. Q. The Mac (PC) version doesn't seem to have any facilities for
+       creating or editing programs apart from entering it interactively, and
+       there seems to be no way to save code that was entered interactively.
+       How do I create a Python program on the Mac (PC)?
+
+To find a particular question, search for the question number followed
+by a dot, a space, and a Q at the beginning of a line (e.g. to find
+question 4.2 in vi, type /^4\.2\. Q/).
+
+
+1. General information and availability
+=======================================
+
+1.1. Q. What is Python?
+
+A. Python is an interpreted, interactive, object-oriented programming
+language.  It incorporates modules, exceptions, dynamic typing, very
+high level dynamic data types, and classes.  Python combines
+remarkable power with very clear syntax.  It has interfaces to many
+system calls and libraries, as well as to various window systems, and
+is extensible in C or C++.  It is also usable as an extension language
+for applications that need a programmable interface.  Finally, Python
+is portable: it runs on many brands of UNIX, on the Mac, and on
+MS-DOS.
+
+To find out more, the best thing to do is to start reading the
+tutorial from the documentation set (see a few questions further
+down).
+
+1.2. Q. Why is it called Python?
+
+A. Apart from being a computer wizard, I'm also a fan of "Monty
+Python's Flying Circus" (a BBC comedy series from the seventies, in
+case you didn't know).  It occurred to me one day that I needed a name
+that was short, unique, and slightly mysterious.  And I happened to be
+reading some scripts from the series at the time...  So then I decided
+to call my language Python.  But Python is not a joke.  And don't you
+associate it with dangerous reptiles either!
+
+1.3. Q. How do I obtain a copy of the Python source?
+
+A. The latest Python source distribution is always available by
+anonymous ftp from ftp.cwi.nl [192.16.184.180] in the directory
+/pub/python, with filename python<version>.tar.Z.  It is a compressed
+tar file containing the complete C source, LaTeX documentation, Python
+library modules, example programs, and several useful pieces of freely
+distributable software.  This will compile and run out of the box on
+most UNIX platforms.  Currently <version> is 1.0.1.  (See section 7
+for non-UNIX information.)
+
+1.4. Q. How do I get documentation on Python?
+
+A. The latest Python documentation set is always available by
+anonymous ftp from ftp.cwi.nl [192.16.184.180] in the directory
+/pub/python, with filename pythondoc-ps<version>.tar.Z.  It is a
+compressed tar file containing PostScript files of the reference
+manual, the library manual, and the tutorial.  Currently <version> is
+1.0.1.  (Note that the library manual is the most important one of the
+set, as much of Python's power stems from the standard or built-in
+types, functions and modules, all of which are described here.)
+PostScript for a high-level description of Python is in the file
+nluug-paper.ps.
+
+The following sites keep mirrors of the Python distribution:
+
+Site			IP address 	Directory
+
+gatekeeper.dec.com	16.1.0.2	/pub/plan/python/cwi
+ftp.uu.net		192.48.96.9	/languages/python
+ftp.wustl.edu		128.252.135.4	/graphics/graphics/sgi-stuff/python
+ftp.funet.fi		128.214.6.100	/pub/languages/python (old?)
+ftp.fu-berlin.de	130.133.4.50	/pub/unix/languages/python (python* only)
+
+Or try archie on e.g. python1.0.1.tar.Z to locate the nearest copy of
+that version...
+
+1.5. Q. Is there a newsgroup or mailing list devoted to Python?
+
+A. There is no Python newsgroup yet; if you want to post to the net
+about Python, use comp.lang.misc.  There is a mailing list devoted to
+Python; send e-mail to python-list-request@cwi.nl to (un)subscribe.  A
+Request For Discussion about create comp.lang.python has been posted
+to news.groups.  So far it has not elicited any negative responses.
+
+1.6. Q. Is there a book on Python, or will there be one out soon?
+
+A. Unfortunately, not yet.  I would like to write one but my
+obligations at CWI include too much other work to make much progress
+on it.  Several parties have expressed interest in sponsoring or
+helping the production of a book or reference manual, but so far there
+are no firm plans.  If you volunteer help, by all means drop me a
+note!
+
+1.7. Q. Are there any published articles about Python that I can quote?
+
+A. So far the only refereed and published article that describes
+Python in some detail is:
+
+    Guido van Rossum and Jelke de Boer, "Interactively Testing Remote
+    Servers Using the Python Programming Language", CWI Quarterly, Volume
+    4, Issue 4 (December 1991), Amsterdam, pp 283-303.
+
+LaTeX source for this paper is available as part of the Python source
+distribution.
+
+A more recent high-level description of Python is:
+
+    Guido van Rossum, "An Introduction to Python for UNIX/C
+    Programmers", in the proceedings of the NLUUG najaarsconferentie
+    1993 (dutch UNIX users group meeting november 1993).
+    
+PostScript for this paper and for the slides used for the accompanying
+presentation can be found in the ftp directory mentioned a few
+questions earlier, with filenames nluug-paper.ps and nluug-slides.ps,
+respectively.
+
+1.8. Q. How does the Python version numbering scheme work?
+
+A. Python versions are numbered A.B.C.  A is the major version number
+-- it is only incremented for major changes in functionality or source
+structure.  B is the minor version number, incremented for less
+earth-shattering changes to a release.  C is the patchlevel -- it is
+incremented for each new release.  Note that in the past, patches have
+added significant changes; in fact the changeover from 0.9.9 to 1.0.0
+was the first time that either A or B changed!
+
+
+2. Python in the real world
+===========================
+
+2.1. Q. How many people are using Python?
+
+A. I don't know, but at the last count there were at least 130
+addresses on the Python mailing list (several of which are local
+redistribution lists).  I suspect that many users don't bother
+to subscribe to the list.
+
+2.2. Q. Have any significant projects been done in Python?
+
+A. Here at CWI (the home of Python), we have written a 20,000 line
+authoring environment for transportable hypermedia presentations, a
+multimedia teleconferencing tool, as well as many smaller programs.
+
+The University of Virginia uses Python to control a virtual reality
+engine.  Contact: Matt Conway <conway@virginia.edu>.
+
+See also the next question.
+
+2.3. Q. Are there any commercial projects going on using Python?
+
+A. Several companies have revealed to me that they are planning or
+considering to use Python in a future product.  The furthest is
+Sunrise Software, who already have a product out using Python -- they
+use Python for a GUI management application and an SNMP network
+manangement application.  Contact: <info@sunrise.com>.
+
+Individuals at many other companies are using Python for
+internal development (witness their contributions to the Python
+mailing list).
+
+Python has also been elected as an extension language by MADE, a
+consortium supported by the European Committee's ESPRIT program and
+consisting of Bull, CWI and some other European companies.  Contact:
+Ivan Herman <ivan@cwi.nl>.
+
+2.4. Q. How stable is Python?
+
+A. Very stable.  While the current version number (1.0.1) would
+suggest it is in the early stages of development, in fact new, stable
+releases (numbered 0.9.x) have been coming out roughly every 3 to 6
+months for the past four years.
+
+2.5. Q. What new developments are expected for Python in the future?
+
+A.  Without warranty that any of this will actually be realized: I am
+currently thinking about mechanisms for built-in on-line help and a
+switch/case statement.  There have been some discussions on
+hierarchical module names which might solve the problem of the
+development of large packages.  A pthreads interface has been
+contributed which I would like to merge into the latest release.  The
+X interface needs improving.  There are also some people
+(independently) working on a windowing interface based on STDWIN but
+with the power and ease of use of the average modern widget set.  I
+still hope to get some help in producing a Windows version.  It would
+be nice if there were a window-based class browser (Someone at CWI has
+contributed one using Motif but it needs some work).  Also: improved
+support for embedding Python in other applications, e.g. by renaming
+most global symbols to have a "Py" prefix and providing more
+documentation and threading support.
+
+
+3. Building Python
+==================
+
+3.1. Q. Is there a test set?
+
+A. Yes, simply do "import testall" (or "import autotest" if you aren't
+interested in the output).  The standard modules whose name begins
+with "test" together comprise the test.  The test set doesn't test
+*all* features of Python but it goes a long way to confirm that a new
+port is actually working.  The Makefile contains an entry "make test"
+which runs the autotest module.
+
+3.2. Q. When running the test set, I get complaints about floating point
+operations, but when playing with floating point operations I cannot
+find anything wrong with them.
+
+A. The test set makes occasional unwarranted assumptions about the
+semantics of C floating point operations.  Until someone donates a
+better floating point test set, you will have to comment out the
+offending floating point tests and execute similar tests manually.
+
+3.3. Q. Link errors building Python with STDWIN on SGI IRIX.
+
+A. Rebuild STDWIN, specifying "CC=cc -cckr" in the Makefile.
+
+3.4. Q. Link errors after rerunning the configure script.
+
+A. It is generally necessary to run "make clean" after a configuration
+change.
+
+3.5. Q. The python interpreter complains about options passed to a
+script (after the script name).
+
+A. You are probably linking with GNU getopt, e.g. through -liberty.
+Don't.  (If you are using this because you link with -lreadline, use
+the readline distributed with Python instead.)
+
+3.6. Q. When building on the SGI, make tries to run python to create
+glmodule.c, but python hasn't been built or installed yet.
+
+A. Comment out the line mentioning glmodule.c in Setup and build a
+python without gl first; install it or make sure it is in your $PATH,
+then edit the Setup file again to turn on the gl module, and make
+again.  You don't need to do "make clean"; you do need to run "make
+Makefile" in the Modules subdirectory (or just run "make" at the
+toplevel).
+
+3.7. Q. Other trouble building Python 1.0.1 on platform X.
+
+A. Please email the details to <guido@cwi.nl> and I'll look into it.
+
+
+4. Programming in Python
+========================
+
+4.1. Q. Is there a source code level debugger with breakpoints, step,
+etc.?
+
+A. Yes.  Check out module pdb; pdb.help() prints the documentation (or
+you can read it as Lib/pdb.doc).  If you use the STDWIN option,
+there's also a windowing interface, wdb.  You can write your own
+debugger by using the code for pdb or wdb as an example.
+
+4.2. Q. Can I create an object class with some methods implemented in
+C and others in Python (e.g. through inheritance)?  (Also phrased as:
+Can I use a built-in type as base class?)
+
+A. No, but you can easily create a Python class which serves as a
+wrapper around a built-in object, e.g. (for dictionaries):
+
+	# A user-defined class behaving almost identical
+	# to a built-in dictionary.
+	class UserDict:
+		def __init__(self): self.data = {}
+		def __repr__(self): return repr(self.data)
+		def __cmp__(self, dict):
+			if type(dict) == type(self.data):
+				return cmp(self.data, dict)
+			else:
+				return cmp(self.data, dict.data)
+		def __len__(self): return len(self.data)
+		def __getitem__(self, key): return self.data[key]
+		def __setitem__(self, key, item): self.data[key] = item
+		def __delitem__(self, key): del self.data[key]
+		def keys(self): return self.data.keys()
+		def items(self): return self.data.items()
+		def values(self): return self.data.values()
+		def has_key(self, key): return self.data.has_key(key)
+
+4.3. Q. Is there a curses/termcap package for Python?
+
+A. No, but you can use the "alfa" (== character cell) version of
+STDWIN.  (STDWIN == Standard Windows, a portable windowing system
+interface by the same author, URL: ftp://ftp.cwi.nl/pub/stdwin.)
+This will also prepare your program for porting to windowing
+environments such as X11 or the Macintosh.
+
+4.4. Q. Is there an equivalent to C's onexit() in Python?
+
+A. Yes, if you import sys and assign a function to sys.exitfunc, it
+will be called when your program exits, is killed by an unhandled
+exception, or (on UNIX) receives a SIGHUP or SIGTERM signal.
+
+4.5. Q. When I define a function nested inside another function, the
+nested function seemingly can't access the local variables of the
+outer function.  What is going on?  How do I pass local data to a
+nested function?
+
+A. Python does not have arbitrarily nested scopes.  When you need to
+create a function that needs to access some data which you have
+available locally, create a new class to hold the data and return a
+method of an instance of that class, e.g.:
+
+	class MultiplierClass:
+		def __init__(self, factor):
+			self.factor = factor
+		def multiplier(self, argument):
+			return argument * self.factor
+
+	def generate_multiplier(factor):
+		return MultiplierClass(factor).multiplier
+
+	twice = generate_multiplier(2)
+	print twice(10)
+	# Output: 20
+
+4.6. Q. How do I iterate over a sequence in reverse order?
+
+A. If it is a list, the fastest solution is
+
+	list.reverse()
+	try:
+		for x in list:
+			"do something with x"
+	finally:
+		list.reverse()
+
+This has the disadvantage that while you are in the loop, the list
+is temporarily reversed.  If you don't like this, you can make a copy.
+This appears expensive but is actually faster than other solutions:
+
+	rev = list[:]
+	rev.reverse()
+	for x in rev:
+		<do something with x>
+
+If it isn't a list, a more general but slower solution is:
+
+	i = len(list)
+	while i > 0:
+		i = i-1
+		x = list[i]
+		<do something with x>
+
+A more elegant solution, is to define a class which acts as a sequence
+and yields the elements in reverse order (solution due to Steve
+Majewski):
+
+	class Rev:
+		def __init__(self, seq):
+			self.forw = seq
+		def __len__(self):
+			return len(self.forw)
+		def __getitem__(self, i):
+			return self.forw[-(i + 1)]
+
+You can now simply write:
+
+	for x in Rev(list):
+		<do something with x>
+
+Unfortunately, this solution is slowest of all, due the the method
+call overhead...
+
+4.7. Q. My program is too slow.  How do I speed it up?
+
+A. That's a tough one, in general.  There are many tricks to speed up
+Python code; I would consider rewriting parts in C only as a last
+resort.  One thing to notice is that function and (especially) method
+calls are rather expensive; if you have designed a purely OO interface
+with lots of tiny functions that don't do much more than get or set an
+instance variable or call another method, you may consider using a
+more direct way, e.g. directly accessing instance variables.  Also see
+the standard module "profile" (described in the file
+"python/lib/profile.doc") which makes it possible to find out where
+your program is spending most of its time (if you have some patience
+-- the profiling itself can slow your program down by an order of
+magnitude).
+
+4.8. Q. When I have imported a module, then edit it, and import it
+again (into the same Python process), the changes don't seem to take
+place.  What is going on?
+
+A. For efficiency reasons, Python only reads the module file on the
+first time a module is imported (otherwise a program consisting of
+many modules, each of which imports the same basic module, would read
+the basic module over and over again).  To force a changed module
+being read again, do this:
+
+	import modname
+	reload(modname)
+
+Warning: this technique is not 100% fool-proof.  In particular,
+modules containing statements like
+
+	from modname import some_objects
+
+will continue to work with the old version of the objects imported
+thus.
+
+4.9. Q. I have a module in which I want to execute some extra code when it
+is run as a script.  How do I find out whether I am running as a
+script?
+
+A. A module can find out its own module name by alooking at the
+(predefined) global variable __name__.  If this has the value
+'__main__' you are running as a script.  E.g. if you put the following
+on the last line of your module, main() is called only when your
+module is running as a script:
+
+	if __name__ == '__main__': main()
+
+
+5. Extending Python
+===================
+
+5.1. Q. Can I create my own functions in C?
+
+A. Yes, you can create built-in modules containing functions,
+variables, exceptions and even new types in C.  This is explained in
+the document "Extending and Embedding the Python Interpreter" (the
+LaTeX file Doc/ext.tex).  Also read the chapter on dynamic loading.
+
+5.2. Q. Can I create my own functions in C++?
+
+A. Yes, using the C-compatibility features found in C++.  Basically
+you place extern "C" { ... } around the Python include files and put
+extern "C" before each function that is going to be called by the
+Python interpreter.  Global or static C++ objects with constructors
+are probably not a good idea.
+
+
+6. Python's design
+==================
+
+6.1. Q. Why isn't there a generic copying operation for objects in
+Python?
+
+A. Hmm.  Maybe there should be one, but it's difficult to assign a
+useful meaning to copying of open files, sockets and windows, or
+recursive data structures.  As long as you design all your classes
+yourself you are of course free to define a standard base class that
+defines an overridable copying operation for all the objects you care
+about.  (One practical point: it would have to be a built-in function,
+not a standard method name, since not all built-in object types have
+methods; e.g. strings, integers and tuples don't.)
+
+6.2. Q. Why isn't there a generic way to implement persistent objects
+in Python?  (Persistent == automatically saved to and restored from
+disk.)
+
+A. Hmm, hmm.  Basically for the same reasons as why there is no
+generic copying operation.
+
+6.3. Q. Why isn't there a switch or case statement in Python?
+
+A. You can do this easily enough with a sequence of
+if... elif... elif... else.  There have been some proposals for switch
+statement syntax, but there is no concensus (yet) on whether and how
+to do range tests.
+
+
+7. Using Python on non-UNIX platforms
+=====================================
+
+7.1. Q. Is there a Mac version of Python?
+
+A. Yes.  It is on most ftp sites carrying Python as python.sea.hqx --
+this is a self-extracting archive containing the application binary as
+well as the Lib modules.
+
+7.2. Q. Is there a DOS version of Python?
+
+A. Yes.  More than one, actually: 16python.exe runs in standard DOS
+mode on 186 CPUs or higher; 32python.exe uses a DOS extender and only
+runs on a 386 or higher CPUs.  Although 16python.exe does not pass the
+test set because test_grammar is too big for the parser, it actually
+has about 270 kbyte of allocatable heap space, which is sufficient for
+fairly large programs.  32python.exe is distributed as a tar file
+containing the required DOS extended and 387 emulator.  Both are on
+most ftp sites carrying Python.
+
+7.3. Q. Is there a Windows version of Python?
+
+A. Yes.  Use qwpython.exe.  The only problem with it: ^C
+unconditionally kills the entire program -- it does not raise
+KeyboardInterrupt.  You can also run 16python.exe or 32python.exe in a
+"DOS box", but qwpython.exe appears to be slightly faster.
+
+7.4. Q. Is there a Windows NT version of Python?
+
+A. Yes.  Use ntpython.exe.  This is for Intel CPUs.  If you want a
+Windows user interface, use qwpython.exe.
+
+7.5. Q. I have the DOS or Windows version but it appears to be only a
+binary.  Where's the library?
+
+A. You still need to copy the files from the distribution directory
+"python/Lib" to your system.  If you don't have the full distribution,
+you can get the file pythonlib1.0.1.tar.Z from most ftp sites carrying
+Python; this is a subset of the distribution containing just those
+file.
+
+7.6. Q. Where's the documentation for the Mac or PC version?
+
+A. There isn't any.  The documentation for the Unix version also
+applies to the Mac and PC versions.  Where applicable, differences
+are indicated in the text.
+
+7.7. Q. The Mac (PC) version doesn't seem to have any facilities for
+creating or editing programs apart from entering it interactively, and
+there seems to be no way to save code that was entered interactively.
+How do I create a Python program on the Mac (PC)?
+
+A. Use an external editor.  On the Mac, I am quite happy with the Desk
+Accessory called Sigma Edit; this doesn't require Multifinder or
+System 7.  I work like this: start the interpreter; edit a module file
+using Sigma Edit; import and test it in the interpreter; edit again in
+Sigma Edit; then use the built-in function reload() to re-read the
+imported module; etc.

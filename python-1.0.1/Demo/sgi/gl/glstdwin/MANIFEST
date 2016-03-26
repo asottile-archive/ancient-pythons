@@ -1,0 +1,12 @@
+   File Name		Archive #	Description
+-----------------------------------------------------------
+ MANIFEST                   1	This shipping list
+ fontchart.py               1	
+ glstdwdraw.py              1	
+ glstdwin.py                1	
+ glstdwmenu.py              1	
+ glstdwwin.py               1	
+ stdwingl.py                1	
+ tcolor.py                  1	
+ tglsw.py                   1	
+ tmenu.py                   1	
