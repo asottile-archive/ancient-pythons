@@ -1,0 +1,6 @@
+Some Python examples written by Mark Lutz:
+
+	psh.py    -- an enhanced Python interactive command shell
+	sets.py   -- sets and relational algebra in Python
+	sets.res  -- sets.py expected results
+	roman.py  -- a Python take-off of an Icon program 

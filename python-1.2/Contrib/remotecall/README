@@ -1,0 +1,89 @@
+In this directory:
+
+README			This file
+RemoteCall.py		Sending calls from a client to a server
+RemoteCallServer.py	Class for implementing python servers
+RemoteCalldefs.py	Common definitions
+Agent.py		Representative in client process for a remote server object
+
+test/exec_client.py	Client using RemoteCall to do some maths.
+test/agent_client.py	Client using Agents to do some simple interactions with
+			a pretty dumb server.
+test/agent_server.py	The aforementioned server
+test/agent_serverdefs.py Definitions for the server
+
+
+DESCRIPTION
+The RemoteCall package is a number of classes for writing client/server
+applications in Python. With RemoteCall you can send
+
+	*  arbitrary expressions
+	*  function calls (i.e. anything you can 'apply' arguments on)
+	*  attribute assignments (setattr(obj, attr, value))
+
+over a socket connection. Values transferred across the wire are marshalled
+using the 'pickle' module, which means not only builtin data types (integers,
+lists, tuples, etc) can be transferred, but also user defined classes.
+
+After an incomming value is unpickled, but before it is further processed
+(e.g. sent as arguments to a function) one can optionally process it with
+a 'before' method. Likewise, before pickling the results and sending them back
+an after method may massage it. The main reason for this facility is to
+implement 'Agents'.
+
+AGENTS
+Agents are objects that acts as local representatives of remote objects.
+Agents are also known in other systems as proxys, ambassadors, and other
+names. Agents are useful for objects that use facilities local to the server
+that might not be available at the client (e.g. they might interface to
+an application with python embedded).
+
+By installing agent support, and telling the RemoteCallServer object what
+objects and/or classes not to send over the wire, all such objects appearing
+in results from a RemoteCall will automatically be converted to agents.
+An agent sent as an argument is likewise translated automatically to the
+corresponding server object.
+
+WHAT ABOUT EXCEPTIONS?
+Server side exceptions are reraised on the client side with the original
+value. There are some problems with exception though. Currently, the client
+searches for an exception with the same name as the string value of the 
+exception. If this fails, it will be impossible to catch the exception.
+
+PROTOCOL
+A remote request is a 2-tuple where the first element indicates whether
+the second element is to be considered an expression, a call, an assignment
+or a record control request.
+
+If the request is an expression or a call, it is evaluated and if the evaluation
+succeeds the tuple '(None, result)' is returned. In the case an exception is
+raised the tuple '(exc_type, exc_value)' is returned instead.
+
+If the request is an assignment it is executed and if successfull the tuple
+'(None, None)' is returned. In the case an exception is raised the tuple
+'(exc_type, exc_value)' is returned instead.
+
+THE SIMPLE EXAMPLE
+The simple example included demonstrates a client and server using agents.
+By commenting out the code
+
+	server.SendAsAgent(serverdefs.StupidServer)
+
+in the main() function in server.py, the server objects will be transferred
+to the client process instead of staying in the server.
+
+To run the example program start the server with an X aware python, e.g.
+
+	xpython agent_server.py
+
+The server will print something like "Server listening on port 1376".
+Then start the client with the port number as argument, or if the server
+is running on a remote node, with the host name and port address, e.g.
+
+	python agent_client.py 1376, or
+	python agent_client.py pollux 1376
+
+BUGS
+If you have any problems, questions, suggestions, or if you improved this code
+yourself, please don't hesitate to contact me at <dlarsson@sw.seisy.abb.se>.
+I am often busy, but I'll do my best to be of help ;^)

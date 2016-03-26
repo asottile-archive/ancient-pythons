@@ -1,0 +1,35 @@
+This directory contains a couple of dialog boxes, including a
+load/save file dialog, for Tkinter.  The code was originally written
+by Ken Howard; Graham Matthews added comments, reformatted it and
+added code to the utils.py and assert.py files.
+
+The directory contains the following files:
+
+alert.py    - Base and derived classes for error/warning dialogs.
+assert.py   - The usual debugging style assertion routines.
+dialog.py   - Base class for a modal and non-modal dialogs.
+filedlg.py  - Contains a load file and save file dialogs.
+loadfile.py - Demo application.
+utils.py    - A simple utility file.
+
+To test: 
+
+1. Run loadfile.py 
+2. Click the load file button.
+3. Play with the load file dialog.
+4. If a choice is made and the dialog is dismissed, the button label
+   will reflect the choice.
+
+Alternatively:
+
+	from tkinter import *
+        from filedlg import SaveFileDialog
+
+	T = Toplevel()
+        d = SaveFileDialog(T, "Save As", "*.ws")
+        if d.Show() == 1:
+                doc = d.GetFileName()
+                d.DialogCleanup()
+                print "doc"
+        else:
+                d.DialogCleanup()

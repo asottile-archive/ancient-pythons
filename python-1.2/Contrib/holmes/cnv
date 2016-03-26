@@ -1,0 +1,14 @@
+#!/usr/bin/csh -f
+
+# to convert to/from dos text form:
+# use 'unix2dos' to fix crlf's for dos
+
+echo $1 ':'
+cd $1
+
+foreach x (*)
+   echo '...' $x
+   dos2unix $x tmp
+   mv -f tmp $x
+end
+

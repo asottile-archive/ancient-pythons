@@ -1,0 +1,74 @@
+MODULE:		filter
+
+FUNCTIONS:	perror(*elist)
+
+The module defines a perror function which takes a variable number of
+arguments, and writes them to stderr followed by a newline.  Think of it
+as print for stderr.  (No it doesn't do what the perror from libc does,
+yes I should have used a different name.)  
+
+CLASSES:	file_filter (__init__, run, do_file, do_line, begin, end)
+
+The filter module defines a simple class "file_filter" to use as a basis
+for writing Unix style filter programs.  It's basic operation is to take
+a sequence (list or tuple) of file names (or if none is given stdin) and
+for each one process it line by line.  Examples of this idiom include
+awk, cat, grep, sed and wc.
+
+The file_filter class has six methods described below.  For most
+purposes all that is needed in a derived class is to overload the
+do_line method to process each line as desired and possibly the __init__
+method.  Instance variables modeled after awk are provided for the
+current file name and handle, the current line number both overall and
+in the current file and the current line.
+
+METHODS:
+
+__init__(self, filenames)
+	self		- the instance
+	filenames	- a (possibly empty) sequence of strings
+
+	__init__ establishes the instance variables by assigning default
+	values to each.
+
+run(self)
+	self		- the instance
+
+	run processes each file in the list or stdin if the list is
+	empty, opening the file and feeding it to do_file and finally
+	closing it.  If it can't open the file it complains on stderr
+	and continues on.
+
+do_file(self)
+	self		- the instance
+
+	do_file reads the file line by line and feeds each one to
+	do_line.
+
+do_line(self)
+	self		- the instance
+
+	do_line processes each line.  The default behaviour is like Unix
+	cat, simply copying the line to stdout.
+
+begin(self)
+end(self)
+
+	These are hooks for awk style begin and end functions.
+
+INSTANCE VARIABLES:
+
+	self.filenames	- the sequence of filenames passed in
+	self.filename	- the current filename
+	self.file	- the current file handle
+	self.line	- the current line
+	self.nr		- the current line number (overall)
+	self.fnr	- the current line number (in this file)
+
+EXAMPLES:
+
+Below are several examples using derived file_filter classes to emulate
+standard Unix filters.  Of course in general this is silly and you would
+use file_filter to write a custom filter, but they make clear examples.
+
+[[See the files cat.py, mygrep.py, wc.py and rip.py in this directory.]]

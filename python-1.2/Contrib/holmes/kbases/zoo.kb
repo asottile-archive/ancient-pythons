@@ -1,0 +1,137 @@
+rule a if lives in shell, 
+          has pinchers
+       then class crustacean.
+
+rule b if has gills,
+          scaly skin
+       then class fish.
+
+rule c if has feathers,
+          able to fly
+       then class bird.
+
+rule d if live births 
+       then class mammal.
+
+rule e if lays eggs 
+       then class reptile
+
+
+rule 1 if lives in saltwater,        
+          has orange color,
+          cling to rocks 
+       then it is a starfish.
+
+rule 2 if lives in saltwater,
+          has tentacles,
+          poisonous bite,
+          transparent color
+       then it is a jellyfish.
+
+
+rule 3 if lives in freshwater,
+          class crustacean,
+          has brown color,
+          has many legs
+       then it is a creyfish.
+
+rule 4 if lives in saltwater,
+          class crustacean,
+          long tail,
+          has many legs,
+          has orange color
+       then it is a lobster.
+
+rule 5 if lives in saltwater,
+          lives in freshwater,
+          class crustacean,
+          has many legs
+       then it is a crab.
+
+rule 6 if lives in saltwater,
+          has many legs,
+          class crustacean,
+          very small body,
+          has orange color
+       then it is a shrimp.
+
+rule 7 if lives in saltwater,
+          hides in rocks,
+          has tentacles
+       then it is a octopus.
+
+rule 8 if lives in saltwater,
+          has tentacles,
+          not hides in rocks
+       then it is a squid.
+
+rule 9 if lives in saltwater,
+          lives in shell
+       then it is a scallop.
+
+rule 10 if lives in saltwater,
+           lives in shell,
+           cannot move by self
+        then it is an oyster.
+
+rule 11 if lives in saltwater,
+           lives in freshwater,
+           lives in shell,
+           cannot move by self
+        then it is a clam.
+
+rule 12 if lives in freshwater,
+           class fish,
+           has speckled body
+        then it is a trout.
+
+rule 13 if lives in freshwater, 
+           class fish,
+           narrow body
+        then it is a pike.
+
+rule 14 if lives in freshwater,
+           class fish,
+           eats meat,
+           travels in groups
+        then it is a pirhanna.
+
+rule 15 if lives in saltwater,
+           class fish,
+           eats meat
+        then it is a shark.
+
+rule 16 if lives in freshwater,
+           class bird
+        then it is a duck.
+
+rule 17 if has feathers,
+           not able to fly,
+           black color
+        then it is a penguin.
+
+rule 18 if class bird,
+           eats meat
+        then it is a eagle.
+
+rule 19 if class mammal,
+           is omnivorous,
+           is intelligent
+        then subclass primate.
+
+rule 20 if subclass primate,
+           not technologically advanced
+        then it is a monkey.
+
+rule 21 if subclass primate,
+           technologically advanced
+        then it is a human.
+
+rule 13 if class mammal,
+           is omnivorous,
+           not is intelligent
+        then it is a texan.
+
+
+
+

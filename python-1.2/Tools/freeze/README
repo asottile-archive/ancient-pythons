@@ -1,0 +1,170 @@
+THE FREEZE SCRIPT
+=================
+
+
+What is Freeze?
+---------------
+
+Freeze make it possible to ship arbitrary Python programs to people
+who don't have Python.  The shipped file (called a "frozen" version of
+your Python program) is an executable, so this only works if your
+platform is compatible with that on the receiving end (this is usually
+a matter of having the same major operating system revision and CPU
+type).
+
+The shipped file contains a Python interpreter and large portions of
+the Python run-time.  Some measures have been taken to avoid linking
+unneeded modules, but the resulting binary is usually not small.
+
+The Python source code of your program (and of the library modules
+written in Python that it uses) is not included in the binary --
+instead, the compiled byte-code (the instruction stream used
+internally by the interpreter) is incorporated.  This gives some
+protection of your Python source code, though not much -- a
+disassembler for Python byte-code is available in the standard Python
+library.  At least someone running "strings" on your binary won't see
+the source.
+
+
+How does Freeze know which modules to include?
+----------------------------------------------
+
+Freeze uses a pretty simple-minded algorithm to find the modules that
+your program uses: given a file containing Python source code, it
+scans for lines beginning with the word "import" or "from" (possibly
+preceded by whitespace) and then it knows where to find the module
+name(s) in those lines.  It then recursively scans the source for
+those modules (if found, and not already processed) in the same way.
+
+Freeze will not see import statements hidden behind another statement,
+like this:
+
+	if some_test: import M  # M not seen
+
+or like this:
+
+	import A; import B; import C  # B and C not seen
+
+nor will it see import statements constructed using string
+operations and passed to 'exec', like this:
+
+	exec "import %s" % "M"  # M not seen
+
+On the other hand, Freeze will think you are importing a module even
+if the import statement it sees will never be executed, like this:
+
+	if 0:
+		import M  # M is seen
+
+One tricky issue: Freeze assumes that the Python interpreter and
+environment you're using to run Freeze is the same one that would be
+used to run your program, which should also be the same whose sources
+and installed files you will learn about in the next section.  In
+particular, your PYTHONPATH setting should be the same as for running
+your program locally.  (Tip: if the program doesn't run when you type
+"python hello.py" there's little chance of getting the frozen version
+to run.)
+
+
+How do I use Freeze?
+--------------------
+
+Ideally, you should be able to use it as follows:
+
+	python freeze.py hello.py
+
+where hello.py is your program and freeze.py is the main file of
+Freeze (in actuality, you'll probably specify an absolute pathname
+such as /ufs/guido/src/python/Tools/freeze/freeze.py).
+
+Unfortunately, this doesn't work.  Well, it might, but somehow it's
+extremely unlikely that it'll work on the first try.  (If it does,
+skip to the next section.)  Most likely you'll get this error message:
+
+	needed directory /usr/local/lib/python/lib not found
+
+The reason is that Freeze require that some files that are normally
+kept inside the Python build tree are installed, and it searches for
+it in the default install location.  (The default install prefix is
+/usr/local; these particular files are installed at lib/python/lib
+under the install prefix.)
+
+The particular set of files needed is installed only if you run "make
+libainstall" (note: "liba", not "lib") in the Python build tree (which
+is the tree where you build Python -- often, but not necessarily, this
+is also the Python source tree).  If you have in fact done a "make
+libainstall" but used a different prefix, all you need to do is pass
+that same prefix to Freeze with the -p option:
+
+	python freeze.py -p your-prefix hello.py
+
+If you haven't run "make libainstall" yet, you should do it now
+(perhaps figuring out first *where* you want everything to be
+installed).
+
+
+How do I configure Freeze?
+--------------------------
+
+It's a good idea to change the first line marked with XXX in freeze.py
+(an assignment to variable PACK) to point to the absolute pathname of
+the directory where Freeze lives (Tools/freeze in the Python source
+tree.)  This makes it possible to call Freeze from other directories.
+
+You can also edit the assignment to variable PREFIX (also marked with
+XXX) -- this saves a lot of -p options.
+
+
+How do I use Freeze with extensions modules?
+--------------------------------------------
+
+XXX to be written.  (In short: pass -e extensionbuilddir.)
+
+
+How do I use Freeze with dynamically loaded extension modules?
+--------------------------------------------------------------
+
+XXX to be written.  (In short: pass -e modulebuilddir -- this even
+works if you built the modules in Python's own Modules directory.)
+
+
+What do I do next?
+------------------
+
+Freeze creates three files: frozen.c, config.c and Makefile.  To
+produce the frozen version of your program, you can simply type
+"make".  This should produce a binary file.  If the filename argument
+to Freeze was "hello.py", the binary will be called "hello".  On the
+other hand, if the argument was "hello", the binary will be called
+"hello.bin".  If you passed any other filename, all bets are off. :-)
+In any case, the name of the file will be printed as the last message
+from Freeze.
+
+
+Troubleshooting
+---------------
+
+If you have trouble using Freeze for a large program, it's probably
+best to start playing with a really simple program first (like the
+file hello.py).  If you can't get that to work there's something
+fundamentally wrong -- read the text above to find out how to install
+relevant parts of Python properly and how to configure Freeze to find
+them.
+
+A common problem is having installed an old version -- rerunning "make
+libainstall" often clears up problems with missing modules or
+libraries at link time.
+
+
+What is nfreeze.py?
+-------------------
+
+The script nfreeze.py is an unsupported variant on freeze.py which
+creates all files in a temporary directory and runs "make" there.  It
+has the advantage that it doesn't overwrite files in the current
+directory, but the disadvantage is that it removes all files when it
+is finished.
+
+
+--Guido van Rossum, CWI, Amsterdam <mailto:Guido.van.Rossum@cwi.nl>
+<http://www.cwi.nl/cwi/people/Guido.van.Rossum.html>

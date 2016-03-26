@@ -1,0 +1,99 @@
+Python 1.0.0 (Feb 13 1994)                                    
+Copyright 1991-1994 Stichting Mathematisch Centrum, Amsterdam 
+>>> import psh                                                
+-Python command shell-                                        
+.PshInit file not found                                       
+%                                                             
+%                                                             
+% help                                                        
+Available commands...                                         
+                                                             
+cd <dir>?          change current directory                   
+db <expr>?         run expr under pdb debugger                
+ed <file>?         edit a file (shell.editor)                 
+equ [<str> <val>]? replace/aliase <str> with <val>            
+fix <module>       edit and import|reload module              
+help <cmd>?        describe one|all commands                  
+hi                 prior command history list                 
+ls <dir>?          list contents of dir                       
+os <cmd>?          send command to system                     
+prompt <str>       change the prompt string                   
+pwd                print current directory                    
+quit               exit the shell                             
+re [<num>|<str>]?  repeat a prior command (see hi)            
+src <file>         read commands from a text file             
+                                                             
+Other commands are run by the Python interpreter in __main__  
+Type 'help <cmd>' for more information on a specific command  
+                                                             
+%                                                             
+% help db                                                     
+Command:     db                                               
+Arguments:   <expr>?                                          
+Description: run expr under pdb debugger                      
+Examples:    db shell.help(['db'])                            
+%                                                             
+% equ ! re                                                    
+% hi                                                          
+1 => help                                                     
+2 => help db                                                  
+3 => equ ! re                                                 
+% !2                                                          
+equ: re 2                                                     
+redo: help db                                                 
+Command:     db                                               
+Arguments:   <expr>?                                          
+Description: run expr under pdb debugger                      
+Examples:    db shell.help(['db'])                            
+%                                                             
+% import holmes                                               
+-Holmes inference engine-                                     
+holmes> @= c:\stuff\python\kbases\ttt2                        
+holmes> +-                                                    
+I deduced these facts...                                      
+   d 1                                                        
+   d 2                                                        
+   c 1                                                        
+   c 2                                                        
+   b 1                                                        
+   b 2                                                        
+   a 1                                                        
+   a 2                                                        
+I started with these facts...                                 
+                                                              
+time:  1                                                      
+                                                             
+show proofs? x                                                
+what?  (expecting "y", "n", "where", or "browse")             
+                                                             
+show proofs? where                                            
+I deduced these facts...                                      
+   d 1                                                        
+   d 2                                                        
+   c 1                                                        
+   c 2                                                        
+   b 1                                                        
+   b 2                                                        
+   a 1                                                        
+   a 2                                                        
+I started with these facts...                                 
+                                                              
+                                                             
+show proofs? n
+holmes> stop
+%  
+% holmes.holmes()
+-Holmes inference engine-                                     
+holmes> stop
+%
+% prompt psh>                                              
+psh> x = 2 
+psh> !h                                                              
+equ: re h                                                         
+redo: holmes.holmes()                                             
+-Holmes inference engine-                                         
+holmes>                                                           
+holmes> stop                                                      
+psh> quit                                                            
+command shell exit.                                               
+>>>      

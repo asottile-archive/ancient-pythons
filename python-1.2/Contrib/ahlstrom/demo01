@@ -1,0 +1,60 @@
+#! /usr/local/bin/python
+# This a demo program for "wpy" written in a declarative (not
+# object-oriented) style.  See demo02 for an object-oriented version.
+# This program will run unchanged on any system which has a "wpy.py".
+
+from wpy import *    # Standard module name on all platforms, but contents
+                     # varies for Motif, Tk, MSW, OS2, etc.
+app     = WpyApp()   # Represents the whole application.  Not visible.
+window  = WpyTopLevel(app, "Usual Hello World Demo")
+button1 = WpyButton(window, "OK")
+window.wpyHasResize = 1		# User can resize the window.
+window.wpyDefaultButton = button1
+button2 = WpyButton(window, "Quit")
+
+# Make a line of text for the window.
+t1 = "Please press OK again to change the size of the window."
+t2 = "Please press OK to change the size of the window."
+t3 = "  Try changing the size with the window decorations too."
+msg = WpyMessage(window, t2 + t3)
+
+# Make a function to be called when the window is sized or resized.
+def size(self, event):        # Standard form of event handler.
+  if event == None:        # Called when window is created.
+    # Set window size according to message size.
+    window.wpySizeX = window.win_x = msg.wpySizeX * 1.4
+    window.wpySizeY =         msg.wpySizeY * 3
+    # Make the button widths the same.
+    window.WpyMakeEqualSize(button1, button2)
+  else:                    # User or programmer resize.
+    window.wpySizeX = window.wpySizeX + event.wpyChangeSizeX
+    window.wpySizeY = window.wpySizeY + event.wpyChangeSizeY
+  # Place widgets relative to "window".
+  msg.WpyPlace(window, 0.5, 0.1, "n")
+  button1.WpyPlace(window, 0.3333, 0.70, "center")
+  button2.WpyPlace(window, 0.6667, 0.70, "center")
+window.WpyOnSize = size
+
+resize_event = WpyEvent()
+resize_event.wpyChangeSizeX = 0
+resize_event.wpyChangeSizeY = 0
+# Make function to be called when button is pressed.  This button resizes
+# the window to demonstrate re-size events.  Window has re-size decoration,
+# so user may resize window him/herself, and the layout will adjust.
+def OkFunc(self, event):        # Standard form of event handler.
+  if window.wpySizeX != window.win_x:  # Just toggle between two sizes.
+    window.wpySizeX = window.win_x
+    msg.wpyTitle = t2 + t3   # Changes to title are trapped, and the underlying
+  else:                      # physical layer is notified automatically.
+    window.wpySizeX = window.win_x * 1.5
+    msg.wpyTitle = t1
+  window.WpySendSizeEvent(resize_event)   # Send a resize event to window.
+# NOTE: You must generate a resize event yourself if your code changes any
+# sizes.  If the user changes a size by using the window decoration, the
+# system generates the resize event.  In general, all code is event driven.
+button1.WpyOnButton = OkFunc         # Function to call on button press.
+button2.WpyOnButton = app.WpyExit    # Use one of app's standard functions.
+
+# Create window, start the application, respond to events.
+window.WpyCreateWindow()
+app.WpyMainLoop()

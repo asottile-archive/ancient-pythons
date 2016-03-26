@@ -1,0 +1,128 @@
+The following was posted to comp.lang.python in November 1994:
+James C. Ahlstrom        jim@interet.com
+
+Recently I have been working on a Python GUI Abstraction Layer.  I realize
+that  other  people  are working on this, and I am posting this to see who
+you are (please reply) and to relate what I found out so far.  To keep the
+length  down  I  plan to followup later this week.  I would appreciate any
+criticism you may have.
+
+The idea is that it should be possible to write the GUI part of a  program
+in Python, and have it run unchanged on several different GUIs  using  the
+native  Look  and Feel.   We could then look forward to complicated Python
+programs which would run unchanged on Unix/Motif, Unix/Tk, MS Windows  and
+OS/2.   Python  is ideal for GUI work because it is a pure object-oriented
+language.
+
+Python would need to provide an interface which supports  a  rich  set  of
+features  available  on today's GUIs in a way which could be easily ported
+to all of them.  Since each GUI has its own view of the world, this is not
+easy.    The  way  to  do  it is to read the Win32, Tk, XVT, SOM, Mac, and
+Motif manuals in detail.  Then think of what they do  and  express  it  in
+Python in a natural and object-oriented way.
+
+So, as an exercise, I wrote a short program which displays a resizable di-
+alog  box  with  two buttons.  I designed the Python code to be compatible
+with the systems I am familiar with, namely MS Windows, XTV (XVT Software,
+Boulder,  CO), and Tk.  Regrettably, I know little about the Mac.   I have
+an actual implementation in Tk using tkinter (not Tkinter.py).
+
+Despite the simplicity of the example, I found many problems.  Once I port
+it  to  XVT  and  WinNT I may find more.  Here is the program:
+
+----snip----
+
+# This program will run unchanged on any system which has a "wpy.py".
+import wpy      # Standard module name on all platforms, but contents
+                # varies for Motif, Tk, MSW, OS2, etc.
+app     = wpy.App()     # Represents the whole application.  Not visible.
+dialog  = wpy.Dialog("Usual Hello World Demo") # A top-level window.
+button1 = wpy.Button(dialog, "OK")             # Two buttons.  Look and feel
+button2 = wpy.Button(dialog, "Quit")           # will be different for
+                                               # different platforms and
+# Make the button widths the same.             # implementations.
+button1.sizeX = max(button1.sizeX, button2.sizeX)  # Buttons come with a size.
+button2.sizeX = button1.sizeX
+
+# Place buttons on 1/3 centers near bottom of dialog.  The model allows
+# an absolute pixel size/position, and a size/position relative to any
+# rectangular object, default: the parent.  Similar to Tk "placer".
+button1.anchor = button2.anchor = "center"
+button1.locY = button2.locY = 0.70
+button1.locX = 0.3333
+button2.locX = 0.6667
+
+# Make function to be called when button is pressed.  This button resizes
+# the dialog to demonstrate re-size events.  Dialog has re-size decoration,
+# so user may resize dialog him/herself, and the layout will adjust.
+dialog.sizeY = 0.4        # Parent of dialog is app with size of screen.
+def OkFunc(self, event):  # Standard form of event handler.
+  if dialog.sizeX == 0.4: # Just toggle between two sizes.
+    dialog.sizeX = 0.6
+  else:
+    dialog.sizeX = 0.4
+  dialog.SendSizeEvent()  # Send a resize event to dialog.
+# NOTE: You must generate a resize event yourself if your code changes any
+# sizes.  If the user changes a size by using the window decoration, the
+# system generates the resize event.  In general, all code is event driven.
+button1.OnPress = OkFunc      # Function to call on button press.
+button2.OnPress = app.Exit    # Use one of app's standard functions.
+
+# Show dialog, start the application, respond to events.
+dialog.Show()        # All objects must be created with "show".  "Show" also
+app.MainLoop()       # creates all child objects.  "MainLoop" must be last.
+
+----snip----
+
+Here  are the details on the implementation using tkinter.  All source and
+documentation is available from ftp.interet.com.  It has  been  tested  on
+SunOS 4.1.1 and Linux.  Keep in mind that it is a demonstration of concept
+rather than something currently useful for writing programs.
+
+The main Python program imports the module "wpy.py", which is meant to  be
+mostly  the same for any platform.  This module contains all the class de-
+finitions and most of the logic for the window system.   It  contains  its
+own  geometry  manager for example.  The Tk geometry managers are not used
+because they are not available on other platforms.
+
+The module "wpy.py" imports the module "wpyos.py" which contains the  code
+which  is highly dependent on Tk. The module "wpyos" imports "tkinter" but
+not "Tkinter.py".  I am hoping that when ported to MS Windows etc.,  "wpy"
+will  remain  mostly the same and only "wpyos" will be rewritten.  If this
+proves impractical, I guess we may as well just use one module.   For  any
+platform,  there  will  be  a  different  "wpy" and "wpyos".  I envision a
+"wpyos.tk", "wpyos.msw", wpyos.os2", etc. with "wpyos.py" a  link  to  the
+correct version.
+
+A  basic  question  is  whether  to  use  "x   =   object.locationX"   and
+"object.locationX  =  150"  to  get/set  location,  or whether to use "x =
+GetLocationX(object)" and "SetLocationX(object,  150)".   The  first  case
+seems  to  need  setattr/getattr to notify the underlying system to change
+the size.  This conundrum applies to any attributes of an object which may
+be changed.
+
+The design used relies on instance variables for most purposes, and events
+for  notification  of changes.  This enables us to write x=a+b rather than
+set_x(get_a() + get_b()).  There is no use of getattr/setattr.
+
+The instance variables won't do anything until  the  programmer  sends  an
+event  to  the  relevant  object.  This seems natural (at least to me) for
+geometry because all modern GUIs are event driven, and the user can change
+the  size and location of a top level window at any time by using the win-
+dow decorations.  In that case, an event "EventSize" is generated and must
+be handled by the event handler "OnSize".  Why not just let the programmer
+generate events too?  So widget configuration would be done by a large set
+of   instance   variables,  a  smaller  set  of  methods  (functions)  and
+setattr/getattr only when all else  fails.   Most  variables  and  methods
+would be inherited.
+
+Python events are generic and are not the same as X/MSW/OS2 events.  Since
+there  is not much point to an object oriented language unless inheritance
+is used extensively, event handlers are designed to be inherited.  If  you
+do  not like the geometry manager, just write your own and replace the On-
+Size event handler with it.  This works both for  individual  objects  and
+for classes of objects.
+
+There is more documentation in the form of comments in the source code.
+
+What do you think?

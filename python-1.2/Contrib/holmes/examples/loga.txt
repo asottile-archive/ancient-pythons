@@ -1,0 +1,90 @@
+Python 1.0.0 (Feb 13 1994)                                    
+Copyright 1991-1994 Stichting Mathematisch Centrum, Amsterdam 
+>>> import psh                                                                                                   
+-Python command shell-                                                                                           
+.PshInit file not found                                                                                          
+%                                                                                                                
+% cd c:\stuff\python\holmes2                                                                                     
+C:\STUFF\PYTHON\HOLMES2                                                                                          
+%                                                                                                                
+% pwd                                                                                                            
+C:\STUFF\PYTHON\HOLMES2                                                                                          
+%                                                                                                                
+% import sys                                                                                                     
+% sys.path                                                                                                       
+['C:\\stuff\\python\\other', 'C:\\stuff\\play\\python', '.', 
+ 'C:\\stuff\\python\\holmes', '\\lang\\python\\lib']                              
+%
+% import holmes                                                                                                  
+-Holmes2 inference engine-                                                                                       
+holmes> help                                                                                                     
+I understand these command forms:                                                                                
+                                                                                                                
++- fact, fact..    --forward chain                                                                               
+?- goal, goal..    --backward chain                                                                              
+++ fact,.., filter --forward, with filter                                                                        
+?? goal,.., x,y    --backward, with print mode                                                                   
+?n   (n=1..7)      --use back chainer variant                                                                    
++n   (n=1..2)      --use forward chain variant                                                                   
+                                                                                                                 
+@= file            --load a kbase file                                                                           
++= rule x if y..   --add a rule to kbase                                                                         
+-= id              --delete kbase rule                                                                           
+=@ file            --save kbase to file                                                                          
+@@ part, value     --browse kbase                                                                                
+                                                                                                                 
+!- statement       --run Python stmt or expr                                                                     
+help               --get this listing                                                                            
+stop               --exit holmes                                                                                 
+                                                                                                                 
+holmes> += rule 1 if human ?x then mortal ?x                                                                     
+holmes> @@                                                                                                       
+rule 1 if human ?x then mortal ?x.                                                                               
+holmes>
+holmes> ?- mortal guido                                                                                          
+is this true: "human guido" ? y                                                                                  
+yes: (no variables)                                                                                              
+                                                                                                                
+show proof ? y                                                                                                   
+ "mortal guido" by rule 1                                                                                        
+    "human guido" by your answer                                                                                 
+more solutions? browse                                                                                           
+enter browse pattern: rule,1                                                                                     
+rule 1 if human ?x then mortal ?x.                                                                               
+more solutions? y                                                                                                
+                                                                                                                
+no (more) solutions                                                                                              
+holmes>
+holmes> +- human amrit                                                                                           
+I deduced these facts...                                                                                         
+   mortal amrit                                                                                                  
+I started with these facts...                                                                                    
+   human amrit                                                                                                   
+time:  0                                                                                                         
+                                                                                                                
+show proofs? y                                                                                                   
+enter deductions pattern: mortal ?x                                                                              
+ "mortal amrit" was deduced by firing rule 1                                                                     
+    "human amrit" was on your initial facts list                                                                 
+                                                                                                                
+show proofs? browse                                                                                              
+enter browse pattern:                                                                                            
+rule 1 if human ?x then mortal ?x.                                                                               
+                                                                                                                
+show proofs? no                                                                                                  
+holmes>                                                                                                          
+holmes> ?- mortal guido                                                                                          
+is this true: "human guido" ? why                                                                                
+to prove "mortal guido" by rule 1                                                                                
+this was part of your original query.                                                                            
+is this true: "human guido" ? browse                                                                             
+enter browse pattern: rule,1                                                                                     
+rule 1 if human ?x then mortal ?x.                                                                               
+is this true: "human guido" ? n                                                                                  
+no (more) solutions                                                                                              
+holmes> stop
+%
+% quit
+>>> 
+
+

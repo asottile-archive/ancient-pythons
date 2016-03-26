@@ -1,0 +1,22 @@
+
+Thanks for your interest in a hobby project of mine!  As (I hope) was
+clear from the announcement, my conversion program is written in
+Python, an object-oriented programming language that I developed for
+my own use (but which is gaining popularity all over the world, and
+freely available, and even being supported).
+
+Here is the source for the Python program that I use.  You need a
+(minimal) Python interpreter to run it; that, you can fetch by
+anonymous ftp from ftp.cwi.nl [192.16.184.180], directory pub, files
+python0.9.6.tar.Z (source), pythondoc-ps0.9.6.tar.Z (PostScript of the
+documentation).  (Files with [pP]ython0.9.7 in their name are part of
+the beta release of version 0.9.7 -- fetch at your own risk.)  I hope
+you're familiar with building large C programs under UNIX, otherwise
+you'll need more hand-holding building Python than I can provide...
+
+Cheers,
+
+--Guido van Rossum, CWI, Amsterdam <guido@cwi.nl>
+"I didn't know we had a king.  I thought we were an autonomous collective."
+
+<INSERT texi2html.py here>

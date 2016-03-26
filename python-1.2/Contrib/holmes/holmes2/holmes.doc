@@ -1,0 +1,612 @@
+Holmes2 is an extension of holmes that uses discrimination
+trees to speed up the deduction process.
+
+See holmes/holmes.doc for more information.  Only 
+new features are documented here.
+
+
+
+---------
+Contents:
+---------
+
+Holmes2 consists of 6 modules:
+    
+    holmes.py     the main driver module
+    kbase.py      knowledge base administrative routines
+    match.py      the pattern matcher (limited unification)
+    forward.py    the forward chaining inference engine  
+    backward.py   the backward chaining inference engine
+    index.py      the discrimination tree implementation
+
+plus a number of backward.py variants (we eliminated backwrd2.py 
+since it was incorrect):  
+
+    backwrd3.py   explicit goal/backtrack stacks
+    backwrd4.py   backward.py without exceptions (just return)
+    backwrd5.py   backward.py without exceptions, and tree list rep
+    backwrd6.py   generate-and-test, with explicit goal stacks
+    backwrd7.py   non-backtracking version (copies proof subtrees)
+
+and a forward.py variant:
+
+    forward2.py   implements negation by ommission or assertion
+
+The module match.py is identical to the original holmes/ version.
+kbase.py and holmes.py are extended to keep index trees with 
+rule lists.  Most internal comments have been removed from the 
+source code in holmes2: refer to the corresponding file in 
+holmes/ for more documentation.
+
+
+
+------------
+Constraints:
+------------
+       
+Using discrimination trees noticably improves performance,
+even for the small example knowledge-bases we have tested.
+This is especially true in forward chaining, which is more 
+computationally intensive than backward chaining.  One 
+forward chaining request with 'fixit.kb' (which has 41 
+fairly complex rules):
+
+    ++ jiggling tv cord has any effect,
+       have spare money,
+       can afford to replace the tv,
+       go tv ?prob ?soln
+
+    -> go tv cord-is-frayed buy-a-new-one.
+
+takes 18 seconds to reach the conclusion in holmes, and 
+between 1 and 2 seconds in holmes2 (with negation-by-ommission).  
+There are, however, 3 constraints that this version imposes:
+
+(1) Rules are not tried in their original order, and 
+    deductions are not reported in the order they were made.
+
+(2) Redundant solutions may be reported in backward mode 
+    when > 1 similar 'then' clause is used in a rule.
+
+(3) 'not' with negation-by-ommission in forward mode (only)
+    does not work quite the same as in the original holmes.
+    'ask' goals also may work unexpectedly in forward mode.
+
+The first 2 of these are only important in backward mode;  they 
+are explained in 'Caveats' below.  Number (3) only applies to 
+forward mode, and a particular 'not' strategy.  You can avoid 
+these pitfalls by careful knowledge-base coding;  alternatively,
+you may use the original holmes version if these are critical 
+points (the original holmes performed reasonably well).
+ 
+
+
+---------------------
+Discrimination trees:
+---------------------
+
+Discrimination trees are used to index rule 'if' parts in forward 
+mode, rule 'then' parts in backward mode, and known fact lists in 
+both modes.  In each case, we avoid exhaustive search;  in forward 
+mode, the 'if' indexes also avoid reselecting the same rule over 
+and over.  Using trees incurs a slight overhead, but the gain we 
+get from avoiding useless match() calls, and redundant rule firing 
+is much greater.
+
+Kowledge bases are now a triple: rule list, 'if' index, and 'then'
+index.  We construct the indexes as the rules are loaded or added,
+rather than before each deduction request;  this incurs a slight
+space cost (we don't need both indexes if we're only going to do
+forward xor backward chaining), but makes deductions faster.
+
+The trees are implemented as trees of (nested) Python dictionaries.  
+Each level of the tree corresponds to a term[i] in the selection pattern.  
+For an N symbol pattern, we descend N levels in the tree (and do N
+hashtable lookups), and find the matching item (fact or rule)
+at the N'th level's node (which may or may not be a leaf).
+
+The trees do length comparison implicitly (we can fall off the
+end (pattern too long), or reach a node with no items (pattern too 
+short)).  They also handle variables in both the pattern, and the 
+stored key:
+    a) when we store a fact with a variable in fact[i],
+       we add the fact to level i's '?' entry (variables),
+       and continue adding to levels i+1..N below the '?'.
+
+    b) when we lookup a pattern's value:
+       if pattern[i] is a constant,
+          we concatenate the results of searching through
+          the level[i] entries for both the constant, and
+          '?' (since the constant can be matched by both)
+
+       if pattern[i] is a free variable,
+          we concatenate the results of searching through
+          all level[i] entries (all constants, and the '?'
+          variable entry), since the variable can match
+          anything at this level
+
+Facts are grounded (variables evaluated) before they are added 
+to the discrimination tree (if appropriate).  When there are 
+no variables in the pattern or stored fact, we only do N
+hashtable seraches to get to the matching value (fact or rule)
+for a term with N symbols.
+
+
+
+Example:
+--------
+    
+    x = Index().init()
+    x.store(['a'],1)  
+    x.store(['b'],2)  
+    x.store(['c'],3)
+    x.store(['a','x'],4) 
+    x.store(['a','y'],5)
+    x.store(['b'],6) 
+    x.store(['b','z'],7)
+
+    x.search(['a'])       ->  [1]
+    x.search(['b'])       ->  [2, 6]
+    x.search(['a','x'])   ->  [4]
+    x.members()           ->  [7, 2, 6, 5, 4, 1, 3]
+  
+    x.search(['a','?x'])  ->  [5, 4]
+    x.search(['?x'])      ->  [2, 6, 1, 3]
+    x.search(['c','?x'])  ->  []
+    x.store(['a','?x'],9)
+    x.search(['a','x'])   ->  [4, 9]  
+    x.search(['a','?x'])  ->  [9, 5, 4]
+    x.search(['?x','?y']) ->  [7, 9, 5, 4]
+
+
+
+Backward chaining optimizations.
+--------------------------------
+
+Keeps 2 indexes: rule 'then' index, and known/asked fact index.
+
+a) Uses discrimination tree to select rules with a 'then' part 
+that can possibly match the current goal.  This avoids scanning 
+entire kbase (rule list) for each goal (and calling match() 
+at each rule).  For each goal, we select the possibly-matching  
+set of rules, and _then_ try matching to 'then' parts.  In 
+practice, we usually only need to try a few rules for each goal.
+
+b) Also uses a second index tree to lookup already-asked facts,
+to avoid scanning the 'asked' list, when no rule applies. This
+speeds up retrieval of prior answers at the proof tree leaves.
+
+In effect, backward() selects a subset of the rule base for
+each goal (with 'then' possibly matching a goal), then 
+does the matching;  it also selects a subset of known facts
+to search before asking a question. In no case do we 
+exhaustively scan the rule or known-fact lists.  This
+is important in large kbases (but not as critical as 
+in forward(), since backward() is goal-directed).
+
+
+
+Forward chaining optimizations.
+-------------------------------
+
+Uses discrimination trees to avoid scanning fact
+lists seqentially, and repeating computations on
+each iteration.  Keeps 2 indexes: rule 'if' index,
+and known-fact index, to avoid:
+    a) exhaustive fact list search when matching an 'if'
+    b) exhaustive fact list scan when seeing if fact redundant 
+    c) exhaustive fact list scan when seeing if should ask user
+    d) reselecting and refiring rule/binding on each iteration
+
+In more detail, uses discrimination nets (index trees) to: 
+   a) select facts that can possibly match a goal (an 'if');
+      this avoids all the useless match() calls: we don't
+      exhaustively scan the facts list for each 'if' in each rule; 
+      (note that we still must select facts for rules triggered
+      by newly added facts, since we must match all if's again);
+      this works well when 'if' goal atterns are distinct (for 
+      example, when the first 'if' is a 'stage N' fact,
+      since rules not part of 'stage N' are eliminated 
+      immediately without any matching);  the index tree 
+      partitions the already-known facts list
+
+   b) detect and eliminate duplicate facts in fire(); this avoids 
+      the facts list 'in' test exhaustive scan, for each new fact 
+      deduced (we quickly eliminate rule/binding's that have 
+      already fired, by eliminating their deductions, even if they
+      were woken by a new fact)
+
+   c) avoid exhaustively scanning the facts list when seeing if a 
+      fact is already known, before asking the user;
+
+   d) avoid reselecting and firing the same rule/binding on each
+      iteration;  makes suggested rule selection fast, as described 
+      in the next section
+
+
+Avoiding reselecting/firing rules:
+----------------------------------
+On each iteration, only try rules that have any 'if' goal
+that can possibly match any fact added in the last iteration;
+the initial facts are the 'newly added' facts in iteration 1;
+in most cases, this avoids repeating the same deductions
+on each iteration (and the associated matching, and firing
+stages);  a rule/binding deduction only gets recomputed if 
+the rule may produce new bindings as a result of newly 
+deduced facts (in which case, the rule is restarted at 
+the 'top' of the facts list);
+
+ex:
+   rule 1 if a ?x, b ?y then c ?x ?y
+   rule 2 if e then b 2
+   rule 3 if d then e
+        
+   +- a 1, d   -> a1, d | e   -> a1, d, e | b2   -> a1, d, e, b2 | c12
+
+   iteration 1: rule 1 and rule 3 
+   iteration 2: rule 2
+   iteration 3: rule 1
+   iteration 4: none->stop
+
+ex:
+   rule 1 if b ?x then a ?x.
+   rule 2 if c ?x then b ?x.
+   rule 3 if d ?x then c ?x.
+   rule 4 if true then d 1.
+   rule 5 if true then d 2.
+
+   +- true (trigger rules 4,5) -> 
+      true | d1, d2  (rule 3) -> 
+      true,  d1, d2 | c1, c2 (rule 2) 
+      true,  d1, d2,  c1, c2 | b1, b2 (rule 1) -> 
+      true,  d1, d2,  c1, c2,  b1, b2 | a1 a2 (stop)
+
+This is a more general (and correct...) version of the 'last-index' 
+method of 'holmesb';  it not only avoids refiring rules with 
+facts 1..last-index each time, but also selects only those
+rules that are suggested at each iteration, and restarts 
+rules if 'if'[2..N] is suggested, even if 'if'[1] is not;
+
+We use discrimination nets for newly added facts to make the
+rule selection phase fast (we don't call 'match()' for each
+'if' in each rule, against all newly added facts);  since 
+we don't match(), we sometimes select a rule that won't
+really generate a new binding (and just do a bogus match())
+
+
+How it works:
+-------------
+Note that we could either: 
+1) index newly-added facts for an iteration, and scan all rules, 
+   checking if any 'if' is in the index, 
+2) index rule's 'if' goals, and scan the newly added facts list, 
+   checking if any new fact is mentioned in the index (in a rule)
+
+to get the list of triggered rules (rules with any if[i] that can
+possibly match a newly added rule).  We use method (2) to index 
+rules 'if' parts, since it's more directed (facts trigger rules
+directly), and we only need to compute the index once (instead of
+a new 'new facts' index on each iteration).  
+
+Rule selection:
+--indexes rules 'if' goals as rules are added/loaded
+--on each iteration, newly added facts are added (asked/deduced) to a list  
+--on the next iteration, we scan this list and lookup triggered rules in 
+  the 'if' index (rules are triggeres/woken/activated by new facts)
+--the initial fact list is 'new facts' in iteration 1 (all rules are 
+  applied to the initial facts on the first itration)
+--avoids adding rules to the 'tiggered' set > once (they may be found in the 
+  index > once) by recording an iteration counter in selected rules,
+  in a special rule field rule['trigger'] (rules are dictionaries)  
+--when facts are deleted, we must add a 'not <..>' fact to the new facts 
+  list, to trigger facts using 'not' as negation-by-ommission.
+
+Rule matching:
+--for each 'if' in a triggered rule, select possibly matching facts
+  in the 'facts' index
+--do match(), and compute conjunct binding intersections
+
+Rule firing:
+--for each fact deduced (or asked), use fact index to avoid adding
+  the fact > once
+
+
+In the examples above, we use discrimination trees to select 
+both the rules which are suggested by new facts, and then 
+to select facts which may match the 'if' parts of selected
+rules (which is taken from the set of all known facts).
+
+In effect, each iteration of forward() selects a subset of
+the rule base (rules triggered by new facts), then 
+selects subsets of the fact base to match 'if' parts of 
+rules, and then selects subsets of the fact base to 
+eliminate duplicate deductions.  In no case do we exhaustively
+scan the rule or fact bases.  This is critical in big
+knowledge bases (else combinatorial explosion occurs).
+
+
+
+--------
+Caveats:
+--------
+
+
+There are some issues we did not explore further, due to 
+lack of time.  These are beyond the scope of this project.
+
+
+
+1) Rules may be applied in random order.
+----------------------------------------
+Within any level of the proof, we do not maintain the 
+original order of the rules in the kbase file-- because 
+we add into a hashtable for the level (a python dictionary), 
+the order in each level is random.  This is really only
+apparent in backward mode, since questions may be asked
+in random order; it is not critical in forward mode, since
+the deduction is not goal-directed anyhow.  
+
+For interactive backward chaining, the user shouldn't, 
+therefore, write rules with similar 'then' parts with any 
+particular order in mind.  (The original holmes tried rules 
+in order, simply because it tried _all_ rules on a linear list).  
+For example, the following rules will be tried in random order:
+    
+    rule 1 if ... then it is a bird.
+    rule 2 if ... then it is a monkey.
+    rule 3 if ... then it is a fish.
+
+    rule 1 if ... then fixit hopeless-case ?x.
+    rule 2 if ... then fixit electric-problem ?x.
+
+In the last case, ordering seems important.  We could 
+reinstate order by sorting the rule selected from the index
+by rule id (or by using a tree instead of a hashtable for 
+each level's keys);  holmes2 does not implement these schemes.
+
+Similarly, deductions in forward mode are not reported in
+the order in which they were reached (since they are added
+to the 'known' fact index).  This could be remedied by 
+also adding them to a linear list, at some speed cost.
+
+
+
+2) Redundant solutions if > 1 'then' in backward mode.
+------------------------------------------------------
+If you write rules with more than 1 'then' clause, the 
+system may produce redundant solutions, in backward mode
+(not in forward mode).  The solutions will be correct, but
+the same solution may be reported more than once, if you 
+ask the system to backtrack through all solutions.  This  
+is caused by the way we index rules: since we put a rule 
+on the index entry for each 'then' clause, we may fetch the
+rule > once for the same goal pattern, and so attempt it
+> once.  For example:
+
+    rule 1 if true then d 1, d 2.
+    ?- d ?x
+
+When we search for rules matching 'd ?x', we find 2 patterns,
+'d 1', and 'd 2', which both have rule 1 in their leaf sets.
+We therefore select and attempt rule 1 twice, yielding 4
+solutions: x=1, x=2, x=1, x=2.  (We correctly get 1 solution
+for '?- d 1' and '?- d 2').
+
+This could be fixed by removing duplicate rules from the 
+selected rules list, but this step may be expensive for
+large rule lists (for ex: the 'zoo.kb' kbase is fairly
+flat, and many rules would be selected for the goal 
+'it is a ?x').  Because of this, we prefer to constrain
+the kbase to not include rules that have > 1 similar 'then' 
+clause, if they are to be used in backward mode.  For ex:
+
+    rule 1a if true then d 1.
+    rule 1b if true then d 2.
+    ?- d ?x  -> x=1, x=2
+
+We can't use the 'trigger' id method forward mode uses to 
+avoid redundant rules (there is no concept of an 'iteration' 
+in backward mode).  It may be possible to use more complex
+indexing or augment the kbase build process to avoid 
+redundant rules.  We could also split rules with  > 1 'then'
+into multiple rules with a single 'then' each, or augment  
+the index searcher to keep 'selection-number' counts at all
+leaf values: only add the leaf value to the result list if 
+it's counter is not = the curent selection counter (like the
+'trigger-id' sceme used in forward; but this would slow down 
+all index searches).  None of these schemes has been explored 
+in holmes2.
+
+
+
+3) Why call match() at all?
+---------------------------
+When we use trees to select rules, we are clearly doing some
+redundant work, if we later call match() once the rules are 
+selected.  However, we need to call match() in the current index  
+implementation, because the index tree search is ignorant of 
+variable bindings-- the index tree search doesn't accumulate bindings
+for variables in the search patterns as the descend levels in the 
+tree: they naively assume that a variable in pattern[i] will be
+free when match() reaches pattern[i], which won't be true if the 
+variable appears earlier in pattern[0..i-1].  Similarly, it 
+assumes variables in key[i] will be free when match reaches
+key[i], even if the variable appears in key[0..i-1].
+ 
+We could augment the index tree searcher to acumulate and 
+ground variable bindings in the pattern and key, and return
+the bindings with the value at the leaf.  This would essentially
+be what the match() routine does, and we might avoid calling
+match() altogether in some cases.
+
+In forward mode, we would still need to call match(), since 
+the triggered 'if' in the rules may be part of some larger
+conjunction: we need to re-match() the 'if'[i] in the context of
+the bindings made to all 'if'[0..i-1], since these bindings 
+are not known until we attempt the whole 'if' conjunction
+(in the 'trigger' stage, we only match 1 'if' clause).  Indeed,
+the bindings made during index search would be almost useless.
+
+But in backward mode, we would have no reason to call match(), 
+if the index search accumulated bindings.  This is possible,
+since we would be matching the goal to a single 'then' part 
+in each selected rule: the bindings would be complete when 
+the rule is selected, and we'd get a list of rule/binding
+pairs to use immediately (without testing each by calling
+match()).  The match() would be redundant;  matching would 
+be distributed over the index search.  Backtracking (at the 
+rule disjunction level) would also be partially absorbed by 
+the index search, since we'd already know which rules match.
+This would probably speed backward chaining (But note: the
+work of match() would still be performed;  it would just be
+distributed in the index searcher.  We'd only avoid the 
+redundant ground term testing done by the indexer now.)
+
+
+
+4) Negation and 'ask' in forward mode.
+--------------------------------------
+It's not clear what 'not' should mean in forward mode, and
+the implementation is problematic.  We implement 2 alternatives: 
+
+  a) Negation by explicit assertion
+     The 'not' goal must literally deduced or on the initial
+     fact list;  'not x' is true iff 'not x' is known.  In this 
+     case 'not' need not be treated specially, and we just match
+     goals to facts as usual.  'not' goals can be deduced by being
+     in a rule's 'then' part, or by a negative user answer.
+   
+  b) Negation-by-ommission 
+     'not x' is true if 'x' is not known (deduced/initial)).
+     This roughly corresponds to negation-by-failure, used in
+     bacward chaining mode.
+
+By default, we use negation-by-assertion.  The forward2.py 
+variant adds negation-by-ommision as an option;  it checks
+both negation-by-ommission, and then negation-by-assertion.
+
+In general, negation-by-ommision (failure) does not appear 
+appropriate for forward chaining.  The ommission case tends 
+to generate alot of garbage deductions in some knowledge bases 
+(ex: fixit.kb), since all 'not' goals will be true initially,  
+just because nothing has been deduced yet.
+
+However, the meaning of negation in forward mode seems
+arbitrary.  Negation by ommission might make sense if the
+known fact list is used to schedule 'stages', by deducing 
+and 'delete'ing 'stage <n>' facts.  The best strategy is
+open to debate.
+
+Negation-by-ommission does not work the same in holmes and 
+holmes2, due to the way holmes2 uses discrimination trees
+to select triggered rules.  In holmes, we try all rules 
+exhaustively on each iteration.  In holmes2, we only select
+rules triggered by matching facts added on the last iteration.
+On the first iteration, holmes2 triggers rules with an 'if'
+part matching facts on the initial facts list;  this makes
+neagtion-by-ommission fail on the first iteration: no 'not'
+facts are asserted, so no rules mentioning them get triggerred
+by their ommission.  
+
+Indeed, negation-by-ommission in holmes2 is only useful when 
+facts get deleted, or when a rule is triggered by other added 
+facts, and just happens to mention an ommitted 'not' goal in 
+some other if[i];  negation-by-ommission never triggers a rule, 
+but it can be used to help satisfy a rule.  The rule must be
+triggered by a non-'not' goal.  Because of this, holmes may
+deduce more facts than holmes2, given 'not' goals in the rules,
+and negation-by-ommission.  It's not clear which strategy
+is preferred.
+
+We could remedy this problem by selecting all rules with 
+'not' goals ommitted (not on the initial facts list) on 
+iteration 1 (or just trying all rules always on iteration 1) 
+in holmes2, but negation-by-ommission seems dubious (especially 
+on iteration 1 when everything's ommitted), and it would 
+be a significant cost to scan all 'ifs' in all rules for 'not'
+goals on the first iteration, for large kbases.  The original 
+holmes makes negation-by-ommission work by always trying all rules
+on each iteration (which is extreme); there is no notion
+of rule triggering.
+
+An example illustrates.  Given the rule:
+
+    rule 1 if not is good then is bad.
+
+Holmes works as follows:
+    +1                 (use negation-by-assertion)
+    +-                 -> nothing deduced
+    +- not is good     -> deduces 'is bad'
+    +2                 (use negation-by-ommission too)
+    +-                 -> deduces 'is bad' 
+    +- not is good     -> deduces 'is bad'
+
+Holmes2 works like this:
+    +1                 (use negation-by-assertion)
+    +-                 -> nothing deduced
+    +- not is good     -> deduces 'is bad'
+    +2                 (use negation-by-ommission too)
+    +-                 -> *nothing deduced*, since rule not triggered 
+    +- not is good     -> deduces 'is bad'
+
+But if we use the rule:
+
+    rule 1 if not is good, is determinate then is bad.
+
+Then holmes and holmes2 work the same:
+    +1                    (use negation-by-assertion)
+    +-                    -> nothing deduced
+    +- is determinate     -> nothing deduced
+    +2                    (use negation-by-ommission too)
+    +-                    -> nothing deduced 
+    +- is determinate     -> deduces 'is bad'
+
+'ask' suffers from a simlilar problem in forward mode: 'ask'
+goals will not be triggered when their fact is added to the
+known facts list.  This could be remedied by correctly indexing
+'if' facts in the kbase (if the head is 'ask', index [1:]),
+but we also never trigger a rule because of its 'ask' fact,
+when the 'ask' fact is not already known-- we will only
+try a rule with 'ask' if's, if the rule get triggered by
+some other if goal.  This is difficult to resolve; the
+original holmes handles 'ask' well because it tries all
+rules on each iteration.
+
+
+
+5) Uncertainty.
+---------------
+Expert systems should really handle uncertain/probabilistic
+reasoning, at least as an option.  This more closely reflects 
+the human reasoning process in many domains, and allows the 
+system to make deductions even when the knowledge is incomplete.
+The absolute true/false reasoning holmes uses is subsumed by 
+uncertain reasoning: holmes' reasoning is a special case of
+uncertain reasoning, where certainties are set to 1.0 (absolute 
+true).
+
+Handling certainty factors can be trivial (depending on the
+model used).  In backward mode, we could combine the certainties
+of each subgoal of a rule, as the proof's recursion unwinds. 
+Users would associate certainties with questions answered,
+and with rules.
+
+In forward mode, we would just propogate the certainties up
+proof tree in a bottom-up fashion, by associating certainties 
+with deduced facts as they are added to the known-fact list
+(the initial facts' certainties start the process off).
+Certainties also allow us to 'cut off' branches of the proof
+tree when their certainties reach absolute true or false
+values.
+
+
+
+6) Explanations for 'ask' goals in forward mode.
+------------------------------------------------
+There's a minor bug in these explanations: the proof trace tree 
+assumes that all 'ask' goals were 'told' (answers from the user).
+It's possible that 'ask' goals were deduced (not told) earlier,
+so the proof tree should really record the 'ask' goals proof 
+tree (not always 'told').  This is a trivial coding fix.
+
+

@@ -1,0 +1,3 @@
+#! /usr/local/bin/esh
+sed -n 's/.* connection from //p' ${1-@log} | sort -u |
+while read X; do ypmatch $X hosts.byaddr; done

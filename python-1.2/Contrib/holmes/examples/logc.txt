@@ -1,0 +1,164 @@
+Python 1.0.0 (Feb 13 1994)                                    
+Copyright 1991-1994 Stichting Mathematisch Centrum, Amsterdam 
+>>> import holmes                                             
+-Holmes inference engine-                                     
+holmes>                                                           
+holmes> @= c:\stuff\python\kbases\ttt5                            
+holmes> @@                                                        
+rule 1 if man ?x then mortal ?x.                                  
+rule 2 if thinks ?x then man ?x.                                  
+rule 3 if ?x is a philosopher then thinks ?x.  
+holmes>                   
+holmes> ?- mortal guido                                           
+is this true: "guido is a philosopher" ? why                      
+to prove "thinks guido" by rule 3                                 
+to prove "man guido" by rule 2                                    
+to prove "mortal guido" by rule 1                                 
+this was part of your original query.                             
+is this true: "guido is a philosopher" ? y                        
+yes: (no variables)                                               
+                                                                 
+show proof ? y                                                    
+ "mortal guido" by rule 1                                         
+    "man guido" by rule 2                                         
+       "thinks guido" by rule 3                                   
+          "guido is a philosopher" by your answer                 
+more solutions? no                                                
+holmes>                                                           
+holmes> +- guido is a philosopher                                 
+I deduced these facts...                                          
+   thinks guido                                                   
+   man guido                                                      
+   mortal guido                                                   
+I started with these facts...                                     
+   guido is a philosopher                                         
+time:  0                                                          
+                                                                 
+show proofs? y                                                    
+enter deductions pattern: mortal guido                            
+ "mortal guido" was deduced by firing rule 1                      
+    "man guido" was deduced by firing rule 2                      
+       "thinks guido" was deduced by firing rule 3                
+          "guido is a philosopher" was on your initial facts list 
+                                                                 
+show proofs? x                                                   
+what?  (expecting "y", "n", "where", or "browse")                 
+                                                                 
+show proofs? y                                                    
+enter deductions pattern: ?x ?y                                   
+ "thinks guido" was deduced by firing rule 3                      
+    "guido is a philosopher" was on your initial facts list       
+ "man guido" was deduced by firing rule 2                         
+    "thinks guido" was deduced by firing rule 3                   
+       "guido is a philosopher" was on your initial facts list    
+ "mortal guido" was deduced by firing rule 1                      
+    "man guido" was deduced by firing rule 2                      
+       "thinks guido" was deduced by firing rule 3                
+          "guido is a philosopher" was on your initial facts list 
+                                                                 
+show proofs? no                                                   
+holmes>                                                           
+holmes> @= c:\stuff\python\kbases\ttt6                            
+holmes> @@                                                        
+rule 1 if true then a 1.                                          
+rule 2 if true then a 2.                                          
+rule 3 if true then a 3.                                          
+rule 4 if true then a 4.                                          
+rule 5 if true then b 1.                                          
+rule 6 if true then b 2.                                          
+rule 7 if true then b 3.                                          
+rule 8 if true then b 4.                                          
+rule 9 if true then c 1.                                          
+rule a if true then c 2.                                          
+rule b if true then c 3.                                          
+rule c if true then c 4.                                          
+holmes>                                                           
+holmes> +-                                                        
+I deduced these facts...                                          
+   a 1                                                            
+   a 2                                                            
+   a 3                                                            
+   a 4                                                            
+   b 1                                                            
+   b 2                                                            
+   b 3                                                            
+   b 4                                                            
+   c 1                                                            
+   c 2                                                            
+   c 3                                                            
+   c 4                                                            
+I started with these facts...                                     
+                                                                  
+time:  1                                                          
+                                                                 
+show proofs? n                                                    
+holmes>                                                           
+holmes> @= c:\stuff\python\kbases\ttt2                            
+holmes> @@                                                        
+rule 1 if b ?x then a ?x.                                         
+rule 2 if c ?x then b ?x.                                         
+rule 3 if d ?x then c ?x.                                         
+rule 4 if true then d 1.                                          
+rule 5 if true then d 2.                                          
+holmes>                                                           
+holmes> +-                                                        
+I deduced these facts...                                          
+   d 1                                                            
+   d 2                                                            
+   c 1                                                            
+   c 2                                                            
+   b 1                                                            
+   b 2                                                            
+   a 1                                                            
+   a 2                                                            
+I started with these facts...                                     
+                                                                  
+time:  0                                                          
+                                                                 
+show proofs? y                                                    
+enter deductions pattern: a ?x                                    
+ "a 1" was deduced by firing rule 1                               
+    "b 1" was deduced by firing rule 2                            
+       "c 1" was deduced by firing rule 3                         
+          "d 1" was deduced by firing rule 4                      
+             "true" is an absolute truth                          
+ "a 2" was deduced by firing rule 1                               
+    "b 2" was deduced by firing rule 2                            
+       "c 2" was deduced by firing rule 3                         
+          "d 2" was deduced by firing rule 5                      
+             "true" is an absolute truth                          
+                                                                 
+show proofs? y                                                    
+enter deductions pattern: d ?x                                    
+ "d 1" was deduced by firing rule 4                               
+    "true" is an absolute truth                                   
+ "d 2" was deduced by firing rule 5                               
+    "true" is an absolute truth                                   
+                                                                 
+show proofs? no                                                   
+holmes>                                                           
+holmes> ?- a ?x                                                   
+yes: a 1                                                          
+                                                                 
+show proof ? y                                                    
+ "a 1" by rule 1                                                  
+    "b 1" by rule 2                                               
+       "c 1" by rule 3                                            
+          "d 1" by rule 4                                         
+             "true" is an absolute truth                          
+more solutions? y                                                 
+                                                                 
+yes: a 2                                                          
+                                                                 
+show proof ? y                                                    
+ "a 2" by rule 1                                                  
+    "b 2" by rule 2                                               
+       "c 2" by rule 3                                            
+          "d 2" by rule 5                                         
+             "true" is an absolute truth                          
+more solutions? y                                                 
+                                                                 
+no (more) solutions                                               
+holmes> stop                                                      
+>>>                                                                 
+                                                         

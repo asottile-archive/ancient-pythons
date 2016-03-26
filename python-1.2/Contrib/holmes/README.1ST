@@ -1,0 +1,203 @@
+System:       Holmes
+Description:  An expert-system shell coded in Python
+Author:       Mark Lutz
+
+
+DESCRIPTION: 
+------------
+A Python-coded expert system shell, submitted as an 
+example of the power of the Python language as a 
+general systems development language.  A number of
+smaller examples (including an enhanced shell) are
+also included (in the 'others' directory).
+
+PURPOSE: 
+--------
+This system does not demonstrate all of Python's qualities 
+(embedding, etc.), but should serve as proof of the 
+utility of the language in sophisticated applications.
+There are certainly better examples of Python's power (for
+example, browse the library code), but expert systems employ 
+particularly interesting algorithms.
+
+FUNCTIONALITY: 
+--------------
+The shell supports both forward and backward chaining inference 
+over a set of logical implication rules.  The backward chainer 
+is roughly similar to the Prolog language, and rule selection 
+uses general (but constrained) unification.  Rules may contain 
+logical (quantified) variables, and conjunctions of goals, and
+are entered in a text file, or interactively.  Backward and 
+forward chaining queries are entered interactively in the
+shell; facilities for reading queries from files also exist.
+Log files in the /examples directory demonstrate the sort
+of bahaviour and interaction implemented in holmes.
+
+LIMITATIONS: 
+------------
+The rule matcher does not allow nested terms, and there are no 
+extra-logical predicates.  Therefore, Holmes is not really 
+suitable for general logic programming, and is more of a tool 
+for exploring symbolic knowledge bases.  Holmes also handles 
+only certain information (there are no certainty factors (yet)).
+
+
+
+
+DISCLAIMER.
+----------------------------------------------------------------------
+
+	*THIS IS NOT PROFESSIONAL-QUALITY SOFTWARE*
+
+Holmes was developed as part of a language evaluation process 
+conducted at XVT Software, under the guise of an R&D project myself 
+and Amrit Prem were involved in.  It was meant as benchmark, and was
+never intended to be used or seen externally.  
+
+Consequently, I make no claims about the quality of the code or the 
+documentation; it's research software.  I cut corners to save time
+in alot of places;  the parser, for example, uses simple field
+scanning, and does not detect syntax errors (if you're lucky, it
+will abort on an error).
+
+You are free to use, distribute, or modify the source code in any way 
+you see fit.  But I assume no responsibility for its quality.  If you 
+do want to use this system in a real application (I wouldn't recommend
+it), you should expect to have to modify it substantially, to make it
+more robust.  As is, it's not much more than a tool for experimenting 
+with expert systems concepts.
+
+
+
+
+IMPLEMENTATION NOTES.
+----------------------------------------------------------------------
+Having said all that, I do think this is a good example of the type
+of thing Python excels at.  This system contains 2 versions of the 
+shell, each of which is a multi-file system, with multiple forward- 
+and backward-chaining inference engines, a pattern matcher (simplified
+unification), a rule file parser, an interactive shell, explanation
+facilities, index trees, etc.  Each of the versions contains roughly 
+2000 lines of text.
+
+Despite this complexity, I was able to develop this system in roughly
+1 month.  Perhaps more importantly, I was able to develop the system
+incrementally (witness the multiple backward chainers), and rapidly 
+modify the code over and over.  In effect, the entire development 
+process was an exercise in rapid prototyping.  Python lends itself 
+to this form of experimental, interactive program development.
+The end result was a readable, usable, and maintainable system.
+
+My experiences demonstrated, in my opinion, that Python is ideal
+for rapid development.  It's orders of magnitude faster to use than C
+or C++: 
+
+   * The lack of compile/link time provides immediate feedback for 
+     program changes.
+
+   * The simpler syntax makes for less to write and read, fewer
+     syntax errors to correct, easier program modifications, etc.
+
+   * The inherent semantic power of the language makes most tasks
+     simpler, leads to fewer runtime errors, etc.
+
+Python provides very fast turnaround, even for major program changes.
+Further, the run-time performance of the system, once coded, was
+very acceptable for such a computationally-intensive task.  Recoding
+in C would not gain enough performance to justify such a tedious task.
+
+Of equal significance, Python proved far superior to other popular
+dynamic scripting language (Perl, TCL, etc.): 
+
+    * I was able to learn the language, and use its syntax almost
+      immediately
+
+    * I was actually able to read and re-use the code I had written, 
+      long after I had written it.
+
+This simplicity and readability of Python are, in my opinion, the most
+important advantages it has over these other tools.  Python, being 
+more like a traditional programming language, is a better choice for 
+writing large, complex software systems fast, whose code must be 
+re-used, maintained by others, etc.  To be blunt, I would never have
+attempted a system of this level of complexity in a Perl, or TCL.
+
+To summarize, Python combines the best features of:
+
+        Scripting languages (TCL, Perl):
+              - embedability
+              - access to system resources and external API's
+
+        Dynamic languages (Lisp, Smalltalk, Prolog):
+              - interactive
+              - dynamic typing
+              - very-high-level objects
+              - no compile, link steps
+              - incremental development/testing
+
+        Traditional languages (C, C++, Modula, Pascal):
+              - procedural syntax
+              - modules, classes, exceptions
+              - straightforward semantics
+
+Of course, Python is not a panacea for all the ills of the software
+industry.  For instance, its speed makes it weak as a number-cruncher.
+But it's an ideal rapid development/prototyping language, and does 
+well as a scripting/integration language.  Both of these tasks usually 
+have modest performance constraints, as do many application areas 
+(GUI design, and database programming, for example).  Python's 
+performance is more than adequate for these cases.  More importantly, 
+speed-of-development often outweighs speed-of-code in these (and 
+many other) areas; Python wins this test easily.
+
+Although Python is well-suited for self-contained rapid development 
+(as in Holmes), I suspect that Python's real contribution will be 
+in the area of mixed-language applications.  Guido has called this 
+a 'hybrid' approach: using Python for modules where performance 
+isn't critical (user-interface, etc.), and C or C++ for modules 
+where it is.  Alternatively, one may initially develop all modules 
+in Python for speed-of-development, and later move selected 
+time-critical modules to C as needed.
+
+By now, we should have learned that no language can simultaneously 
+satisfy all development goals.  But a mixed approach leverages the 
+best of all available tools.  Here again, Python excels: it's clean 
+call-in and call-out intefaces to C make it ideal as an embedded
+dynamic language, in large applications.  Python's can also function 
+as the 'glue' for external API's (data-bases, GUI's, etc.), providing 
+a programmatic interface.  Further, it's clear syntax and semantics 
+put it far ahead other languages with similar goals, such as TCL 
+(which are usually just extended 'shell' languages).
+
+These are all very subjective comments.  I'd encourage you to 
+browse the source code, experiment with the system, and draw 
+your own conclusions.  You may very well become as evangelical 
+about Python as I did :-).
+
+
+
+
+WHERE TO GO FROM HERE.
+----------------------------------------------------------------------
+Read the 'README.2ND' file for information on package contents, loading
+and running.  Also see the 'holmes.doc' files in both versions (holmes
+and holmes2) for implementation details.  Draw your own conclusions. 
+Have fun.  Feel free to email me with questions or comments.
+
+If you are interested in more information about expert systems, you
+might try consulting a good AI text book.  Books on Lisp and Prolog
+also cover these sorts of things.  My favorites are:
+	-- The Art of Prolog, by Sterling and Shapiro
+	-- Lisp, by Winston and Horn
+	-- The Elements of Artificial Intelligence, by Tanimoto
+
+I hope to develop a tool for automating Python/C integration in
+the near future.  Details will be posted as they emerge.
+
+
+
+Mark Lutz
+lutz@kapre.com
+Boulder, Colorado
+Feb. 1994
+

@@ -1,0 +1,219 @@
+\section{Standard Module \sectcode{cgi}}
+\stmodindex{cgi}
+\indexii{WWW}{server}
+\indexii{CGI}{protocol}
+\indexii{HTTP}{protocol}
+\indexii{MIME}{headers}
+\index{URL}
+
+\renewcommand{\indexsubitem}{(in module cgi)}
+
+This module makes it easy to write Python scripts that run in a WWW
+server using the Common Gateway Interface.  It was written by Michael
+McLay and subsequently modified by Steve Majewski and Guido van
+Rossum.
+
+When a WWW server finds that a URL contains a reference to a file in a
+particular subdirectory (usually \code{/cgibin}), it runs the file as
+a subprocess.  Information about the request such as the full URL, the
+originating host etc., is passed to the subprocess in the shell
+environment; additional input from the client may be read from
+standard input.  Standard output from the subprocess is sent back
+across the network to the client as the response from the request.
+The CGI protocol describes what the environment variables passed to
+the subprocess mean and how the output should be formatted.  The
+official reference documentation for the CGI protocol can be found on
+the World-Wide Web at
+\code{<URL:http://hoohoo.ncsa.uiuc.edu/cgi/overview.html>}.  The
+\code{cgi} module was based on version 1.1 of the protocol and should
+also work with version 1.0.
+
+The \code{cgi} module defines several classes that make it easy to
+access the information passed to the subprocess from a Python script;
+in particular, it knows how to parse the input sent by an HTML
+``form'' using either a POST or a GET request (these are alternatives
+for submitting forms in the HTTP protocol).
+
+The formatting of the output is so trivial that no additional support
+is needed.  All you need to do is print a minimal set of MIME headers
+describing the output format, followed by a blank line and your actual
+output.  E.g. if you want to generate HTML, your script could start as
+follows:
+
+\begin{verbatim}
+# Header -- one or more lines:
+print "Content-type: text/html"
+# Blank line separating header from body:
+print
+# Body, in HTML format:
+print "<TITLE>The Amazing SPAM Homepage!</TITLE>"
+# etc...
+\end{verbatim}
+
+The server will add some header lines of its own, but it won't touch
+the output following the header.
+
+The \code{cgi} module defines the following functions:
+
+\begin{funcdesc}{parse}{}
+Read and parse the form submitted to the script and return a
+dictionary containing the form's fields.  This should be called at
+most once per script invocation, as it may consume standard input (if
+the form was submitted through a POST request).  The keys in the
+resulting dictionary are the field names used in the submission; the
+values are {\em lists} of the field values (since field name may be
+used multiple times in a single form).  \samp{\%} escapes in the
+values are translated to their single-character equivalent using
+\code{urllib.unquote()}.  As a side effect, this function sets
+\code{environ['QUERY_STRING']} to the raw query string, if it isn't
+already set.
+\end{funcdesc}
+
+\begin{funcdesc}{print_environ_usage}{}
+Print a piece of HTML listing the environment variables that may be
+set by the CGI protocol.
+This is mainly useful when learning about writing CGI scripts.
+\end{funcdesc}
+
+\begin{funcdesc}{print_environ}{}
+Print a piece of HTML text showing the entire contents of the shell
+environment.  This is mainly useful when debugging a CGI script.
+\end{funcdesc}
+
+\begin{funcdesc}{print_form}{form}
+Print a piece of HTML text showing the contents of the \var{form} (a
+dictionary, an instance of the \code{FormContentDict} class defined
+below, or a subclass thereof).
+This is mainly useful when debugging a CGI script.
+\end{funcdesc}
+
+\begin{funcdesc}{escape}{string}
+Convert special characters in \var{string} to HTML escapes.  In
+particular, ``\code{\&}'' is replaced with ``\code{\&amp;}'',
+``\code{<}'' is replaced with ``\code{\&lt;}'', and ``\code{>}'' is
+replaced with ``\code{\&gt;}''.  This is useful when printing (almost)
+arbitrary text in an HTML context.  Note that for inclusion in quoted
+tag attributes (e.g. \code{<A HREF="...">}), some additional
+characters would have to be converted --- in particular the string
+quote.  There is currently no function that does this.
+\end{funcdesc}
+
+The module defines the following classes.  Since the base class
+initializes itself by calling \code{parse()}, at most one instance of
+at most one of these classes should be created per script invocation:
+
+\begin{funcdesc}{FormContentDict}{}
+This class behaves like a (read-only) dictionary and has the same keys
+and values as the dictionary returned by \code{parse()} (i.e. each
+field name maps to a list of values).  Additionally, it initializes
+its data member \code{query_string} to the raw query sent from the
+server.
+\end{funcdesc}
+
+\begin{funcdesc}{SvFormContentDict}{}
+This class, derived from \code{FormContentDict}, is a little more
+user-friendly when you are expecting that each field name is only used
+once in the form.  When you access for a particular field (using
+\code{form[fieldname]}), it will return the string value of that item
+if it is unique, or raise \code{IndexError} if the field was specified
+more than once in the form.  (If the field wasn't specified at all,
+\code{KeyError} is raised.)  To access fields that are specified
+multiple times, use \code{form.getlist(fieldname)}.  The
+\code{values()} and \code{items()} methods return mixed lists ---
+containing strings for singly-defined fields, and lists of strings for
+multiply-defined fields.
+\end{funcdesc}
+
+(It currently defines some more classes, but these are experimental
+and/or obsolescent, and are thus not documented --- see the source for
+more informations.)
+
+The module defines the following variable:
+
+\begin{datadesc}{environ}
+The shell environment, exactly as received from the http server.  See
+the CGI documentation for a description of the various fields.
+\end{datadesc}
+
+\subsection{Example}
+\nodename{CGI Example}
+
+This example assumes that you have a WWW server up and running,
+e.g.\ NCSA's \code{httpd}.
+
+Place the following file in a convenient spot in the WWW server's
+directory tree.  E.g., if you place it in the subdirectory \file{test}
+of the root directory and call it \file{test.html}, its URL will be
+\file{http://\var{yourservername}/test/test.html}.
+
+\begin{verbatim}
+<TITLE>Test Form Input</TITLE>
+<H1>Test Form Input</H1>
+<FORM METHOD="POST" ACTION="/cgi-bin/test.py">
+<INPUT NAME=Name> (Name)<br>
+<INPUT NAME=Address> (Address)<br>
+<INPUT TYPE=SUBMIT>
+</FORM>
+\end{verbatim}
+
+Selecting this file's URL from a forms-capable browser such as Mosaic
+or Netscape will bring up a simple form with two text input fields and
+a ``submit'' button.
+
+But wait.  Before pressing ``submit'', a script that responds to the
+form must also be installed.  The test file as shown assumes that the
+script is called \file{test.py} and lives in the server's
+\code{cgi-bin} directory.  Here's the test script:
+
+\begin{verbatim}
+#!/usr/local/bin/python
+
+import cgi
+
+print "Content-type: text/html"
+print                                   # End of headers!
+print "<TITLE>Test Form Output</TITLE>"
+print "<H1>Test Form Output</H1>"
+
+form = cgi.SvFormContentDict()          # Load the form
+
+name = addr = None                      # Default: no name and address
+
+# Extract name and address from the form, if given
+
+if form.has_key('Name'):
+        name = form['Name']
+if form.has_key('Address'):
+        addr = form['Address']
+        
+# Print an unnumbered list of the name and address, if present
+
+print "<UL>"
+if name is not None:
+        print "<LI>Name:", cgi.escape(name)
+if addr is not None:
+        print "<LI>Address:", cgi.escape(addr)
+print "</UL>"
+\end{verbatim}
+
+The script should be made executable (\samp{chmod +x \var{script}}).
+If the Python interpreter is not located at
+\file{/usr/local/bin/python} but somewhere else, the first line of the
+script should be modified accordingly.
+
+Now that everything is installed correctly, we can try out the form.
+Bring up the test form in your WWW browser, fill in a name and address
+in the form, and press the ``submit'' button.  The script should now
+run and its output is sent back to your browser.  This should roughly
+look as follows:
+
+\strong{Test Form Output}
+
+\begin{itemize}
+\item Name: \var{the name you entered}
+\item Address: \var{the address you entered}
+\end{itemize}
+
+If you didn't enter a name or address, the corresponding line will be
+missing (since the browser doesn't send empty form fields to the
+server).

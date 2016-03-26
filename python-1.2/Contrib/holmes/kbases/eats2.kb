@@ -1,0 +1,28 @@
+rule r1 if true then 
+        restaurant armadillo
+            type mexican price moderate location mall.
+rule r2 if true then 
+        restaurant wrangler
+            type american price moderate location mall.
+rule r3 if true then 
+        restaurant pablos
+            type mexican price moderate location south-side.
+rule r4 if true then  
+        restaurant taco-hell
+            type mexican price low location multiple.
+rule r5 if true then  
+        restaurant mcdonalds
+            type american price low location multiple.
+
+
+rule 0 if true then stage price.
+
+rule 1 if stage type, ask french ok then type french.
+rule 2 if stage type, ask italian ok then type italian.
+rule 3 if stage type, ask fast food ok then type fast-food.
+rule 4 if stage type, ask mexican ok then type mexican.
+rule 4 if stage type, type ?x then delete stage type, stage price.
+
+rule 5 if stage price, type french, ask high price ok then price high.
+
+

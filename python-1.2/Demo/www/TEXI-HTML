@@ -1,0 +1,74 @@
+Converting Texinfo files into HTML
+==================================
+
+
+Advantages of HTML over Info
+----------------------------
+
+Info files are ASCII only; HTML can display text in different fonts
+and sizes (if the output device is capable of doing so).
+
+HTML can be browsed remotely and referenced by hyperlinks from other
+places in the World-Wide Web.
+
+
+Problems with using HTML for Texinfo files
+------------------------------------------
+
+Texinfo uses various highlighting commands, e.g.  @emph{text in
+italics}, @strong{text in bold} or @code{text in fixed-width font} and
+even @sc{text in small caps}.  It translates these to font changes in
+the printed manual, and to various forms of quotation marks and/or
+upper case in the Info files.  Since the generated HTML will be
+browsed both in ASCII mode and in multi-font mode, it is desirable
+that tags are put in the HTML files which correspond roughly with the
+tags used in Texinfo.  This means that the WWW browsers must be
+changed to recognize these new tags and interpret them accordingly.
+
+Texinfo examples can still contain @-commands, e.g. to put comments in
+a non-fixed width font.
+
+Texinfo has names for a (small) number of non-ASCII characters, e.g.
+@bullet{} and @equiv{}, which are again displayed different in ASCII
+mode than in the printed manual.
+
+Texinfo has some list styles which do not closely map to HTML list
+styles.
+
+Texinfo has some styles for which there is no HTML equivalent, e.g.
+"@quotation ... @end quotation" adds left and right indents to the
+contained text.
+
+Texinfo allows the author more precise control over spacing between
+paragraphs and whether the first line of a paragraph should be
+indented.
+
+
+Goals
+-----
+
+The primary goal is to be able to convert Texinfo files to HTML for
+browsing with WWW browsers; updates will be made to the Texinfo source
+files.
+
+Eventually, it may be desirable to edit the resulting HTML instead
+(since it is more likely that WYSIWYG editors will exist for HTML than
+for Texinfo).  This would require that (almost) all Texinfo commands
+(and some lay-out features of the source as well!) are translated into
+distinch HTML tags, lest information be lost.  Ideally, it should be
+possible to write a program that translates HTML back into Texinfo
+without loss of information.
+
+
+Suggested changes to HTML
+-------------------------
+
+Add '&name.' entities for the special characters used in Texinfo.
+
+Support tags like <CODE>some text</CODE> which is expanded to `some
+text' in ASCII mode but uses a fixed-width font in multi-font mode,
+and <VAR>name</VAR> which uses italics or upper case.
+
+Create a new form of example tag which produces a fixed-width font and
+breaks lines as in the source but does not suppress recognition of
+other tags.

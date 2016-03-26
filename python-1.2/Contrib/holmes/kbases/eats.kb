@@ -1,0 +1,23 @@
+rule r1 if true then 
+        restaurant armadillo
+            type mexican price moderate location mall.
+rule r2 if true then 
+        restaurant wrangler
+            type american price moderate location mall.
+rule r3 if true then 
+        restaurant pablos
+            type mexican price moderate location south-side.
+rule r4 if true then  
+        restaurant taco-hell
+            type mexican price low location multiple.
+rule r5 if true then  
+        restaurant mcdonalds
+            type american price low location multiple.
+
+rule 0 if restaurant ?R type ?T price ?P location ?L,
+          ask ?T food ok,
+          ask ?P price ok,
+          ask ?L location ok
+       then suggest ?R. 
+   
+

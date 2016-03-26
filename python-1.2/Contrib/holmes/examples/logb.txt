@@ -1,0 +1,75 @@
+Python 1.0.0 (Feb 13 1994)                                    
+Copyright 1991-1994 Stichting Mathematisch Centrum, Amsterdam 
+>>> import holmes                                             
+-Holmes inference engine-                                     
+holmes>                                                       
+holmes> += rule 1 if human ?x then mortal ?x                  
+holmes> ?- mortal marc                                        
+is this true: "human marc" ? y                                
+yes: (no variables)                                           
+                                                             
+show proof ? y                                                
+ "mortal marc" by rule 1                                      
+    "human marc" by your answer                               
+more solutions? n                                             
+holmes>                                                       
+holmes> @= c:\stuff\python\kbases\zoo.kb                      
+holmes> ?- it is a ?x                                         
+is this true: "lives in saltwater" ? y                        
+is this true: "has tentacles" ? y                             
+is this true: "poisonous bite" ? n                            
+is this true: "lives in freshwater" ? why                     
+to prove "it is a creyfish" by rule 3                         
+this was part of your original query.                         
+is this true: "lives in freshwater" ? no                      
+is this true: "lives in shell" ? no                           
+is this true: "has many legs" ? y                             
+is this true: "hides in rocks" ? y                            
+yes: it is a octopus                                          
+                                                             
+show proof ? y                                                
+ "it is a octopus" by rule 7                                  
+    "lives in saltwater" by your answer                       
+    "hides in rocks" by your answer                           
+    "has tentacles" by your answer                            
+more solutions? n                                             
+holmes> ?- it is a ?x                                         
+is this true: "lives in saltwater" ? n                        
+is this true: "lives in freshwater" ? n                       
+is this true: "has feathers" ? n                              
+is this true: "live births" ? y                               
+is this true: "is omnivorous" ? y                             
+is this true: "is intelligent" ? y                            
+is this true: "technologically advanced" ? y                  
+yes: it is a human                                            
+                                                             
+show proof ? y                                                
+ "it is a human" by rule 21                                   
+    "subclass primate" by rule 19                             
+       "class mammal" by rule d                               
+          "live births" by your answer                        
+       "is omnivorous" by your answer                         
+       "is intelligent" by your answer                        
+    "technologically advanced" by your answer                 
+more solutions? n                                             
+holmes>                                                       
+holmes> ?- it is a ?x                                         
+is this true: "lives in saltwater" ? n                        
+is this true: "lives in freshwater" ? n                       
+is this true: "has feathers" ? n                              
+is this true: "live births" ? why      
+to prove "class mammal" by rule d      
+to prove "subclass primate" by rule 19 
+to prove "it is a monkey" by rule 20   
+this was part of your original query.  
+is this true: "live births" ? y        
+is this true: "is omnivorous" ? y                             
+is this true: "is intelligent" ? y                            
+is this true: "technologically advanced" ? n                  
+yes: it is a monkey                                           
+                                                             
+show proof ? n                                                
+more solutions? n                                             
+holmes> stop
+>>>                                                      
+

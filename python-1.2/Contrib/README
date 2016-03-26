@@ -1,0 +1,35 @@
+This directory contains various useful, entertaining, enlightening or
+just clever pieces of Python contributed by happy Python users other
+than myself.
+
+
+ahlstrom/	Design for a simple portable windowing GUI by Jim
+		Ahlstrom.
+
+baw/		Shell utilities by Barry Warsaw.
+
+ccso/		CSO interface by Jeffrey Ollie.
+
+filter/		Class for writing awk-like filters by Tom Culliton.
+
+forth/		Forth interpreter by Nick Seidenman.
+
+holmes/		Expert system by Mark Lutz.
+
+lutz/		More demos by Mark Lutz -- including a
+		nice enhanced Python shell!!!
+
+popmail/	POP and SMTP mail clients by jkute@mcs.com.
+
+remotecall/	Remote procedure call interface by Daniel Larsson.
+
+rsa/		RSA public-key cryptosystem (needs mpz and md5) by
+		Jan-Hein Buhrman and Niels Ferguson.
+
+stoffel/	Games by Stoffel Erasmus.
+
+subproc/	Subprocess management by Ken Manheimer.
+
+tkdialogs/	Tk dialogs by Ken Howard.
+
+turing/		Turing machine emulator by Amrit Prem.

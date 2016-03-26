@@ -1,0 +1,81 @@
+Subject: subproc.py v 1.5
+From: ken.manheimer@NIST.GOV (Ken Manheimer)
+To: python-list@cwi.nl
+Date: Mon, 23 Jan 1995 19:00:11 -0500 (EST)
+Organization: National Institute of Standards and Technology
+
+The diffs are larger than the file, so i'm posting the entire thing.
+
+It's......  a new version of subproc.py.
+
+It rectifies a big problem with the prior version, and tidies up the
+approach to non-blocking reads.  However, i have found one application
+where it mysteriously misbehaves, when the old version didn't, so you
+may want to test before switching to this version.
+
+The new version of the Subprocess class now cleans up the pipe file
+descriptors on deletion, so the process' file table is not exhausted
+as subprocesses are generated and discarded.
+
+I've implemented a 'readbuf', based on the 'iobuf' donn cave
+implemented in his version of the subproc code, which disposes of the
+dual-thrust approach to non-blocking reads.  I had originally
+believed, incorrectly, that chunking the reads (eg, 'os.read(1024)')
+dictates hanging until the number of chars are read, which is not the
+case.  Ability to chunk regular reads cancels the advantages of the
+new io-buffer-size regulation mechanism, so i'm dropping it in favor
+of a single, simple approach.  The code is simpler, without,
+presumably, sacrificing functionality.
+
+Due simply to lack of time, i have not implemented a signal hander to
+track expiration of the child (and automatically do the cleanup).  It
+would certainly be proper to do implement such a thing, but i've been
+furtively stealing time to do this partial cleanup.
+
+I have encountered a mysterious problem with this new version of
+subproc.  Using the 'Ph' class to look up the identitification info
+for accounts on my system, i've hit a weird error where select
+eventually (and consistently) fails to recognize a previously valid
+file handle, with a select error.  The subprocess is subsequently
+unreadable and unopenable:
+
+    Traceback (innermost last):
+      File "<stdin>", line 1, in ?
+      File "./acctidents.py", line 50, in getIdents
+	phGot = ph.query(nameStr)
+      File "./subproc.py", line 453, in query
+	response = self.getreply()	# Should get null on new prompt.
+      File "./subproc.py", line 476, in getreply
+	nextChar = self.proc.waitForPendingChar(60)
+      File "./subproc.py", line 181, in waitForPendingChar
+	nextChar = self.readbuf.peekPendingChar()
+      File "./subproc.py", line 324, in peekPendingChar
+	sel = select.select([self.fd], [], [self.fd], 0)
+    select.error: (9, 'Bad file number')
+    >>> > ph = subproc.Ph()
+    **execvp failed, '(2, 'No such file or directory')'**
+    returned to parent
+    >>> 
+
+The prior, effectively identical 'ph = subproc.Ph()' call worked fine.
+Evidently something is fouled up in the process space.  (And the
+python session would have terminated had i not been operating in a
+forked child.  And, yes, the problem does occur the same way if i am,
+in fact, not operating in a child.)
+
+The weird thing is that the fault seems to be related to the data
+coming out of the subprocess, but i cannot tell why or how, and i
+cannot isolate the data dependency apart from the accounts on my
+system, so i cannot package up the conditions for replication
+elsewhere!  I'm not sure what to do about this, and am hoping that
+others will try out the code and maybe identify more reproducable
+circumstances by which we can debug the problem.
+
+This may be exposing a bug in python, btw.  I've replicated it in the
+most recent version of python that i could get.  Those of you with
+1.1.1 should see it, if you can provoke find the right conditions.
+
+cheers,
+
+Ken
+ken.manheimer@nist.gov, 301 975-3539

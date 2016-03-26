@@ -1,0 +1,149 @@
+rule 0 if fixit unit ?problem ?solution  then go ?problem ?solution.
+rule 1 if fixit ?name ?problem ?solution then go ?name ?problem ?solution.
+
+
+rule t1 if klutzy user ?name ?prob ?soln     then fixit ?name ?prob ?soln.
+rule t2 if appliance abuse ?name ?prob ?soln then fixit ?name ?prob ?soln.
+rule t3 if power problem ?name ?prob ?soln   then fixit ?name ?prob ?soln.
+rule t4 if repairable ?name ?prob ?soln      then fixit ?name ?prob ?soln.
+rule t5 if hopeless case ?name ?prob ?soln   then fixit ?name ?prob ?soln.
+
+
+rule k1
+    if not ?name works, 
+       not switch turned on 
+    then klutzy user ?name not-turned-on press-the-power-switch.
+rule k2
+    if not ?name works,  
+       ?name runs on batteries,
+       not batteries loaded
+    then klutzy user ?name no-batteries-in-unit put-batteries-in.
+rule k3
+    if not ?name works,
+       not ?name runs on batteries,
+       not ?name firmly plugged in
+    then klutzy user ?name not-plugged-in plug-it-in-to-outlet.
+rule k4
+    if not used ?name before,
+       not read user manual
+    then klutzy user ?name not-setup-right read-users-manual.
+
+
+rule a1
+    if ?name makes sizzle sound 
+    then appliance abuse ?name unit-is-wet dry-it-out.
+rule a2
+    if not ?name works,
+       ?name was emersed 
+    then appliance abuse ?name unit-is-wet dry-it-out.
+rule a3    
+    if ?name is very dirty 
+    then appliance abuse ?name unit-is-dirty clean-it.
+
+
+rule p1
+    if ?name runs on batteries, 
+       dc power problem ?name ?prob ?soln 
+    then power problem ?name ?prob ?soln.
+rule p2
+    if not ?name runs on batteries,
+       ac power problem ?name ?prob ?soln
+    then power problem ?name ?prob ?soln.
+
+
+rule d1
+    if ?name works, batteries loaded, ?name runs slowly
+    then dc power problem ?name batteries-run-down replace-batteries.
+rule d2 
+    if not ?name works, batteries loaded, batteries backwards
+    then dc power problem ?name batteries-backwards switch-batteries-around.
+rule d3
+    if batteries loaded, batteries corroded
+    then dc power problem ?name batteries-corroded clean-and-replace-batteries.
+
+
+rule a1
+    if not ?name works, lights went out
+    then ac power problem ?name fuse-is-blown replace-fuse.
+rule a2
+    if not ?name works, not others work in same outlet
+    then ac power problem ?name outlet-not-working plug-in-different-outlet.
+rule a3 
+    if jiggling ?name cord has any effect, repair ?name ?plan
+    then ac power problem ?name cord-is-frayed ?plan.
+
+
+rule r1 
+    if   electric ?name ?cause, repair ?name ?plan   
+    then repairable ?name ?cause ?plan.
+rule r2 
+    if   mechanical ?name ?cause, repair ?name ?plan 
+    then repairable ?name ?cause ?plan.
+
+
+rule e1 if smell smoke from ?name    
+        then electric ?name circuit-shorting-out.
+rule e2 if see sparks in ?name    
+        then electric ?name circuit-is-arcing.
+rule e3 if felt shock from ?name    
+        then electric ?name circuit-shorting-out.
+rule e4 if ?name started a fire 
+        then electric ?name major-electric-damage.
+
+rule m1 if hear grinding sound from ?name
+        then mechanical ?name parts-grinding. 
+rule m2 if not ?name controls have any effect   
+        then mechanical ?name controls-malfunction.
+
+
+rule h1 
+    if not ?name works, repair ?name ?plan     
+    then hopeless case ?name unknown ?plan.
+rule h2 
+    if ?name works, ?name works usually 
+    then hopeless case ?name unknown use-it-till-it-breaks.
+rule h3 
+    if ?name works, ?name works rarely, repair ?name ?plan  
+    then hopeless case ?name unknown ?plan.
+rule h4
+    if true
+    then hopeless case ?name I-give-up consult-a-human-expert.
+
+
+rule f1 
+    if experienced with ?name repairs 
+    then repair ?name try-to-fix-it-yourself.
+rule f2 
+    if not experienced with ?name repairs,  
+       have spare money,
+       can afford to replace the ?name
+    then repair ?name buy-a-new-one.
+rule f3 
+    if not experienced with ?name repairs, 
+       have spare money,
+       can afford to repair the ?name, 
+       can get to repair shop
+    then repair ?name take-it-to-repair-shop.
+rule f4
+    if not experienced with ?name repairs, 
+       have spare money,
+       can afford to repair the ?name, 
+       not can get to repair shop
+    then repair ?name call-a-repair-man.
+rule f5 
+    if have a rich relative 
+    then repair ?name ask-for-one-for-christmas.
+rule f6 
+    if not experienced with ?name repairs, 
+       not have spare money,
+       not have a rich relative, 
+       ?name works,
+       not dangerous to use ?name
+    then repair ?name continue-using-it-for-now.
+rule f7 
+    if not experienced with ?name repairs, 
+       not have spare money,
+       not have a rich relative, 
+       not ?name works
+    then repair ?name do-without-it-for-now.
+

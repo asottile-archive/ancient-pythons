@@ -1,0 +1,116 @@
+CONTENTS:
+---------
+These directories contain the holmes inference system in Python:
+
+    holmes/
+        the original (naive) verion of holmes
+
+    holmes2/
+        the optimized, index tree version of holmes
+
+    kbases/
+        some example knowledge base files (fixit, zoo, eats, etc.)
+
+holmes/ and holmes2/ both contain a 'holmes.doc' information 
+file, with implementation details.  Both holmes versions contain 
+a number of backward chainer variants, demonstrating different 
+codings/algorithms.  Both versions also contain 2 forward
+chainer varients, which use different semantics for logical 
+negation ('not'). 
+
+Other directories:
+
+    examples/
+        logs showing example interaction/use of holmes, and the
+        psh command-line shell
+
+    holmes3/ 
+        an incomplete start at adding uncertainties to holmes   
+        (I don't have time to finish this version right now)
+
+    others/
+        other Python examples that have nothing to do with Holmes
+	    psh.py    -- an enhanced Python interactive command shell
+ 	    sets.py   -- sets and relational algebra in Python
+	    sets.res  -- sets.py expected results
+ 	    roman.py  -- a Python take-off of an Icon program 
+
+
+RUNNING:
+--------
+One way (perhaps not the best) to run the system:
+    goto python/lib
+    cp ../../holmes/* or ../../holmes2/* to .
+    python holmes.py
+
+Better, set up your python load path environment variable to point 
+to the directory you put the holmes modules in.  You only need to 
+import 'holmes'; the holmes module imports the rest of the system 
+itself.  You must have Python installed to use Holmes; I wrote it 
+under Python 0.9.8 (hence the lack of class constructors/destructors), 
+but it should work with 1.0 (I've run it under 1.0 briefly-- email 
+me if you have troubles).
+
+When you import holmes (or run 'python holmes.py'), an interactive
+shell starts up.  Here, you are able to 
+
+	-- load external rule files,
+	-- enter rules interactively, 
+	-- submit forward and backward chaining requests, 
+	-- get how/why explanations, 
+	-- enter Python commands, 
+	-- browse the current rule base, 
+	-- specify which backward chaining varient you want to use
+	-- etc.  
+
+Typing 'help' at the 'holmes>' prompt shows you all available commands.
+Normally, you will type yur rules into a text file with an editor,
+start holmes, load the rules file, and run queries inside holmes.
+
+Some of the more important shell commands:
+	To load a rule file:
+    		holmes> @= a:\kbases\fixit.py
+
+	To submit a backward chaining query:
+    		holmes> ?- fixit tv ?prob ?soln
+
+	To forward chain, from a set of initial facts:
+    		holmes> +- class mammal, is intelligent
+
+	To add a new rule:
+		holmes> += rule 1 if human ?X then mortal ?x
+
+	To list all rules in the knowledge base:
+		holmes> @@
+
+	To get help:
+    		holmes> help
+
+
+An example session:
+	python holmes.py
+	holmes> += rule 1 if human ?x then mortal ?x
+	holmes> ?- mortal guido
+
+	is this true: "human guido" ? <yes>
+
+	yes: (no variables)
+
+	show proof? <no>
+        more solutions? <no>
+
+	holmes> +- human amrit
+
+	I deduced these facts...
+	    mortal amrit
+	I started with these facts...
+	    human amrit
+
+	show proofs? <no>
+
+	holmes> stop
+
+See the examples/* log files for more detailed examples of interaction
+under holmes and psh.  These logs serve as good documentation of use
+of the system.
+

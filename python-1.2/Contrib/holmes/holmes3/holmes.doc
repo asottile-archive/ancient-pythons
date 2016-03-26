@@ -1,0 +1,127 @@
+Holmes3 is an experimental extension of holmes2 that 
+introduces uncertain reasoning.  
+
+See holmes/holmes.doc and holmes2/holmes.doc for more information.  
+Only new features are documented here.
+
+
+
+---------
+Contents:
+---------
+
+Holmes2 consists of 6 modules:
+    
+    holmes.py     the main driver module
+    kbase.py      knowledge base administrative routines
+    match.py      the pattern matcher (limited unification)
+    forward.py    the forward chaining inference engine  
+    backward.py   the backward chaining inference engine
+    index.py      the discrimination tree implementation
+
+plus some of the backward.py and forward.py variants (we eliminated 
+most in the interest of brevity):  
+
+    backwrd5.py   backward.py without exceptions, and tree list rep
+    backwrd7.py   non-backtracking version (copies proof subtrees)
+    forward2.py   forward.py with negation-by-ommission
+
+
+These modules are identical to their holmes2 versions: 
+
+    kbase.py    
+    match.py 
+    index.py
+
+holmes.py is almost identical to holmes2.  Only the forward/backward
+modules vary substantially.
+
+
+
+------------
+Description.
+------------
+
+Rule syntax is identical to holmes/holmes2, but the last 2 terms
+in a sentence are treated specially in initial facts in 'forward' mode, 
+and 'then' clauses in both modes.  If the last 2 terms are:
+    'cf' <number in 0.0 .. 1.0>
+
+then there is a certainty associated with the initial fact or the
+rule's deduction.  If the last 2 terms are something else, the 
+certainty defaults to 1.0 (absolute true, which corresponds to 
+the original holmes/holmes2 model).
+
+For example:
+
+    rule 1 if ?p has stomach pain then has ulcer ?p cf 0.3. 
+    
+states that there's a probability of 0.3 that a patient has an
+ulcer if we know that they have stomach pain (if we know this 
+fact all by itself).
+
+    +- tom has stomach pain cf 1.0, to tastes blood cf 0.5
+
+starts forward chaining with 'stomach pain' true, and 'tastes blood'
+probability 0.5.
+
+Holmes3 asks for the certainty of a fact whenever it prompts the 
+user (rather than whether it's simply true or not).
+
+Holmes3 combines certainties (cf's) as follows:
+
+i)  The cf of AND(g1, g2,..gn) is MIN(cf(g1), cf(g2),..cf(gn)).  This 
+    rule is applied at conjunctions in the query and rule 'if' parts.
+
+ii) The cf of OR(d1, d2,..dn) is MAX(cf(d1), cf(d2),..cf(dn)).  This 
+    rule is applied at alternative rules deducing the same 'then' part.
+
+ii) The cf of a rules deduction is cf(AND(if[0..n]) * cf('then').
+    That is, we find the minimum cf among all if's, and multiply
+    that cf times the cf of the 'then' deduction.
+
+These are not the only shemes possible.  For example, a cumulative
+rule might be used at OR nodes:
+
+    cf(rule1) + cf(rule2) - [cf(rule1) * cf(rule2)]
+
+which would allow each rule to add to the overall certainty of the
+deduction.  This was not implemented here.
+
+
+1) In forward mode, cf's are propogated up the proof tree, bottom-up. 
+   each fact records it's initial or deduced cf (much like their proof
+   trees), and when a rule is fired, the cf recorded for each 'then'
+   is the min() of all 'if' part certainties, times the cf of the 
+   'then' fact itself.
+
+2) in backtracking backward mode (backward, backward5), 
+
+
+
+
+
+5) Uncertainty.
+---------------
+Expert systems should really handle uncertain/probabilistic
+reasoning, at least as an option.  This more closely reflects 
+the human reasoning process in many domains, and allows the 
+system to make deductions even when the knowledge is incomplete.
+The absolute true/false reasoning holmes uses is subsumed by 
+uncertain reasoning: holmes' reasoning is a special case of
+uncertain reasoning, where certainties are set to 1.0 (absolute 
+true).
+
+Handling certainty factors can be trivial (depending on the
+model used).  In backward mode, we could combine the certainties
+of each subgoal of a rule, as the proof's recursion unwinds. 
+Users would associate certainties with questions answered,
+and with rules.
+
+In forward mode, we would just propogate the certainties up
+proof tree in a bottom-up fashion, by associating certainties 
+with deduced facts as they are added to the known-fact list
+(the initial facts' certainties start the process off).
+Certainties also allow us to 'cut off' branches of the proof
+tree when their certainties reach absolute true or false
+values.

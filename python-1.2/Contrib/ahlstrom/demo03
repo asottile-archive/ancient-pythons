@@ -1,0 +1,89 @@
+#! /usr/local/bin/python
+
+from wpy import *
+
+# A Python function that generates dialog boxes with a text message,
+# optional bitmap, and any number of buttons.
+# See Ousterhout, Tcl and the Tk Toolkit, Figs. 27.2-3, pp. 269-270.
+
+class My_dialog(WpyModalDialog):
+  def __init__(self, title, text, bitmap, default, *args):
+    WpyModalDialog.__init__(self, None, title)
+    self.index = -1
+    self.msg = WpyMessage(self, text)
+    self.buttons = []
+    n = 0
+    for title in args:
+      n = n + 1
+      b = My_button(self, title)
+      b.index = n
+      self.buttons.append(b)
+    if default >= 0:
+      self.wpyDefaultButton = self.buttons[default]
+  def WpyOnSize(self, event):
+    self.WpyMakeEqualSize(self.buttons)
+    butnX = self.buttons[0].wpySizeX
+    butnY = self.buttons[0].wpySizeY
+    n = len(self.buttons)
+    self.wpySizeX = max(self.msg.wpySizeX * 1.2,
+             butnX * n * 1.3)
+    self.wpySizeY = self.msg.wpySizeY + butnY * 4
+    y = float(self.wpySizeY - butnY * 2) / self.wpySizeY
+    self.WpyMakeEqualSpaceX(0, 1, y, "n", self.buttons)
+    self.msg.WpyPlace(self, 0.5, 0.1, "n")
+
+class My_button(WpyButton):
+  def WpyOnButton(self, event):
+    self.wpyParent.index = self.index
+    self.wpyParent.WpyDestroyWindow()
+
+class Exit_button(WpyButton):
+  def WpyOnButton(self, event):
+    self.WpyExit()
+
+class Start_button(WpyButton):
+  def WpyOnButton(self, event):
+    win = My_dialog('Not Responding',
+	       "The file server isn't responding right now; "
+	       "I'll keep trying.",
+	       '',
+	       -1,
+	       'OK')
+    win.WpyCreateWindow()
+    if win.wpyDestroyedByClose:
+      print "User closed the window"
+    else:
+      print 'pressed button', win.index
+    win = My_dialog('File Modified',
+	       'File "tcl.h" has been modified since '
+	       'the last time it was saved. '
+	       'Do you want to save it before exiting the application?',
+	       'warning',
+	       0,
+	       'Save File',
+	       'Discard Changes',
+	       'Return To Editor')
+    win.WpyCreateWindow()
+    if win.wpyDestroyedByClose:
+      print "User closed the window"
+    else:
+      print 'pressed button', win.index
+
+class test_win(WpyTopLevel):
+  def __init__(self):
+    WpyTopLevel.__init__(self, None,
+        "Dialog demo from Mr. Ousterhout's Book p269")
+    self.start = Start_button(self, "Press Here To Start")
+    self.endit = Exit_button(self, "Exit")
+  def WpyOnSize(self, event):
+    self.WpyMakeEqualSize(self.start, self.endit)
+    self.wpySizeX = self.start.wpySizeX * 4
+    self.wpySizeY = self.wpySizeX / 2
+    self.start.WpyPlace(self, 0.5, 0.3333, "center")
+    self.endit.WpyPlace(self, 0.5, 0.6667, "center")
+
+if __name__ == '__main__':
+    mainWidget = WpyApp()
+    window = test_win()
+    window.WpyCreateWindow()
+    mainWidget.WpyMainLoop()

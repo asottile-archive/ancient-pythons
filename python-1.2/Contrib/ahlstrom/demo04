@@ -1,0 +1,327 @@
+#! /usr/local/bin/python
+
+from wpy import *
+
+class My_toplevel(WpyTopLevel):
+  def __init__(self, parent, title):
+    WpyTopLevel.__init__(self, parent, title)
+    self.wpyHasResize = 1
+    global window, status
+    window = My_win(self, "window")
+    status = My_status(self, "status")
+    My_menu(self)
+  def WpyOnSize(self, event):
+    if event != None:
+      window.wpySizeX = window.wpySizeX + event.wpyChangeSizeX
+      window.wpySizeY = window.wpySizeY + event.wpyChangeSizeY
+    else:
+      window.wpySizeY = butn1.wpySizeY * 10
+      window.wpySizeX = window.wpySizeY * 2
+    window.wpyLocX = window.wpyLocY = 0
+    obj = window.label1
+    leading = obj.wpySizeY
+    status.wpySizeY = leading * 1.2
+    x = x0 = obj.wpySizeY * 2
+    y = y0 = x
+    obj.WpyPlace(None, x, y, "sw")
+    y = y + leading
+    window.label2.WpyPlace(None, x, y, "sw")
+    x = window.wpySizeX * 0.6
+    y = y0
+    window.label3.WpyPlace(None, x, y, "sw")
+    y = y + leading
+    window.label4.WpyPlace(None, x, y, "sw")
+    y = y + leading * 2
+
+    butn1.WpyMakeEqualSize(butn1, butn2, butn3, butn4)
+    x = x0
+    y0 = y
+    leading = butn1.wpySizeY * 1.5
+    butn1.WpyPlace(None, x, y, "w")
+    y = y + leading
+    butn2.WpyPlace(None, x, y, "w")
+    y = y + leading
+    butn3.WpyPlace(None, x, y, "w")
+    y = y + leading
+    butn4.WpyPlace(None, x, y, "w")
+
+    radio1.WpyMakeEqualSize(radio1, radio2, radio3)
+    x = x0 = window.wpySizeX * 0.4
+    y = y0
+    scroll.wpyLocX = window.wpySizeX * 0.8
+    scroll.wpyLocY = y0
+    leading = radio1.wpySizeY * 1.1
+    radio1.WpyPlace(None, x, y, "w")
+    y = y + leading
+    radio2.WpyPlace(None, x, y, "w")
+    y = y + leading
+    radio3.WpyPlace(None, x, y, "w")
+    y = y + leading * 2
+
+    check1.WpyMakeEqualSize(check1, check2, check3)
+    check1.WpyPlace(None, x, y, "w")
+    y = y + leading
+    check2.WpyPlace(None, x, y, "w")
+    y = y + leading
+    check3.WpyPlace(None, x, y, "w")
+    y = y + leading * 2
+
+    if event == None:
+      window.wpySizeY = y
+    scroll.wpySizeY = y / 2
+
+    status.WpyGlue(window, 0, 1, "nw", 1, None)
+
+    self.WpyShrinkWrap()
+
+    if not status.wpyVisible:
+      dy = status.wpySizeY + status.wpyFrameSizeY
+      window.wpySizeY = window.wpySizeY + dy
+
+class My_win(WpyChildWindow):
+  def __init__(self, parent, title):
+    WpyChildWindow.__init__(self, parent, title)
+    self.wpyHasVScroll = 1
+    self.wpyHasHScroll = 1
+    # Set up both scroll bars:
+    self.wpyVScrollSize = 50
+    self.wpyVScrollWinSize = 10
+    self.wpyHScrollSize = 100
+    self.wpyHScrollWinSize = 50
+    # Make labels:
+    self.label1 = WpyLabel(self, "Use menu to enable buttons")
+    self.label2 = WpyLabel(self, "Window xxx, yyy")
+    self.label3 = WpyLabel(self, "Scrollbar location xxx")
+    self.label4 = WpyLabel(self, "Window scroll location xx, yy")
+    # Make buttons:
+    global butn1, butn2, butn3, butn4
+    butn1 = MyButn1(self, "Disable Options")
+    butn2 = MyButn2(self, "Hide Text")
+    butn3 = MyButn3(self, "About")
+    butn4 = MyButn4(self, "Quit")
+    butn1.wpyEnabled = 1
+    butn2.wpyEnabled = butn3.wpyEnabled = 0
+    # Make radio buttons:
+    global radio1, radio2, radio3
+    radio1	= myradio(self, "Radio 1", None)
+    radio2	= myradio(self, "Radio 2", radio1)
+    radio3	= myradio(self, "Radio 3", radio1)
+    # Make check buttons:
+    global check1, check2, check3
+    check1	= mycheck(self, "Check 1")
+    check2	= mycheck(self, "Check 2")
+    check3	= mycheck(self, "Check 3")
+    # Make other controls:
+    global scroll
+    scroll = scrollx(self, "v")
+  def WpyOnCreate(self, event):
+    status.MakeStatus()
+    self.MakeLabel4()
+  def WpyOnSize(self, event):
+    self.label2.wpyTitle = \
+        "Window%4d,%4d  " % (self.wpySizeX, self.wpySizeY)
+  def MakeLabel3(self, control):
+    self.label3.wpyTitle = "Scrollbar location%3d  " % control.wpyScrollPos
+  def MakeLabel4(self):
+    self.label4.wpyTitle = "Window scroll location%3d,%3d  " % \
+          (self.wpyHScrollPos, self.wpyVScrollPos)
+  def WpyOnVScroll(self, event):
+    self.wpyVScrollPos = event.wpyScrollPos
+    self.WpyChangeVScroll()
+    self.MakeLabel4()
+  def WpyOnHScroll(self, event):
+    self.wpyHScrollPos = event.wpyScrollPos
+    self.WpyChangeHScroll()
+    self.MakeLabel4()
+
+class My_status(WpyChildWindow):
+  def MakeStatus(self):
+    s = "Button status: " + radio1.wpyButtonValue.wpyTitle
+    for obj in (check1, check2, check3):
+      if obj.wpyButtonValue:
+        s = s + ", "
+        s = s + obj.wpyTitle
+    self.WpyWriteClear()
+    x = self.wpySizeY / 2
+    self.WpyWriteText(x, x, "w", s)
+
+class MyButn1(WpyButton):	# Button
+  def WpyOnButton(self, event):
+    if options.wpyEnabled:
+      options.wpyEnabled = 0
+      self.wpyTitle = "Enable Options"
+    else:
+      options.wpyEnabled = 1
+      self.wpyTitle = "Disable Options"
+
+class MyButn2(WpyButton):	# Button
+  def WpyOnButton(self, event):
+    lab = self.wpyParent.label1
+    if lab.wpyVisible:
+      lab.wpyVisible = 0
+      self.wpyTitle = "Show Text"
+    else:
+      lab.wpyVisible = 1
+      self.wpyTitle = "Hide Text"
+
+class MyButn3(WpyButton):	# Button
+  def WpyOnButton(self, event):
+    AboutWin().WpyCreateWindow()
+
+class MyButn4(WpyButton):	# Button
+  def WpyOnButton(self, event):
+    self.WpyExit()
+
+class mycheck(WpyCheckButton):	# A check button.
+  def WpyOnButton(self, event):
+    status.MakeStatus()
+
+class myradio(WpyRadioButton):	# A radio button.
+  def WpyOnButton(self, event):
+    status.MakeStatus()
+
+
+class DialogButn(WpyButton):	# Button to terminate dialog box.
+  def WpyOnButton(self, event):
+    self.wpyParent.WpyDestroyWindow()
+
+class AboutWin(WpyModalDialog):	# The dialog box.
+  def __init__(self):
+    WpyModalDialog.__init__(self, None,
+        "Python wpy version %s" % wpyVersion)
+    self.b = DialogButn(self, "OK")
+    self.m = WpyMessage(self, """\
+This is the Jan 1995 version of "demo04", an early\
+ version of a proposed Python GUI abstraction tool.\
+  Please direct comments and complaints to:\
+ Jim Ahlstrom        jim@interet.com""")
+  def WpyOnSize(self, event):
+    self.wpySizeX = self.m.wpySizeX * 1.2
+    self.wpySizeY = self.m.wpySizeY * 1.2 + self.b.wpySizeY * 3
+    self.b.wpySizeX = self.b.wpySizeX * 3
+    self.m.WpyPlace(self, 0.5, 0.1, "n")
+    self.b.WpyPlace(self, 0.5, 0.8, "center")
+
+class scrollx(WpyScroll):	# A scrollbar control.
+  def __init__(self, parent, title):
+    WpyScroll.__init__(self, parent, title)
+    self.wpyScrollSize = 20
+    self.wpyScrollWinSize = 5
+    self.wpyParent.MakeLabel3(self)
+  def WpyOnScroll(self, event):
+    self.wpyScrollPos = event.wpyScrollPos
+    self.WpyChangeScroll()
+    self.wpyParent.MakeLabel3(self)
+
+# Start of menu buttons
+
+class StatusButn(WpyMenuCheck):	# Show/Unshow status line.
+  def WpyOnButton(self, event):
+    if status.wpyVisible == self.wpyButtonValue:	# No change
+      return
+    status.wpyVisible = self.wpyButtonValue
+    dy = status.wpySizeY + status.wpyFrameSizeY
+    if status.wpyVisible:
+      window.wpySizeY = window.wpySizeY - dy
+    else:
+      window.wpySizeY = window.wpySizeY + dy
+    window.WpySendSizeEvent(None)
+
+class About(WpyMenuButton):	# The about button
+  def WpyOnButton(self, event):
+    AboutWin().WpyCreateWindow()
+
+class MenuExit(WpyMenuButton):
+  def WpyOnButton(self, event):
+    self.WpyExit()
+
+class MyEnable(WpyMenuCheck):	# Enable menu item.
+  def WpyOnButton(self, event):
+    self.target.wpyEnabled = self.wpyButtonValue
+
+class MyVisible(WpyMenuCheck):	# Visible menu item.
+  def WpyOnButton(self, event):
+    self.target.wpyVisible = self.wpyButtonValue
+
+class popitem(WpyMenuButton):	# Item on top-level popup.
+  def WpyOnButton(self, event):
+    self.pop.WpyOnButton(None)
+
+class Pop(WpyMenuButton):	# The top-level popup menubutton.
+  def __init__(self, parent, title):
+    WpyMenuButton.__init__(self, parent, title)
+    self.pop = pop = WpyTopPopup(window)
+    pop.wpyLocX = 100
+    pop.wpyLocY = 100
+    i1  = popitem(pop, "Button 1")
+    i2  = popitem(pop, "Button 2")
+    i3  = popitem(pop, "Button 3")
+    i1.pop = i2.pop = i3.pop = self
+  def WpyOnButton(self, event):
+    if self.pop.wpyVisible:
+      self.pop.wpyVisible = 0
+      self.wpyTitle = "Show Popup"
+    else:
+      self.pop.wpyVisible = 1
+      self.wpyTitle = "Hide Popup"
+
+class My_menu(WpyMenuBar):
+  def __init__(self, parent):
+    WpyMenuBar.__init__(self, parent)
+    file = WpyBarPopup(self, "File")
+    x = WpyMenuButton(file, "Save")
+    x.wpyEnabled = 0
+    x = WpyMenuButton(file, "SaveAs ...")
+    x.wpyEnabled = 0
+    WpyMenuLine(file)
+    Pop(file, "Show Popup")
+    WpyMenuLine(file)
+    MenuExit(file, "Exit")
+
+    WpyBarPopup(self, "Edit")
+
+    x = WpyBarPopup(self, "Buttons")
+    buttonEnable = WpyMenuPopup(x, "Enable")
+    buttonVisible = WpyMenuPopup(x, "Visible")
+    x = MyEnable(buttonEnable, "Button 1")
+    x.wpyButtonValue = butn1.wpyEnabled
+    x.target = butn1
+    x = MyEnable(buttonEnable, "Button 2")
+    x.wpyButtonValue = butn2.wpyEnabled
+    x.target = butn2
+    x = MyEnable(buttonEnable, "Button 3")
+    x.wpyButtonValue = butn3.wpyEnabled
+    x.target = butn3
+    x = MyVisible(buttonVisible, "Button 1")
+    x.wpyButtonValue = butn1.wpyVisible
+    x.target = butn1
+    x = MyVisible(buttonVisible, "Button 2")
+    x.wpyButtonValue = butn2.wpyVisible
+    x.target = butn2
+    x = MyVisible(buttonVisible, "Button 3")
+    x.wpyButtonValue = butn3.wpyVisible
+    x.target = butn3
+
+    global options
+    options = WpyBarPopup(self, "Options")
+    x = StatusButn(options, "Status line")
+    x.wpyButtonValue = status.wpyVisible = 1
+    WpyMenuLine(options)
+    WpyMenuButton(options, "Button 1")
+    WpyMenuButton(options, "Button 2")
+    WpyMenuLine(options)
+    WpyMenuCheck(options, "Check 1")
+    x = WpyMenuCheck(options, "Check 2")
+    x.wpyButtonValue = 1
+    WpyMenuLine(options)
+    x = WpyMenuRadio(options, "Radio 1")
+    WpyMenuRadio(options, "Radio 2", x)
+    WpyMenuRadio(options, "Radio 3", x)
+
+    x = WpyBarPopup(self, "Help")
+    About(x, "About")
+
+app = WpyApp()
+toplevel = My_toplevel(app, "Demonstration of Controls")
+toplevel.WpyCreateWindow()
+app.WpyMainLoop()

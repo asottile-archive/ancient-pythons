@@ -1,0 +1,510 @@
+---------
+Contents:
+---------
+
+Holmes consists of 5 modules:
+    holmes.py    the main driver module
+    kbase.py     knowledge base administrative routines
+    match.py     the pattern matcher (limited unification)
+    forward.py   the forward chaining inference engine  
+    backward.py  the backward chaining inference engine
+
+plus 6 backward.py varients:
+    backwrd2.py  (incorrect) non-backtracking version of backward.py
+    backwrd3.py  explicit stacks backtracking
+    backwrd4.py  backward.py without exceptions
+    backwrd5.py  backwrd4.py with tree list representation
+    backwrd6.py  backwrd4.py with explicit goals stack
+    backwrd7.py  non-backtracking (corrected backwrd2.py: copies trees)
+
+and 1 forward.py variant:
+    forward2.py  implements negation by ommission and assertion
+
+and some example knowledge bases:
+    fixit.kb     appliance repair
+    zoo.kb       animal classification
+    eats.kb      retaurant selection
+
+Note: only the original 'backward.py' back chaining variant is 
+self-contained;  the others borrow logic (user-interface routines)
+from one or more of the other backward variants.  Only the deduction
+logic varies.  This is a good test of inter-module references.
+The 'best' backward chainer is probably backwrd5.py, but this
+hasn't been verified.  'forward2.py' only over-rides one function
+in forward.py;  the rest is imported.
+
+There are 2 versions of holmes: the one here, and the one in the
+'holmes2' directory.  'holmes2' is a variant of holmes that 
+uses discrimination trees (indexes) to avoid exhaustive fact 
+and/or rule list scans in forward and backward mode.  It avoids
+useless match() calls, re-attempting the same rules each time in 
+forward, and known fact list scans.  holmes2 is more appropriate
+for large rule sets, especially when forward chaining is used
+(though naive holmes is useful for fairly large rule sets;
+a 50-rule set has been tested).
+
+
+
+------------
+Description:
+------------
+
+Holmes is an example of fairly complex, symbolically
+oriented programming.  As such, its both a good stress 
+test, and a good paradigmatic test of the language.
+
+Holmes is a backward and forward chaining inference system.
+It incorporates a pattern matcher for selecting rules and
+facts, and mutiple inference engines.  The user provides  
+a knowledge base (a set of symbolic rules) for holmes to
+operate on.  Together, the holmes inference engine and
+the knowledge base constitute an 'expert system', which 
+can encode expertise in a particular domain.  We provide
+3 simple example knowledge bases.  In some sense, these
+are 'programs' for the inference engine.
+
+
+
+-----------
+Algorithms:
+-----------
+
+There are (at least) 2 distinct ways to use a set of
+logical implications.  Given an implication of the form:
+    
+    if a and b then c and d         (a,b -> c,d)
+
+we can proceed in 2 distinct ways:
+
+1) Deduce c and d, when we are told that a and b are true.
+   This is forward chaining.
+
+2) Try to prove a and b when asked about the truth of c or d.
+   This is backward chaining.
+
+In both instances, the chain of reasoning may be arbitrarily
+long.  In forward mode, the deductions added from 1 rule's 
+'then' part may in turn satisfy another rule's 'if' part 
+allowing more deductions to be made, and so on.  In backward 
+mode, the 'if' parts of a selected rule may in turn match 
+the 'then' parts of other rules, and so on.  For example:
+
+    if a then b
+    if b then c
+    if c then d
+
+If we add 'a' as an initally true fact, forward chaining will
+deduce b, then c, then d.   Similarly, if we ask if 'd' is 
+true, backward chaining will try to prove c, then b, then a.
+
+Because of this, we can think of forward chaining as a 
+'bottom-up' deduction, and backward as 'top-down' deduction.
+Both raverse the AND/OR tree implied by the set of implications:
+AND nodes are the conjunctions in the 'if' parts, and OR 
+nodes are different rules deducing the same fact.  The 
+backward/forward chaining distinction is not unlike the
+top-down/bottom-up distinction in language parsing (parsing 
+is just theorum proving).
+
+Forward mode works best at combining a set of facts to form
+a composite deduction, and backward is useful for solving
+a particular goal.  Forward chaining ends when no more new 
+facts can be deduced, and backward when the top-level goal's 
+tree is complete (the leaves of the tree are known or told facts).
+Both algorithms are straightforward; much of the complexity comes 
+from the user interface (generating explanations, etc.).
+
+
+Forward chainer
+---------------
+Forward chaining is roughly:
+    
+    facts = initial facts list
+    repeat:
+        select rules with 'if' parts satisfied by facts (all poss bindings)
+        select a satisfied rule or rules to apply 
+        fire the rule/rules, adding their 'then' parts to facts (if new)
+    until no rules satisfied or no new facts added by firing
+    report deductions in facts
+
+This is sometimes called pattern-directed programming.
+There's a lot of room for variations within this basic scheme.
+We choose to fire _all_ satisfied rules on each iteration,
+since it avoids alot of work (extra iterations).  We also 
+require explicit 'ask <fact>' to specify which goals can
+be asked of the user.  
+
+Note that we redo alot of work in the simple holmes model, 
+since we reselect the same rule/binding on each iteration, 
+even if it already fired (they are eliminated only when we 
+notice their 'then' parts are already on 'facts').  We do 
+better in the index tree version, only picking rules triggered 
+by facts added on the last iteration (rules are index on their 
+'if' parts), and only matching 'if' clauses to known facts 
+that can possibly match (facts are indexed as well; in the naive 
+version, we try to match each rule's 'if' clauses to all
+facts on the facts list, on each iteration, to genrate all 
+possible bindings).
+
+
+Backward chainer
+----------------
+Backward chaining is just a depth-first traversal of the 
+AND/OR tree implied by the rules set, to find a binding
+for all rule's variables which is satisfied by all node
+in the serach tree.  Alternative rules are the 'OR' nodes
+('then' parts matching a goal), and the goals in a rule's
+'if' part (and the query) are AND nodes.  The set of 
+binding environments at each node on the proof tree is the
+solution.  Each proof tree is a subgraph of the AND/OR
+tree.  Roughly:
+
+    prove(conjunction)
+        for each goal in the conjunction,
+            find a rule whose 'then' part matches the goal
+            prove the rule's 'if' part recursively
+        at the top-level, report the level's variable bindings
+
+In the naive holmes, we try to match the goal to all rule's
+'then' parts.  In the index tree version, we do better by 
+selecting rules that can possibly match a goal (rules are
+indexed on their 'then' parts.  In both chainers, we keep 
+track of questions already asked to avoid re-asking a fact.
+
+Backward chaining is much more focused than forward 
+chaining, since it works towards a specific goal 
+(forward chaining is essentially unconstrained 
+resolution).  Forward chaining can be made somewhat 
+more focused by asserting and retracting 'stage' facts 
+(so only rule subsets are tried at any given point), 
+or by making the rule select/fire process recursive 
+(fire one rule, select all rule triggered by its 
+'then' facts, fire that rule, ...).
+
+
+Pattern matcher
+---------------
+The pattern matcher implements simplified unification, 
+in which there are no nested terms: each term is a 
+list of literals, and variables which can only be 
+bound to literals.  Each operand to match() can  
+contain variables and literals, and match() binds
+2 free variables to each other, so they refere to 
+the same unbound value (most general unifier).
+
+Rather than renaming variables, we keep the bindings
+for the variables in each of the 2 operands in distinct
+environments.  In forward mode, this is trivial (we
+only have 2 levels of binding: a fact, and a rule).
+In backward mode, binding environments can be spread
+across a proof tree: the binding environment for a 
+goals is in its proof tree node.  This is similar
+to local variable implementation in C, for example.
+
+Binding environments are implemented as dictionaries, 
+of ('variable':value) pairs, where the value is either
+a literal term (a string), a free-variable (the string 
+'?'), or a reference to another free variable, which 
+is a (<name>, <dictionary>) pair.  This last case  
+occurs when we match 2 free variables: one is cross-bound
+with the other, so the 2 'share' the same free variable.
+These 'sharing' reference chains can be arbitrarily long,
+and we follow the chains to a literal or free variable
+before comparing 2 terms.
+
+
+
+------------
+Constraints:
+------------
+
+Expert systems have some unique qualities:
+  
+  -- they use general knowledge (quantified by logical variables)
+  -- they can explain their actions, reasoning, and questions
+  -- they can handle uncertain, probabilistic, and incomplete knowledge 
+  -- their knowledge is declarative, symbolic, high-level, and modular
+
+Holmes meets all these criteria except for handling uncertain 
+knowledge.  To limit development time, we constrained holmes 
+in the following ways:
+
+1) No certainty factors associated with rules or facts.
+   Deductions are either absolutely true or false.
+   Handling uncertainties is not particulary hard to do
+   (see holmes2/holmes.doc 'Caveats'), but its extra work.
+
+2) No nested terms in the clauses passed to the pattern 
+   matcher.  match() is just simplified 'unification', 
+   which matches strictly linear lists of literals and
+   variables.  [It would be trivial to extend match() for
+   the general case: it would call match() recursivley
+   for each term in a list, and ground() terms before
+   checking if they are lists or scalar].  We note that
+   this constraint makes holmes useless for general
+   logic programming (since we cannot construct or traverse 
+   subterms recursively; as is, holmes can't be used to parse
+   a stream of tokens, for example, since we'd need different
+   rules for all possible input sentence patterns).
+
+3) match() also only supports the 'unification' model 
+   of pattern matching: there is no sublist matching 
+   operator, only variables that match exactly 1 term
+   in the other pattern.  If we allowed sublist matching,
+   we'd generate nested terms (which are not allowed).
+
+4) There is no explicit disjunction ('or') or logical 
+   nesting in the rule's 'if' parts.  Disjunction can
+   be coded by >1 rule with the same 'then' part, and
+   complex logical tests can be factored among >1 rule.
+
+5) We only support forward chaining xor backward chaining.
+   It's not possible to do forward chaining during a 
+   backward chaining proof (for example, to add all 
+   facts related to a question just answered).
+
+6) Rules only support symbolic deduction.  They don't
+   support general programming tasks, so holmes isn't 
+   suited for propgramming (no math, i/o, etc).
+
+7) We dont detect/trap cycles in the rule base in 
+   backward mode.  We do in forward mode implicitly,
+   since we avoid re-adding a fact to the known facts
+   list > once.  It's not hard to do this in backward 
+   mode: we can just scan the stack of active goals/envs
+   before attempting a new goal (we have this stack 
+   explicitly, as the 'why' explanation list), but
+   we don't do it.  So, recursive cycles will make
+   the inference engine loop ('rule 1 if p ?x then p ?x')
+
+8) Everything is done as simply as possible: explanations
+   are simple (an exhaustive proof tree list), rule 
+   loading doesn't check or report syntax errors, etc.
+
+9) When the user is asked if a fact is true or not, we assume
+   there are no free variables in the fact (more precisely,
+   we ignore them).  A smarter strategy is to let the user
+   enter 1 or more bindings for free variables in asked facts.
+
+
+
+------------
+Rule syntax:
+------------
+
+    rule = 'rule' id 'if' conjunct 'then' conjunct '.'
+
+    conjunct = clause ',' conjunct  | clause
+
+    clause = sentence | negation | special
+    
+    sentence = term sentence | term
+
+    term = atom | variable
+    
+    atom     = string 
+    variable = '?' string 
+
+    negation = 'not' sentence
+    special  = 'true' | 'ask' sentence | 'delete' sentence
+
+    string = sequence of any 1 or more non-blank characters
+
+    fact  = clause
+    facts = conjunct
+    goal  = conjunct
+
+
+Rules are simple 'if' -> 'then' implications.  Both the 'if' and
+'then' parts are conjunctions of clauses (sentences), seperated  
+by commas.  Each clause is in turn a list of white-space 
+seperated terms, which are either literal strings or logical 
+vairables (preceded by a '?').  All parts of a rule are converted
+to strings when the rule is read in (the rule id need not be 
+unique or numeric), and the rules is internally stored as a
+3-entry dictionary, with sublists of strings for 'if' and 
+'then' values.  The kbase is just a list of rule dictionaries.
+When loaded from a file, rules can span lines arbitrarily, 
+and may be seperated by blank lines.
+
+In holmes, rules are attempted in the order in which they were
+added (or appeared in a loaded kbase file).  In holmes2, we 
+do not guarantee that rules will be tried in the order in 
+which they were added: rules with similar 'then' parts will 
+be tried in random order, in backward chaining.  Rules with 
+identical 'then' parts are still tried in order of adding.
+
+
+notes: 
+1) The '.' following a rule is not used for rules entered interactively
+
+2) A rule can span multiple lines arbitrarily, and any number of rules
+   can appear on the same single line;  newlines are stripped when  
+   rules are loaded.  Terms in a sentence are seperated by white-space.
+
+3) 'not' is implemented as negation-by-failure in backward mode 
+   ('not x' is true if 'x' cannot be proved).  In forward mode, we adopt
+   2 different strategies: negation-by-assertion, and negation-by-
+   ommission, implemented in forward.py, and forward2.py respectively.  
+   See holmes2/holmes.doc 'Caveats' for more information;  negation   
+   by assertion is the default.  'not' only makes sense in 'if' parts 
+   in backward mode;  it makes sense in 'if' and 'then' parts in 
+   forward mode, when negation-by-assertion is used (the 'not' clause 
+   in a 'then' is asserted directly).
+
+4) 'ask' is redundant in backward mode (and is ignored), since all 
+   facts without a rule are asked.  It is needed in forward mode, 
+   since it's not clear what goals should be asked due to the 
+   unfocused deduction process (for example, if n-1 of n 'if' parts 
+   are satisfied, we still don't know if we should 'ask').  
+   backward mode ask == 'rule x if ?x then ask ?x' (although this
+   coding is not possible without subterm matching);      
+   
+5) 'delete' is only useful in forward mode: it removes a fact from 
+   the known facts list.  This can be used to switch between 'stages'
+   sequentially;  for example, assert 'stage n' and check for this
+   in all rules for stage n;  re,ove it and assert 'stage n+1' to
+   begin the next stage (and activate a new set of rules.
+   
+6) Rules may be converted to any convenient internal form for 
+   this benchmark (but should be written in the syntax above).
+
+7) It is possible to write rules (in a file or interactively) in 
+   their internal format directly.  If this format is used in a
+   file, the kbase can be loaded by importing the module file
+   (the kbase would be 1 big dictionary list expression/assignment).
+   The internal format is a list of 3-field dictionaries, with 
+   conjunction split around the ',' and ' ' seperators:
+        
+        rule id: if a ?x, b ?x then c ?x.
+
+            ==> 
+
+        [{'rule':id, 
+          'if':[['a', '?x'], ['b', '?x']], 
+          'then':[['c', '?x']]}, 
+          {..}, {..}, ...
+        ]
+
+
+
+---------
+Examples:
+---------
+
+ex:
+   rule 1 if man ?x then mortal ?x.
+   rule 2 if philosopher ?x then man ?x.
+   rule 3 if thinks ?x then philosopher ?x.
+
+   ?- mortal marc  -> asks: 'philosopher marc'
+   +- thinks marc  -> deduces: 'philosopher marc', 'man marc', 'mortal marc'
+
+ex:
+   += rule 1 if forgot lunch ?x then ?x is hungry
+   += rule 2 if ?x is hungry then eat popcorn ?x
+   
+   +- forgot lunch mark   -> deduces: eat popcorn mark
+   ?- eat popcorn mark    -> asks: forgot lunch mark?
+
+ex:
+   rule mammal  if live births ?x then class ?x mammal.
+   rule primate if class ?x mammal, intelligent ?x then primate ?x.
+   rule human   if primate ?x, technological ?x then human ?x.
+
+   ?- human amrit
+   +- live births amrit, intelligent amrit, technological amrit
+ex: 
+   rule 1 
+        if ?x needs fix, not can afford ?x new  
+        then fix call ?x repair man, ?x not available.  
+
+
+
+------------
+Interaction:
+------------
+
+To start the system:
+    'python holmes.py'  or 'python', 'import holmes'
+
+holmes starts up a command interpreter, where you can load 
+rules, start forward and backward chaining, submit python
+commands, etc.  The interpreter has a 'help' command. 
+ex:
+
+    python holmes.py
+    holmes> @= fixit.kb                      --load a rule file
+    holmes> ?- fixit ?problem ?soln          --backward chain
+    holmes> @= mortal                        --load a rule file
+    holmes> +- philosopher marc              --forward chain
+
+holmes prompts the user with questions along the way, 
+presents 'why' explanations when asking a question, and
+'how' explanations for each proof or deduction made.
+'why' list the current line of reasoning, and 'how'
+traces the proof tree.
+
+
+
+-------------
+Backtracking:
+-------------
+
+We don't really need to backtrack in forward or backward modes, 
+but we _do_ need reversible assignment in backward mode: because
+match() can bind in any active dictionary (any level of recursion),
+we either need to copy _stacks_ of dictionaries before each match(),
+or undo all bindings done before trying alternatives (reversible
+assignment), which is much faster.  We simulate reversible 
+assignment by keeping track of bindings match() makes on a list, 
+and setting all these back to 'free' before the next match()
+at the same level.  This isn't strictly needed in forward mode 
+(since match only changes at most 2 dictionaries (the fact's,
+and the 'if' goal: caller and callee);  we could instead copy
+and restore the caller's dictionary at each level (but reversable
+assignment is faster than copying dictionaries, in most cases).
+
+There is potential for backtracking: at conjunctions ('if's)
+in forward and backward mode, and at disjunctions (alt rules)
+in backward mode. These 2 correspond to AND/OR trees.
+
+In forward mode, we avoid conjunction backtracking, 
+by generating all solutions (bindings) for a conjunct[i] 
+as a set, and passing each in this set to conjuncts[i+1..N], 
+as constraints, to be narrowed or expanded.  The recursion 
+effectively intersects the bindings of if's 1..N.  This
+is simply 'generate-and-test' problem solving.
+
+In backward mode, we avoid conjunction backtracking
+by generating a solution for if[i], and passing it 
+to if[i+1..n] to be tested.
+
+We adopt a number of strategies for handling disjunction
+backtracking in backward mode.  We either implement 
+backtracking by: 
+
+1) 'generate-and-test' coding (which always proceeds ahead, 
+with no routine returning until backtracking is desired).  
+The call stack is an implicit backtrack stack.  This  
+method is used in backward (with exceptions to trigger 
+backtracking), backwrd4, backwrd5, and backwrd6 (with 
+'return' to backtrack).
+
+2) use an explicit stack data struture to coordinate the
+AND/OR tree search.  Used in backwrd3.
+
+3) compute and copy candidate proof trees (and their 
+binding environments) at each disjunction in the
+proof, and pass these ahead to be tested by the rest
+of the search.  Used in backwrd7.
+
+Of these 2, only (3) does no real backtracking (though
+proof subtree construction is equivalent to backtracking
+early).  In backward mode, disjunction backtracking 
+seems more straightforward than a non-backtracking scheme.
+
+
+See holmes.doc in the indexed holmes2 variant for 
+details on the discrimination tree.
+

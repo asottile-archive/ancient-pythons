@@ -1,0 +1,17 @@
+Subject: FORTH in Python 1.2
+From: nick@osg.saic.com (Nick Seidenman)
+To: python-list@cwi.nl
+Date: 8 Dec 1994 00:30:29 GMT
+X-Newsgroups: comp.lang.python
+X-Organization: Science Applications International Corporation
+X-Keywords: forth
+
+Ok, so I didn't get back to work right away.  Anyway, I implemented the
+internal constructs I spoke of in the header comments, so now
+InnerInterpreter parses if-else-then and do-loop constructs into a sort
+of sub-program within the program.  The actions have yet to be filled in
+and the outer interpreter needs to be modified to correctly collect the
+input in a way that makes sense to the InnerInterpreter (i.e. handle
+multi-line input).  
+
+nick

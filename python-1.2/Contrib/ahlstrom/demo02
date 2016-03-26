@@ -1,0 +1,60 @@
+#! /usr/local/bin/python
+# This a demo program for "wpy" written in an object-oriented
+# (not declarative) style.  See demo01 for a declarative version.
+# This program will run unchanged on any system which has a "wpy.py".
+
+from wpy import *
+
+class butn_ok(WpyButton):
+# An "OK" button: Toggles between two window sizes.
+  def WpyOnButton(self, event):        # Standard form of event handler.
+    window = self.wpyParent
+    if window.wpySizeX != window.size_x:
+      window.wpySizeX = window.size_x
+    else:
+      window.wpySizeX = window.size_x * 1.5
+    window.make_msg()
+    window.WpySendSizeEvent(None)   # Send a resize event to window.
+# NOTE: You must generate a resize event yourself if your code changes any
+# sizes.  If the user changes a size by using the window decoration, the
+# system generates the resize event.  In general, all code is event driven.
+
+class butn_quit(WpyButton):
+  def WpyOnButton(self, event):
+    self.WpyExit()
+
+class my_win(WpyTopLevel):
+  t1 = "Please press OK again to change the size of the window."
+  t2 = "Please press OK to change the size of the window."
+  t3 = "  Try changing the size with the window decorations too."
+  def __init__(self, parent, title):
+    WpyTopLevel.__init__(self, parent, title)
+    self.wpyHasResize = 1	# User can resize the window.
+    self.button1 = butn_ok(self, "OK")
+    self.wpyDefaultButton = self.button1
+    self.button2 = butn_quit(self, "Quit")
+    self.msg = WpyMessage(self, self.t2 + self.t3)
+  def make_msg(self):	# Toggle message text.
+    if self.wpySizeX != self.size_x:
+      self.msg.wpyTitle = self.t1
+    else:
+      self.msg.wpyTitle = self.t2 + self.t3
+  def WpyOnCreate(self, event):      # Standard form of event handler.
+    self.WpyMakeEqualSize(self.button1, self.button2)
+    self.wpySizeX = self.size_x = self.msg.wpySizeX * 1.4
+    self.wpySizeY = self.msg.wpySizeY * 3
+  def WpyOnSize(self, event):        # Standard form of event handler.
+    if event != None:		# User resize.
+      self.wpySizeX = self.wpySizeX + event.wpyChangeSizeX
+      self.wpySizeY = self.wpySizeY + event.wpyChangeSizeY
+    # Place widgets relative to "self".
+    self.msg.WpyPlace(self, 0.5, 0.1, "n")
+    self.button1.WpyPlace(self, 0.3333, 0.70, "center")
+    self.button2.WpyPlace(self, 0.6667, 0.70, "center")
+    
+
+# Create window, start the application, respond to events.
+app = WpyApp()      # Represents the whole application.  Not visible.
+window  = my_win(app, "Usual Hello World Demo")
+window.WpyCreateWindow()
+app.WpyMainLoop()

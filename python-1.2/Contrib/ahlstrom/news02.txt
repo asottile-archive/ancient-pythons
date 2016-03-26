@@ -1,0 +1,24 @@
+This is an update on a proposed Python GUI abstraction.  Updated code is
+at ftp.interet.com in directory pub/python.  After writing some programs,
+I found it necessary to make some changes in the design.
+
+Ed Miller (ed@infoseek.com) wrote to suggest using setattr/getattr,
+and after some more experience I agree.  It is just too annoying to generate
+events for each change.  So the current design uses __setattr__ followed
+by a dictionary lookup to trap all changes to variables which require
+notification to the underlying native GUI.  This is used for changes to
+titles, visibility, enable/disable of menu items, etc.  Size changes
+(currently) still require the programmer to generate a size event.
+
+So a change in title would look like this:
+        window.title = "New title"
+with no further action required.  I believe this is better that methods 
+for everything as in:
+        window.ChangeTitle("New title")
+because the instance variable "window.title" still exists and you can write
+        the_title = window.title
+with no need of a "getattr" or a "get" method.
+
+I also added a few more widgets, namely menus, labels and messages.  I also
+changed the name of the second included file and a number of variable
+names to make them less confusing and more consistent, and (well) prettier.  

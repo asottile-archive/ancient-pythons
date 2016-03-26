@@ -1,0 +1,69 @@
+This is an update on a proposed Python GUI abstraction.  Updated code is
+at ftp.interet.com in directory pub/python.  There is now about 2000 lines
+of Python code in the implementation, and four demo programs.  The code
+now carries the version number of "0.1".  I still consider the code a
+proof of concept exercise, but it may be adequate for simple purposes.
+
+Recall that the goal is to be able to write a Python GUI program in a
+pretty, object-oriented style as easily as possible, and have the program
+run on X/Tk, XVT and WindowsNT platforms without any changes at all.
+The main changes are as follows:
+
+1) All of my names now start with "wpy" or "Wpy" to avoid name conflicts.
+   The wpy module should be imported with "from wpy.py import *".  Note
+   that user names and my names co-exist in the user's Python code.
+
+2) More widgets. It has become clear that one solution to incompatible window
+   systems is to create very high level widgets.  The current widgets are:
+
+     Top-level windows with optional scroll bars, a menu, and size-changers.
+     Top-level menus, with buttons, checks, cascades, etc.
+     Child windows which belong to top-level windows.
+     Dialogs, modal and modeless.  These are a kind of top-level window.
+     A floating pop-up menu which can appear anywhere in a window.
+     Controls:
+       Buttons, with a different-looking default button.
+       Check buttons and radio buttons.
+       Labels and messages - these are static text controls.
+       Scroll controls - like window scroll bars.
+
+3) Python events.  Events from X, XVT and NT are quite different.  The
+   approach is to standardize a small number of generic Python events.
+   These events are delivered to the lowest level of the class hierarchy,
+   generally to the controls.  Transfer to higher levels is by inheritance
+   if desired.  Other necessary native OS events are handled invisibly
+   in the "wpy" layer.  Current events are OnCreate, OnClose, OnChar,
+   OnMouse, OnScroll, OnButton, OnSize, OnFocus.
+
+4) New geometry management.  Only Tk has geometry managers.  Currently I
+   have built-in geometry managers written in Python which approximate the
+   Tk placer and which support all native OS's.  Generally the user will
+   put all geometry and layout code in an OnSize event handler.  See
+   "window creation".
+
+5) Window creation.  Windows are created by getting a window class instance,
+   changing attributes, and then calling the window create method.  The
+   OnCreate and OnSize events are then sent to the window.  The user must
+   write or inherit an OnSize event handler to perform size and layout.
+   Utility layout functions are provided, and I personally find it
+   convenient to simply do all layout in a function rather than try to
+   attach layout to objects.  But it would be nice to have more built-in
+   geometry support.
+   
+6) Access to Tk through "option readfile wpy_tk.dfl" on the Python path.
+   This provides a way to change the look-and-feel of the Tk version without
+   completely throwing away portability.  Only default values of borders,
+   fonts, colors etc. are used, and these may be changed in "wpy_tk.dfl",
+   or, of course, in .Xdefaults.  Full access to Tk is available by hacking
+   "wpy_phys.py" at the expense of portability.
+
+7) The model supports a C-like or an OO-like style of programming, although
+   this may be a bad idea, and may be eliminated.  But it may be easier
+   for a C-language programmer to get used to.
+
+I would appreciate any feedback anyone could give me.  If anyone wants to
+use this code for a real program, please note that it is incomplete.  But
+if you insist, I will add features starting with the ones you need most.
+Otherwise, I may just start the port to NT or (gasp!) write documentation.
+
+Jim Ahlstrom            jim@interet.com
