@@ -3,12 +3,16 @@
 *.pyc
 
 /*/buildno
+/*/Grammar/Makefile
+/*/Grammar/graminit.c
+/*/Grammar/graminit.h
 /*/Makefile
 /*/Modules/add2lib
 /*/Modules/hassignal
 /*/Modules/Makefile
 /*/Modules/Makefile.pre
 /*/Modules/Setup
+/*/Modules/Setup.config
 /*/Modules/Setup.local
 /*/Modules/Setup.thread
 /*/Modules/config.c
