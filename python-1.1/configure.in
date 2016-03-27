@@ -250,6 +250,9 @@ main() { exit(foobar()); }
 AC_IRIX_SUN
 AC_XENIX_DIR
 
+# Needed for crypt
+AC_CHECK_LIB(crypt, crypt)
+
 # check for --with-libm=...
 AC_SUBST(LIBM)
 LIBM=-lm
