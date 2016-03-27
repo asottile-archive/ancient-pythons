@@ -1,0 +1,63 @@
+Here's a mail from Amrit on porting Python 1.0.2 to DOS.  Also see the
+file BUILD for more concrete info.
+
+Subject: Python 1.0.2 on DOS
+From: amrit@xvt.com (Consultant)
+To: guido@cwi.nl
+Date: Fri, 13 May 1994 12:25:55 -0600 (MDT)
+
+I have ported Python 1.0.2 to DOS using GCC 2.5.7 running under DJ's
+extender version 1.11.  The 1.11 extender is much better; It runs better
+under DMPI (Windows), so I no longer get "buggy read.s module."
+
+I took more time doing a careful port of Python by writing custom
+configuration files for DJGPP and QuickWin.  Thus the time functions now
+work much better.  (In particular, it now uses DJGPP's gettimeofday()
+function, whereas before, without config.h, it was just using the
+ANSI time() function.)
+
+Great news!  I got keyboard interrupts working for the DOS extended version
+of the Python interpreter; pressing Control-Break on the DJGPP version will
+raise the KeyboardInterrupt exception.  However Control-C will still terminate
+the Python process, and both Control-Break and Control-C will terminate the
+QuickWin Python program :-(  For the DOS documentation, I wonder if you
+should emphasize that control-break is the interrupt key of choice.
+
+The regular expression globbing feature of Python was broken on DOS.  This
+was due to a combination of a bug in dospath.py and dosmodule.c.  I am
+sending you the fixes to both.  I made several changes to dosmodule.c:
+
+    dosmodule.c now works with both the Borland findfirst/findnext directory
+    search functions and the Microsoft _dos_findfirst/_dosfindnext directory
+    functions.  DJGPP uses the Borland interface, so it makes sense to
+    have the code work for both methods.  (Also, then it can work for Borland)
+    I noticed that an earlier version of dosmodule.c supported both interfaces,
+    so I wonder why you took that support out.
+
+    Fixed a bug where listdir('') returned the listing of the root directory
+    instead of the current directory.
+
+    I changed the file attributes for findfirst() so that system files are
+    not included in the directory search.  Users should not be messing with
+    these. (IMHO)
+
+    I added system() for QuickWin back to dosmodule.c.  You told me you moved
+    it to a separate file, but I couldn't find it in the distribution.  :-(
+
+    dospath.py was broken where normalize() would convert regular expression
+    metacharacters into '_'.
+
+I am sending you the configuration files I wrote for the extended dos version
+(config.dj) and the QuickWin version (config.qw).  As well as the config.h
+that I use, which merely includes either config.dj or config.qw as
+appropriate.  Also, you will find the new intrcheck.c module and the new dos
+modules, and some diffs.
+
+Since the DOS globbing is so badly broken, it might be worthwhile to release
+a patch with just the source for dosmodule.c and the new dospath.py (or
+however you choose to fix glob()).
+
+Also, if you want me to submit another gcc build of Python, let me know;
+I will be happy do do that.  I lost the readme that I wrote that gave the
+installation instructions, so if you cand send the one I wrote previously
+(If you still have it.) that will save me from having to create another one.

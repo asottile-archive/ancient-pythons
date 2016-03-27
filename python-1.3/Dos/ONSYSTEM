@@ -1,0 +1,20 @@
+Subject: Python system() for QuickWin builds
+From: amrit@xvt.com (Consultant)
+To: guido@cwi.nl
+Date: Wed, 22 Jun 1994 12:22:39 -0600 (MDT)
+
+I searched the Windows FAQ's and finally gleaned enough information to
+write system() the "right" way under Windows.  The new system() function
+really returns the exit status of the child process (left shifted
+to be compatible with UNIX), and not an assumed successful completion
+status.
+
+system() requires toolhelp.dll, which is only available on Windows 3.1;
+However, toolhelp may be freely distributed with Python for people who are
+clinging to Windows 3.0. (A Zipped toolhelp.dll could be put on the
+Python FTP site, and people who don't have it should download
+toolhelp.dll and put it in their /windows/system directory.)
+
+I had to change the build procedures somewhat because system()
+requires different flags (-GA,-GEd instead of -Mq), and to link
+toolhelp.lib.

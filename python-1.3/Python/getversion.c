@@ -1,0 +1,23 @@
+/* Return the full version string. */
+
+#include "Python.h"
+
+#include "patchlevel.h"
+
+#define VERSION "%s (%s) %s"
+
+#ifdef __DATE__
+#define DATE __DATE__
+#else
+#define DATE "October 13 1995"
+#endif
+
+extern const char *getcompiler();
+
+const char *
+getversion()
+{
+	static char version[80];
+	sprintf(version, VERSION, PATCHLEVEL, DATE, getcompiler());
+	return version;
+}

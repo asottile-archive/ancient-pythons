@@ -1,0 +1,130 @@
+PR
+==
+
+write a real manual for wwww in html
+
+Other Projects
+==============
+
+Convert Python tut and ref as well
+
+Use html in CMIF (triggered by filename extension) to allow multifont
+text (then what to do with the font and size attributes?  ignore?  use
+to change the style sheet?)
+
+CERN's WWW
+==========
+
+CERN's WWW breaks for 2nd (or relative?) ftp access, endless sequence
+of "-1 read" when tracing (on the SGI)
+
+Software Engineering
+====================
+
+Use dbm for places instead of marshal.load/dump
+
+Move fmt.py and *lib.py (at least) to lib-python, fix gopher example
+in demo/sockets
+
+Factor out more commonalities between www.py and wwww.py (e.g. command
+line parsing); maybe even make a base class with the commonalities
+between WWWWindow and WWWCmd?
+
+texi2html.py
+============
+
+Generate quotes around attributes?
+
+Use <typewriter>?
+
+wwww.py
+=======
+
+middle mouse should offer to fetch the referenced document without
+displaying it, e.g. to print it if it is plaintext
+
+Generalize next/prev/up/down/traverse to apply to non-texinfo nodes,
+and change them not to fill up the history (up should behave like
+back, next/prev should leave history unchanged)
+
+Mouse state handling is a mess
+
+Split command menu in a navigation menu and a "special actions" menu
+
+Order various types of functions in the class differently, e.g.:
+(1) init/close
+(2) stdwin event dispatching
+(3) key_<char> functions
+(4) msg_<name> functions
+(5) high-level semantic functions (follow, search, ...)
+(6) support functions (make_*_menu etc.)
+
+Find, goto and save should use modeless dialogs or at least support cut/paste?
+
+If a referenced document is already shown in another window, pop it?
+
+Improve help?
+
+Keyboard browsing (at least space/backspace)?
+
+Add tab command to search for the next link in the text?
+
+Make it into a full HTML editor
+
+www.py
+======
+
+Add info browsing commands like in wwww.py
+
+Improve help
+
+When backing up to (!) a search result (e.g. after following a link in
+the search result), don't repeat the search but show previous results
+
+wwwutil.py
+==========
+
+(none)
+
+htmllib.py
+==========
+
+Blank lines in all literal text disappear
+
+Ignore text inside <COMMENT>...</COMMENT> tags
+
+Implement <DIR> listing to format multiple items per line
+
+Change space-skipping to same as CERN's www!  (Ignore newlines at
+start of paragraph, but don't ignore spaces -- necessary for new
+texinfo example style...)
+
+sgmllib.py
+==========
+
+Allow spaces around '=' in attributes.
+
+Allow single quotes around attribute values?
+
+Allow quoted attributes containing spaces.
+
+Expand entity references in attribute values.
+
+fmt.py, Para.py
+===============
+
+Break lines only where stretch > 0
+
+Reimplement Para and BaseFormatter in C (they're worth it!)
+
+wwwlib.py
+=========
+
+File format directory listings should somehow return a flag indicating
+that GOTO should be interpreted relative to the full path, not to the
+parent (e.g. modify the address to end in a /)
+
+Boundary cases of ftp pathnames aren't always treated correctly
+(e.g. 'file://ftp.cwi.nl' seems to go wrong, should list '/'?).
+
+Support more address formats (especially wais; telnet??? news???)

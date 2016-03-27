@@ -1,0 +1,13 @@
+# ^http://[^/:]*\.cwi\.nl[:/]
+^http://[^/]+/\(HELP\|FIND\|NEWS\|VAXNEWS\)/
+^http://info\.cern.\ch/hypertext/Conferences/.*\.wn
+^http://iicm\.tu-graz\.ac\.at/[A-Z]0x
+^http://info\.cern\.ch:8001/
+^http://asis01\.cern\.ch/info/
+^http://info\.cern.\ch/hypertext/Conferences/.*\.ps
+^http://iicm\.tu-graz\.ac\.at/CJargon[A-Z]
+^http://fnala\.fnal\.gov:8000/
+# ^http://vms\.huji\.ac\.il[:/]
+^http://iicm\.tu-graz\.ac\.at/Csection
+^http://xcf\.berkeley\.edu/ht/projects/viola/docs/
+^http://info\.cern\.ch:8004/

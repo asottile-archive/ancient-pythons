@@ -1,0 +1,43 @@
+#! /bin/sh
+
+echo
+echo === Rebuild python ===
+echo
+texi2html -d /ufs/guido/src/python/doc/@out.texi \
+	     /usr/local/ftp.cwi.nl/pub/www/texinfo/python
+
+echo
+echo === Rebuild texinfo ===
+echo
+texi2html -d /usr/rosrc/local/gnu/texinfo-2.14/texinfo2.texi \
+	     /usr/local/ftp.cwi.nl/pub/www/texinfo/texinfo
+
+echo
+echo === Rebuild emacs ===
+echo
+texi2html -d /usr/rosrc/local/gnu/emacs-18.58/man/emacs.texi \
+	     /usr/local/ftp.cwi.nl/pub/www/texinfo/emacs
+
+echo
+echo === Rebuild cl ===
+echo
+texi2html -d /usr/rosrc/local/gnu/emacs-18.58/man/cl.texinfo \
+	     /usr/local/ftp.cwi.nl/pub/www/texinfo/cl
+
+echo
+echo === Rebuild regex ===
+echo
+texi2html -d /usr/rosrc/local/gnu/emacs-18.58/man/regex.texinfo \
+	     /usr/local/ftp.cwi.nl/pub/www/texinfo/regex
+
+echo
+echo === Rebuild termcap ===
+echo
+texi2html -d /usr/rosrc/local/gnu/emacs-18.58/man/termcap.texi \
+	     /usr/local/ftp.cwi.nl/pub/www/texinfo/termcap
+
+echo
+echo === Rebuild vip ===
+echo
+texi2html -d /usr/rosrc/local/gnu/emacs-18.58/man/vip.texinfo \
+	     /usr/local/ftp.cwi.nl/pub/www/texinfo/vip

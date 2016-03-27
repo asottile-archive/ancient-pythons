@@ -1,0 +1,12 @@
+#! /bin/sh
+
+wwwhunt.py -d $* >>@hunt.out 2>&1
+echo "" >>@hunt.out
+echo "--- Exit status $? ---" >>@hunt.out
+
+while test -f @todo.dir
+do
+	wwwhunt.py -d >>@hunt.out 2>&1
+	echo "" >>@hunt.out
+	echo "--- Exit status $? ---" >>@hunt.out
+done
