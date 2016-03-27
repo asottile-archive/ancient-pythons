@@ -6,6 +6,7 @@
 /*/Modules/Makefile
 /*/Modules/Makefile.pre
 /*/Modules/Setup
+/*/Modules/Setup.local
 /*/Modules/config.c
 /*/Objects/Makefile
 /*/Parser/Makefile
