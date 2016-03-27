@@ -1,0 +1,47 @@
+PYTHON DOCUMENTATION TO-DO LIST			-*- indented-text -*-
+===============================
+
+
+* The "Very High Level Interface" in the API document has been
+  requested; I guess it wouldn't hurt to fill in a bit there.  Request 
+  by Albert Hofkamp <a.hofkamp@wtb.tue.nl>.  (Partly done.)
+
+* Describe implementing types in C, including use of the 'self'
+  parameter to the method implementation function.  (Missing material
+  mentioned in the Extending & Embedding manual, section 1.1; problem
+  reported by Clay Spence <cspence@sarnoff.com>.)
+
+* In the extensions manual, more information is needed about building
+  dynamically linked extensions in C++.  Specifically, the extensions
+  must be linked against the C++ libraries (and possibly runtime).
+  Also noted by Albert Hofkamp <a.hofkamp@wtb.tue.nl>.
+
+* Python/C API reference missing PyArg_ParseTuple(),
+  PyArg_ParseTupleAndKeywords(), Py_BuildValue().  Information
+  requested by Greg Kochanski <gpk@bell-labs.com>.  PyEval_EvalCode()
+  has also been requested.
+
+* Update the pickle documentation to describe all of the current
+  behavior; only a subset is described.  __reduce__, etc.  Partial
+  update submitted by Jim Kerr <jbkerr@sr.hp.com>.
+
+* Update the code/codeop module documentation.
+
+* Figure out HTMLHelp generation for the Windows world.
+
+* Straighten out random/whrandom.
+
+
+NOT WORTH THE TROUBLE
+---------------------
+
+* In the indexes, some subitem entries are separated from the item
+  entries by column- or page-breaks.  Reported by Lorenzo M. Catucci
+  <lorenzo@argon.roma2.infn.it>.  This one will be hard; probably not
+  really worth the pain.  (Only an issue at all when a header-letter
+  and the first index entry get separated -- can change as soon as we
+  change the index entries in the text.)
+
+* Fix problem with howto documents getting the last module synopsis
+  twice (in \localmoduletable) so we can get rid of the ugly 'uniq'
+  hack in tools/mkhowto.  (Probably not worth the trouble of fixing.)

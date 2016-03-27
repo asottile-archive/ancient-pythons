@@ -1,0 +1,299 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "_socket"=".\_socket.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    _socket
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "_sre"=".\_sre.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    _sre
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "_tkinter"=".\_tkinter.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    _tkinter
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "bsddb"=".\bsddb.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    bsddb
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mmap"=".\mmap.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    mmap
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "parser"=".\parser.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    parser
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "pyexpat"=".\pyexpat.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    pyexpat
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "python"=".\python.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    python
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "python16"=".\python16.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    python16
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "pythonw"=".\pythonw.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    pythonw
+    ..\pc
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "select"=".\select.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    select
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "unicodedata"=".\unicodedata.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    unicodedata
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "winreg"=".\winreg.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    winreg
+    ..\pc
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "winsound"=".\winsound.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    winsound
+    ..\pc
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "zlib"=".\zlib.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    zlib
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name python16
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

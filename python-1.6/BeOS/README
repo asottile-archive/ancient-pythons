@@ -1,0 +1,93 @@
+Python 1.5.x (x > 1) for BeOS
+
+This directory contains several useful things to help you build your own
+version of Python for BeOS.
+
+What's Here?
+
+ar-fake - A shell script used by the build process to emulate a "real"
+          POSIX ar command; helps to build the Python shared library.
+
+dl_export.h - A header defining the evil magic declaration decorations
+              required for dynamic loading.
+
+linkcc - A shell script used by the build process to build the Python
+         shared library.
+
+linkmodule - A shell script used by the build process to build the
+             shared library versions of the standard modules; you'll
+             probably need this if you want to build dynamically loaded
+             modules from the Python archives.
+
+README - This file (obviously!).
+
+README.readline-2.2 - Instructions for compiling/installing GNU readline 2.2.
+                      You'll have to grab the GNU readline source code from 
+                      prep.ai.mit.edu:/pub/GNU or any other GNU mirror.
+
+                      The Python interpreter is much nicer to work with
+                      interactively if you've got readline installed.  Highly
+                      recommended.
+
+Compiling Your Own Version
+
+To compile your own version of Python 1.5.x for BeOS (with any luck,
+Python 1.5.2 and later will compile "out of the box" on BeOS), try this:
+
+1) Get the latest Python source code from ftp.python.org.
+
+2) Configure with:
+
+   ./configure --verbose --prefix=/boot/home/config --with-thread
+
+3) Copy Modules/Setup.in to Modules/Setup.
+
+4) Edit Modules/Setup to turn on all the modules you want built.
+
+   Make sure you use _socket instead of socket for the name of the
+   socketmodule on BeOS.
+
+   If you want the modules to be built as shared libraries, instead of as
+   part of the Python shared library, be sure to uncomment the #*shared*
+   line.
+
+   I've tried the following modules:
+
+   regex pcre posix signal readline array cmath math strop struct time
+   operator _locale fcntl pwd grp select _socket errno crypt termios
+   audioop imageop rgbimg md5 timing rotor syslog curses new gdbm soundex
+   binascii parser cStringIO cPickle zlib
+   
+   Note that some of these (readline, curses, gdbm, and zlib) require extra
+   libraries that aren't supplied with Python.  If you don't have the extra
+   libs (you can probably get them from GeekGadgets), don't try to use
+   these modules; they won't compile.
+
+5) Make:
+
+   make
+
+6) Test:
+
+   make test
+
+   Expect the following errors:
+
+   test_grp crashed -- exceptions.KeyError : getgrnam(): name not found
+   test_pwd failed -- Writing: 'fakename', expected: 'caught e'
+   test_socket crashed -- exceptions.AttributeError : SOCK_RAW
+
+   These are all due to either partial support for certain things (like
+   sockets), or valid differences between systems.
+
+   NOTE: On R4/x86, the pause() function is broken; expect the signal
+         module test to crash Python!
+
+7) Install:
+
+   make install
+
+8) Enjoy!
+
+- Chris Herborth (chrish@beoscentral.com)
+  January 12, 1999

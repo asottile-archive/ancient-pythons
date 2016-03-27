@@ -1,0 +1,34 @@
+/* -*- C -*- */
+/* Module configuration */
+
+/* !!! !!! !!! This file is edited by the makesetup script !!! !!! !!! */
+
+/* This file contains the table of built-in modules.
+   See init_builtin() in import.c. */
+
+#include "Python.h"
+
+
+/* -- ADDMODULE MARKER 1 -- */
+
+extern void PyMarshal_Init();
+extern void initimp();
+
+struct _inittab _PyImport_Inittab[] = {
+
+/* -- ADDMODULE MARKER 2 -- */
+
+	/* This module "lives in" with marshal.c */
+	{"marshal", PyMarshal_Init},
+
+	/* This lives it with import.c */
+	{"imp", initimp},
+
+	/* These entries are here for sys.builtin_module_names */
+	{"__main__", NULL},
+	{"__builtin__", NULL},
+	{"sys", NULL},
+
+	/* Sentinel */
+	{0, 0}
+};

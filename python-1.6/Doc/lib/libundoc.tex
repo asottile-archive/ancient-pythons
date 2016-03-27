@@ -1,0 +1,224 @@
+\chapter{Undocumented Modules}
+\label{undoc}
+
+Here's a quick listing of modules that are currently undocumented, but
+that should be documented.  Feel free to contribute documentation for
+them!  (The idea and original contents for this chapter were taken
+from a posting by Fredrik Lundh; I have revised some modules' status.)
+
+
+\section{Frameworks}
+
+Frameworks tend to be harder to document, but are well worth the
+effort spent.
+
+\begin{description}
+\item[\module{Tkinter}]
+--- Interface to Tcl/Tk for graphical user interfaces; Fredrik Lundh
+is working on this one!  See
+\citetitle[http://www.pythonware.com/library.htm]{An Introduction to
+Tkinter} at \url{http://www.pythonware.com/library.htm} for on-line
+reference material.
+
+\item[\module{Tkdnd}]
+--- Drag-and-drop support for \module{Tkinter}.
+
+\item[\module{turtle}]
+--- Turtle graphics in a Tk window.
+
+\item[\module{test}]
+--- Regression testing framework.  This is used for the Python
+regression test, but is useful for other Python libraries as well.
+This is a package rather than a module.
+\end{description}
+
+
+\section{Miscellaneous useful utilities}
+
+Some of these are very old and/or not very robust; marked with ``hmm.''
+
+\begin{description}
+\item[\module{dircmp}]
+--- Class to build directory diff tools on (may become a demo or tool).
+\deprecated{1.6}{The \refmodule{filecmp} module will replace
+\module{dircmp}.}
+
+\item[\module{bdb}]
+--- A generic Python debugger base class (used by pdb)
+
+\item[\module{ihooks}]
+--- Import hook support (for \refmodule{rexec}; may become obsolete)
+
+\item[\module{tzparse}]
+--- Parse a timezone specification (unfinished; may disappear in the
+future)
+\end{description}
+
+
+\section{Platform specific modules}
+
+These modules are used to implement the \refmodule{os.path} module,
+and are not documented beyond this mention.  There's little need to
+document these.
+
+\begin{description}
+\item[\module{dospath}]
+--- implementation of \module{os.path} on MS-DOS
+
+\item[\module{ntpath}]
+--- implementation on \module{os.path} on 32-bit Windows
+
+\item[\module{posixpath}]
+--- implementation on \module{os.path} on \POSIX{}
+\end{description}
+
+
+\section{Multimedia}
+
+\begin{description}
+\item[\module{audiodev}]
+--- Platform-independent API for playing audio data
+
+\item[\module{sunaudio}]
+--- Interpret Sun audio headers (may become obsolete or a tool/demo)
+
+\item[\module{toaiff}]
+--- Convert "arbitrary" sound files to AIFF files; should probably
+become a tool or demo.  Requires the external program \program{sox}.
+\end{description}
+
+
+\section{Obsolete \label{obsolete-modules}}
+
+These modules are not normally available for import; additional work
+must be done to make them available.
+
+Those which are written in Python will be installed into the directory 
+\file{lib-old/} installed as part of the standard library.  To use
+these, the directory must be added to \code{sys.path}, possibly using
+\envvar{PYTHONPATH}.
+
+Obsolete extension modules written in C are not built by default.
+Under \UNIX, these must be enabled by uncommenting the appropriate
+lines in \file{Modules/Setup} in the build tree and either rebuilding
+Python if the modules are statically linked, or building and
+installing the shared object if using dynamically-loaded extensions.
+
+% XXX need Windows instructions!
+
+\begin{description}
+\item[\module{addpack}]
+--- alternate approach to packages
+
+\item[\module{cmp}]
+--- File comparison function.  Use the newer \refmodule{filecmp} instead.
+
+\item[\module{cmpcache}]
+--- Caching version of the obsolete \module{cmp} module.  Use the
+newer \refmodule{filecmp} instead.
+
+\item[\module{codehack}]
+--- Extract function name or line number from a function
+code object (these are now accessible as attributes:
+\member{co.co_name}, \member{func.func_name},
+\member{co.co_firstlineno}).
+
+\item[\module{dircmp}]
+--- class to build directory diff tools on (may become a demo or tool)
+
+\item[\module{dump}]
+--- Print python code that reconstructs a variable
+
+\item[\module{fmt}]
+--- text formatting abstractions (too slow)
+
+\item[\module{lockfile}]
+--- wrapper around FCNTL file locking (use
+\function{fcntl.lockf()}/\function{flock()} intead; see \refmodule{fcntl})
+
+\item[\module{newdir}]
+--- New \function{dir()} function (the standard \function{dir()} is
+now just as good)
+
+\item[\module{Para}]
+--- helper for fmt.py
+
+\item[\module{poly}]
+--- Polynomials
+
+\item[\module{tb}]
+--- Print tracebacks, with a dump of local variables (use
+\function{pdb.pm()} or \refmodule{traceback} instead)
+
+\item[\module{timing}]
+--- Measure time intervals to high resolution (use
+\function{time.clock()} instead).  (This is an extension module.)
+
+\item[\module{util}]
+--- Useful functions that don't fit elsewhere.
+
+\item[\module{wdb}]
+--- A primitive windowing debugger based on STDWIN.
+
+\item[\module{whatsound}]
+--- Recognize sound files; use \refmodule{sndhdr} instead.
+
+\item[\module{zmod}]
+--- Compute properties of mathematical "fields"
+\end{description}
+
+
+The following modules are obsolete, but are likely re-surface as tools
+or scripts.
+
+\begin{description}
+\item[\module{find}]
+--- find files matching pattern in directory tree
+
+\item[\module{grep}]
+--- grep
+
+\item[\module{packmail}]
+--- create a self-unpacking \UNIX{} shell archive
+\end{description}
+
+
+The following modules were documented in previous versions of this
+manual, but are now considered obsolete.  The source for the
+documentation is still available as part of the documentation source
+archive.
+
+\begin{description}
+\item[\module{ni}]
+--- Import modules in ``packages.''  Basic package support is now
+built in.
+
+\item[\module{rand}]
+--- Old interface to the random number generator.
+
+\item[\module{soundex}]
+--- Algorithm for collapsing names which sound similar to a shared
+key.  (This is an extension module.)
+\end{description}
+
+
+\section{Extension modules}
+
+\begin{description}
+\item[\module{stdwin}]
+--- Interface to STDWIN (an old, unsupported
+platform-independent GUI package).  Obsolete; use \module{Tkinter} for
+a platform-independent GUI instead.
+\end{description}
+
+The following are SGI specific, and may be out of touch with the
+current version of reality.
+
+\begin{description}
+\item[\module{cl}]
+--- Interface to the SGI compression library.
+
+\item[\module{sv}]
+--- Interface to the ``simple video'' board on SGI Indigo
+(obsolete hardware).
+\end{description}
