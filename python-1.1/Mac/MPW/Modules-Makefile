@@ -1,0 +1,24 @@
+
+all= arraymodule.c.o ¶
+audioop.c.o ¶
+gestaltmodule.c.o ¶
+imageop.c.o ¶
+imgformat.c.o ¶
+mathmodule.c.o ¶
+md5c.c.o ¶
+md5module.c.o ¶
+newmodule.c.o ¶
+parsermodule.c.o ¶
+regexmodule.c.o ¶
+regexpr.c.o ¶
+rgbimgmodule.c.o ¶
+rotormodule.c.o ¶
+stropmodule.c.o ¶
+structmodule.c.o ¶
+timemodule.c.o 
+
+lib.o Ä {all}
+	lib -o lib.o -sn Main=unixemu {all}
+
+clean Ä
+	Delete -i {all}

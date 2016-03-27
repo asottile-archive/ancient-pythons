@@ -1,0 +1,24 @@
+
+all= bltinmodule.c.o ¶
+ceval.c.o ¶
+compile.c.o ¶
+errors.c.o ¶
+getargs.c.o ¶
+getopt.c.o ¶
+graminit.c.o ¶
+import.c.o ¶
+marshal.c.o ¶
+modsupport.c.o ¶
+mystrtoul.c.o ¶
+pythonmain.c.o ¶
+pythonrun.c.o ¶
+sigcheck.c.o ¶
+structmember.c.o ¶
+sysmodule.c.o ¶
+traceback.c.o
+
+lib.o Ä {all}
+	lib -o lib.o -sn Main=unixemu {all}
+
+clean Ä
+	Delete -i {all}

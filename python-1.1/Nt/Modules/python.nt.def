@@ -1,0 +1,124 @@
+LIBRARY		Python
+CODE		PRELOAD MOVEABLE DISCARDABLE
+DATA		PRELOAD SINGLE
+
+EXPORTS
+; Data item exports
+	Accesstype			CONSTANT
+	Anynumbertype		CONSTANT
+	Anysequencetype		CONSTANT
+	Anymappingtype		CONSTANT
+	Classtype			CONSTANT
+	Instancetype		CONSTANT
+	Instancemethodtype	CONSTANT
+	Codetype			CONSTANT
+	AccessError			CONSTANT
+	AttributeError		CONSTANT
+	ConflictError		CONSTANT
+	EOFError			CONSTANT
+	IOError				CONSTANT
+	ImportError			CONSTANT
+	IndexError			CONSTANT
+	interrupted			CONSTANT
+	KeyError			CONSTANT
+	KeyboardInterrupt	CONSTANT
+	MemoryError			CONSTANT
+	NameError			CONSTANT
+	OverflowError		CONSTANT
+	RuntimeError		CONSTANT
+	SyntaxError			CONSTANT
+	SystemError			CONSTANT
+	SystemExit			CONSTANT
+	TypeError			CONSTANT
+	ValueError			CONSTANT
+	ZeroDivisionError	CONSTANT
+	Filetype			CONSTANT
+	Floattype			CONSTANT
+	Frametype			CONSTANT
+	Functype			CONSTANT
+	Inttype				CONSTANT
+	FalseObject			CONSTANT
+	TrueObject			CONSTANT
+	Listtype			CONSTANT
+	Longtype			CONSTANT
+	Mappingtype			CONSTANT
+	Methodtype			CONSTANT
+	Moduletype			CONSTANT
+	Typetype			CONSTANT
+	NoObject			CONSTANT
+	Rangetype			CONSTANT
+	Stringtype			CONSTANT
+	sys_trace			CONSTANT
+	sys_profile			CONSTANT
+	Tupletype			CONSTANT
+
+	addlistitem
+	add_module
+	call_object
+	cmpobject
+	dictinsert
+	dictlookup
+	err_badarg
+	err_badcall
+	err_clear
+	err_errno
+	err_nomem
+	err_occurred
+	err_set
+	err_setstr
+	err_setval
+	fatal
+	findmethod
+	get_modules
+	getargs
+	getcopyright
+	getfilefile
+	getfloatvalue
+	getintvalue
+	getlistitem
+	getlistsize
+	getmoduledict
+	getpythonpath
+	getstringsize
+	getstringvalue
+	gettupleitem
+	gettuplesize
+	getversion
+	initmodule
+	joinstring
+	joinstring_decref
+	long_escan
+	mappinginsert
+	mkvalue
+	mystrtol
+	mystrtoul
+	newclassobject
+	newcodeobject
+	newfileobject
+	newfloatobject
+	newframeobject
+	newfuncobject
+	newinstanceobject
+	newintobject
+	newlistobject
+	newmappingobject
+	newmethodobject
+	newobject
+	newopenfileobject
+	newsizedstringobject
+	newstringobject
+	newtupleobject
+	printobject
+	print_error
+	realmain
+	resizestring
+	reprobject
+	run_command
+	run_script
+	run_string
+	run_tty_loop
+	setlistitem
+	setpythonpath
+	settupleitem
+	tb_print
+

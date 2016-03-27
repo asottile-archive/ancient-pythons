@@ -1,0 +1,23 @@
+Subject: Turing machine Python benchmark
+From: amrit@xvt.com (Consultant)
+To: guido@cwi.nl
+Date: Wed, 2 Mar 1994 15:52:23 -0700 (MST)
+
+I thought I would upload the Turing machine simulation that I wrote.
+I like this demo because I found that Python was the easiest language
+to write this program in.  (It was originally a 3 file C++ program; the
+Python is the shortest version of the program.  This is due to the powerful
+python library (very good regular expressions), the high level datatypes, and
+of course the functional programming stuff I added!) 
+
+Actually, The Icon version is a smaller due to the __cram everything in one
+line if you can__ style of Icon, but I like this version the best.
+
+To test:
+
+    % python turing.py double aaa
+
+Should print:
+
+    ### aaaaaa
+	^

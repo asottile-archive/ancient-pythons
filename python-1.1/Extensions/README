@@ -1,0 +1,44 @@
+Python 1.1 Extensions
+=======================
+
+This directory contains extension modules to Python.  You must already
+have built and installed Python 1.1 (or possibly higher).  This
+'Extensions' directory should be a direct subdirectory of Python's
+toplevel directory (where the configure script lives).
+
+Here's a list of available extensions; note that several are
+unsupported or unfinished.  (Authors listed are for the extensions,
+not for the software they interface to -- when not listed, I wrote it
+myself.)  Each extension has its own README file:
+
+X11 		Guess what?  (Works but still somewhat rough)
+af		DEC CRL's AudioFile (probably incomplete)
+amoeba		Free University's Amoeba distributed operating system
+gsm		"GSM" audio encoding
+jpeg		JPEG image compression, by Jack Jansen
+metalbase	Metalbase database, by Lance Ellinghouse
+mSQL		MiniSQL database, by Anthony Baxter
+ptx		Pseudo TTYs, by Jaap Vermeulen (Sequent specific)
+socks		SOCKS (socket interface through filewall), by Dan Connolly
+suit		U of V's Simple UI Toolkit, by Bill Carlson & Matt Conway
+wafe		WAFE (Tcl with X widgets), by Gustaf Neumann
+
+Althoug theoretically each extension can have its own Makefile.pre.in,
+in practice they all share exactly the same Makefile.pre.in file --
+all dependencies on the module being built are in the Setup(.in) file.
+For convenience, and in order to avoid having to update N copies each
+time I add a feature to the generic Makefile.pre.in file, the
+extension directories all contain a symbolic link to
+../Makefile.pre.in.
+
+Each extension does have its own Setup.in file, which is used in the
+same manner as Modules/Setup.in in the main Python distribution (so
+you never edit Setup.in -- you copy it to Setup and edit that).  The
+configuration and build process is explained in detail in comments in
+Makefile.pre.in.
+
+There are also some examples that help you create your own extensions:
+
+example		A simple example -- adds module 'xx'
+example2	Adds module 'yy' to the previous example (i.e. adds 'xx', 'yy')
+example3	Adds module 'zz' to example2 (i.e. adds 'xx', 'yy', and 'zz')

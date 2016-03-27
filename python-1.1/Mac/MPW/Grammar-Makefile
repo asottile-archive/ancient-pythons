@@ -1,0 +1,25 @@
+TOP=		::
+PGENDIR=	{TOP}Parser:
+PGEN=		{PGENDIR}Pgen
+DESTH=		{TOP}Include:graminit.h
+DESTC=		{TOP}Python:graminit.c
+
+all	Ä		install
+
+install	Ä	{DESTH} {DESTC}
+
+depend	Ä
+
+{DESTH}	Ä	graminit.h
+		Duplicate -y graminit.h {DESTH}
+
+{DESTC}	Ä	graminit.c
+		Duplicate -y graminit.c {DESTC}
+
+graminit.c graminit.h	Ä {PGEN} Grammar
+		{PGEN} Grammar
+
+clean	Ä
+		Delete -i graminit.c graminit.h
+
+clobber	Ä	clean

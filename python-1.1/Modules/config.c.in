@@ -1,0 +1,213 @@
+/* -*- C -*- ***********************************************
+Copyright 1991, 1992, 1993, 1994 by Stichting Mathematisch Centrum,
+Amsterdam, The Netherlands.
+
+                        All Rights Reserved
+
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in 
+supporting documentation, and that the names of Stichting Mathematisch
+Centrum or CWI not be used in advertising or publicity pertaining to
+distribution of the software without specific, written prior permission.
+
+STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+******************************************************************/
+
+/* Universal Python configuration file */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef macintosh
+/* The Macintosh main program is in macmain.c */
+#define NO_MAIN
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
+#include "myproto.h"
+#include "mymalloc.h"
+#include "osdefs.h"
+#include "intrcheck.h"
+
+
+#ifndef NO_MAIN
+
+/* Normally, the main program is called from here (so everything else
+   can be in libPython.a).  We save a pointer to argv[0] because it
+   may be needed for dynamic loading of modules in import.c.  If you
+   have your own main program and want to use non-SunOS dynamic
+   loading, you will have to provide your own version of
+   getprogramname(). */
+
+static char *argv0;
+
+/* These are made available for other modules that might need them.
+   This is rare, but it is needed by the secureware module. */
+
+static char **orig_argv;
+static int  orig_argc;
+
+main(argc, argv)
+	int argc;
+	char **argv;
+{
+	orig_argc = argc;
+	orig_argv = argv;
+	argv0 = argv[0];
+	realmain(argc, argv);
+}
+
+char *
+getprogramname()
+{
+	return argv0;
+}
+
+void
+getargcargv(argc,argv)
+	int *argc;
+	char ***argv;
+{
+	*argc = orig_argc;
+	*argv = orig_argv;
+}
+
+#endif
+
+
+/* Python version information */
+
+#include "patchlevel.h"
+
+/* Return the version string.  This is constructed from the official
+   version number (from patchlevel.h), and the current date (if known
+   to the compiler, else a manually inserted date). */
+
+#define VERSION "%s (%s)"
+
+#ifdef __DATE__
+#define DATE __DATE__
+#else
+#define DATE "Aug 17 1994"
+#endif
+
+char *
+getversion()
+{
+	static char version[80];
+	sprintf(version, VERSION, PATCHLEVEL, DATE);
+	return version;
+}
+
+
+/* Return the copyright string.  This is updated manually. */
+
+char *
+getcopyright()
+{
+	return "Copyright 1991-1994 Stichting Mathematisch Centrum, Amsterdam";
+}
+
+
+/* Return the initial python search path.  This is called once from
+   initsys() to initialize sys.path.
+   The environment variable PYTHONPATH is fetched and the default path
+   appended.  (The Mac has no environment variables, so there the
+   default path is always returned.)  The default path may be passed
+   to the preprocessor; if not, a system-dependent default is used. */
+
+#ifndef PYTHONPATH
+#ifdef macintosh
+#define PYTHONPATH ": :Lib :Lib:stdwin :Lib:test :Lib:mac"
+#endif /* macintosh */
+#endif /* !PYTHONPATH */
+
+#ifndef PYTHONPATH
+#if defined(MSDOS) || defined(NT)
+#define PYTHONPATH ".;..\\lib;\\python\\lib"
+#endif /* MSDOS || NT */
+#endif /* !PYTHONPATH */
+
+#ifndef PYTHONPATH
+#define PYTHONPATH ".:/usr/local/lib/python"
+#endif /* !PYTHONPATH */
+
+extern char *getenv();
+
+char *
+getpythonpath()
+{
+	char *path = getenv("PYTHONPATH");
+	char *defpath = PYTHONPATH;
+	static char *buf = NULL;
+	char *p;
+	int n;
+
+	if (path == NULL)
+		path = "";
+	n = strlen(path) + strlen(defpath) + 2;
+	if (buf != NULL) {
+		free(buf);
+		buf = NULL;
+	}
+	buf = malloc(n);
+	if (buf == NULL)
+		fatal("not enough memory to copy module search path");
+	strcpy(buf, path);
+	p = buf + strlen(buf);
+	if (p != buf)
+		*p++ = DELIM;
+	strcpy(p, defpath);
+	return buf;
+}
+
+
+/* Table of built-in modules.
+   These are initialized when first imported.
+   Note: selection of optional extensions is now generally done by the
+   makesetup script. */
+
+/* -- ADDMODULE MARKER 1 -- */
+
+extern void initmarshal();
+
+struct {
+	char *name;
+	void (*initfunc)();
+} inittab[] = {
+
+/* -- ADDMODULE MARKER 2 -- */
+
+	/* This module "lives in" with marshal.c */
+	{"marshal", initmarshal},
+
+	/* These entries are here for sys.builtin_module_names */
+	{"__main__", NULL},
+	{"__builtin__", NULL},
+	{"sys", NULL},
+
+	/* Sentinel */
+	{0, 0}
+};
+
+#ifndef USE_FROZEN
+struct frozen {
+	char *name;
+	char *code;
+	int size;
+} frozen_modules[] = {
+	{0, 0, 0}
+};
+#endif

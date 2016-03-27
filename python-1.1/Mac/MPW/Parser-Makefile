@@ -1,0 +1,32 @@
+
+all= acceler.c.o ¶
+bitset.c.o ¶
+firstsets.c.o ¶
+grammar.c.o ¶
+grammar1.c.o ¶
+intrcheck.c.o ¶
+listnode.c.o ¶
+metagrammar.c.o ¶
+myreadline.c.o ¶
+node.c.o ¶
+parser.c.o ¶
+parsetok.c.o ¶
+pgen.c.o ¶
+printgrammar.c.o ¶
+tokenizer.c.o 
+
+ALL Ä	lib.o # Pgen
+
+lib.o Ä  {all}
+	lib -o lib.o -sn Main=unixemu {all}
+
+Pgen Ä	pgenmain.c.o
+	link {LinkOptions} -o Pgen  -t MPST -c "MPS " ¶
+		pgenmain.c.o ¶
+		lib.o ¶
+		"{Libraries}Runtime.o" ¶
+		"{Libraries}Interface.o" ¶
+		"{CLibraries}StdCLib.o" 
+
+clean Ä
+	Delete -i {all} Pgen

@@ -1,0 +1,48 @@
+
+all=	chdir.c.o ¶
+	config.c.o ¶
+#	dynamic_load.c.o ¶
+	gestaltmodule.c.o ¶
+	getbootvol.c.o ¶
+	getwd.c.o ¶
+	macgetmtime.c.o ¶
+	macguesstabsize.c.o ¶
+	macmain.c.o ¶
+	macmodule.c.o ¶
+	macosmodule.c.o ¶
+	macsetfiletype.c.o ¶
+	macstat.c.o ¶
+	mkdir.c.o ¶
+	opendir.c.o ¶
+	rmdir.c.o ¶
+	sync.c.o 	
+
+libes=	{Libraries}Interface.o ¶
+	{Libraries}Runtime.o ¶
+	{CLibraries}CSANELib.o ¶
+	{CLibraries}StdCLib.o
+
+lib.o Ä {all}
+	lib -o lib.o -sn Main=unixemu {all}
+
+clean Ä
+	Delete -i {all}
+
+dynamic_load.c.o Ä dynamic_load.h
+
+
+pobjs=	pwd.c.o lib.o
+pwd	Ä {pobjs}
+	link {LinkOptions} -t MPST -c 'MPS ' -p -o pwd {pobjs} {libes}
+
+lobjs=	ls.c.o dir.c.o stat.c.o
+ls	Ä {lobjs}
+	link {LinkOptions} -t MPST -c 'MPS ' -o ls {lobjs} {libes}
+
+mobjs=	mov.c.o rename.c.o perror.c.o
+mov	Ä {mobjs}
+	link {LinkOptions} -t MPST -c 'MPS ' -o mov {mobjs} {libes}
+
+dobjs=	del.c.o rename.c.o perror.c.o
+del	Ä {dobjs}
+	link {LinkOptions} -t MPST -c 'MPS ' -o del {dobjs} {libes}

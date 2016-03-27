@@ -1,0 +1,2025 @@
+=================================
+==> Release 1.1 (11 Oct 1994) <==
+=================================
+
+Tue Oct 11 16:24:42 1994  Guido van Rossum  <guido@voorn.cwi.nl>
+
+	* last-minute changes for SunOS 4.1.3: test for volatile in
+	configure; add getargs.o dependency to Modules/Makefile.in; some
+	things in README and Misc/NEWS; change pathnames in
+	Demo/tkinter/guido/*.py
+
+Mon Oct 10 19:00:34 1994  Guido van Rossum  <guido@voorn.cwi.nl>
+
+	* Makefile.in: apply ranlib to installed libraries
+
+	* Modules/socketmodule.c: new style
+
+	* Doc/ref3.tex: some stuff about __getattr__ etc.
+
+Thu Oct  6 16:40:05 1994  Guido van Rossum  <guido@voorn.cwi.nl>
+
+	* Got rid of Modules/imgformat.c (will be distributed with Jack's
+	img package)
+
+	* Doc/*.tex: moved title boilerplate to separate file, added
+	copyright notice (separate file)
+
+Wed Oct  5 11:13:13 1994  Guido van Rossum  <guido@voorn.cwi.nl>
+
+	* Modules/config.c.in: don't include frozen.c when frozen (the new
+	freeze script compiles it separately)
+
+	* Lib/os.py: add dummy import posixpath, for freeze script
+
+	* Python/marshal.c (r_object): plugged memory leak in reading of
+	code objects
+
+	* Modules/config.c.in (getpythonpath): always return malloc'ed
+	memory -- save a static pointer to free next time (prevents leaks)
+
+Thu Sep 29 10:35:28 1994  Guido van Rossum  <guido@voorn.cwi.nl>
+
+	* Grammar/Grammar: got rid of history; changed some diagram
+	commands
+
+	* Lib/types.py: cosmetic changes
+
+	* Mac/{config.c,macosmodule.c}: new interface to (a few bits of)
+	the Mac OS
+
+	* Modules/xxmodule.c: integrated with xxobject.c by Jack
+
+	* Modules/(posix,socket}module.c: more NT changes
+
+	* Python/traceback.c: security fix -- check for buffer oveflow
+	before concatenating sys.path item and module name
+
+	* Python/ceval.c, Include/ceval.h: promote MakePendingCalls to
+	global: Py_MakePendingCalls.  Also guard against recursive calls
+
+	* Python/pythonmain.c: fatal error if can't alloc mem for -c
+	string
+
+	* Python/pythonrun.c: add string "Python" to fatal error message
+
+Wed Sep 28 16:39:09 1994  Guido van Rossum  <guido@voorn.cwi.nl>
+
+	* Objects/longobject.c: change ValueError to OverflowError when
+	converting to int
+
+	* Objects/xxobject.c: changed to use new style (not finished?)
+
+	* Objects/stringobject.c: use HAVE_LIMITS instead of __STDC__
+
+	* Objects/rangeobject.c: modernized
+
+	* Objects/floatobject.c: add overflow check when converting float
+	to int and implement truncation towards zero using ceil/float
+
+	* Parser/intrcheck.c: make 'interrupted' global (forgot for
+	whom...)
+
+	* Include/rename1.h: don't even define Py_FPROTO
+
+	* Python/{modsupport.c,getargs.c,Makefile.in},
+	Include/modsupport.h: moved getargs() to its own file and
+	re-implemented it entirely to support optional arguments, multiple
+	arguments without surrounding parentheses
+	(when called as newgetargs()), and better error messages
+
+	* Include/classobject.h, Objects/classobject.c,
+	Python/{ceval.c,bltinmodule.c}: entirely redone operator
+	overloading.  The rules for class instances are now much more
+	relaxed than for other built-in types
+	(whose coerce must still return two objects of the same type)
+
+Sun Sep 18 07:26:39 1994  Guido van Rossum  <guido@cayenne.cwi.nl>
+
+	* Python/pythonrun.c (print_error): print only last line of
+	multi-line source line
+
+	* Parser/tokenizer.c (tok_nextc): count line numbers when parsing
+        strings
+
+Fri Sep 16 15:54:56 1994  Guido van Rossum  <guido@voorn.cwi.nl>
+
+	* Python/modsupport.c (do_arg): added error message if "O!" fails;
+	change type of converter for "O&" to function returning int taking
+	an object* and a void* parameter; it should return 1 for success
+	or return 0 and set an exception for failure to convert
+
+Wed Sep 14 14:08:44 1994  Guido van Rossum  <guido@voorn.cwi.nl>
+
+	* Include/Python.h: new header file for new naming scheme
+
+	* various modules: #include "Python.h" and remove most remporary
+	renaming hacks
+
+	* Lib/whrandom.py: if seed is (0,0,0), initialize from current
+	time; default seed's arguments to (0,0,0)
+
+	* Python/ceval.c (eval_code), Include/ceval.h: added registry of
+        pending functions (to be used by functions that are called
+        asynchronously, like UNIX signal handlers or Mac I/O completion
+        routines)
+
+Wed Sep 14 11:05:36 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/libsys.tex (section{Built-in Module \sectcode{sys}}):
+	documented sys.check_interval
+
+Tue Sep 13 21:35:19 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Import/pythonrun.h, Python/{import,pythonrun}.c,
+	mac/macsetfiletype.c: changes by Jack to execute .pyc file passed
+	as command line argument.  On the Mac .pyc files are given a
+	special type so they can be double-clicked
+
+	* Modules/stropmodule.c (strop_[r]find): change index range check
+	-- don't raise ValueError buit silently clip when it's out of
+	range (this is compatible with slicing)
+
+Mon Sep 12 12:53:07 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Extensions/X11/Xmmodule.c: (Sjoerd): Implemented
+	Xm.OptionButtonGadget and Xm.OptionLabelGadget
+
+	* Modules/Setup.in: define PYTHONPATH using COREPYTHONPATH for
+	extensions; add -lm to math module definition
+
+	* Modules/Makefile.pre.in: remove *.so and so_locations on clobber
+
+	* Modules/makesetup: (Sjoerd): treat words beginning with a dollar
+	and not ending in a well-known extension as linker arguments
+
+	* Lib/urlparse.py: URL parser according to the latest Internet
+	draft
+
+	* README: added note about HP-UX
+
+Sun Sep 11 12:12:28 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Misc/indent.pro: Steen's approximation of my C style as a GNU
+	indent profile
+
+	* Modules/{Setup.in,termios.c}: add Steen's termios; also
+	Lib/[pt]ty.py, Demo/scripts/script.py, Lib/irix5/TERMIOS.py
+
+	* Demo/scripts/h2py.py: merged in Steen Lumholt's changes to
+	handle #include.  Now also handles one-argument macros.
+
+	* configure.in: use uname to decide how to create / link shared
+	libraries and to set $(MACHDEP) (machine dependent subdirectory of
+	Lib)
+
+	* Makefile.in: shared library support; added target sharedinstall
+	which move shared libraries into Lib/$(MACHDEP)
+
+	* Modules/{Makefile.pre.in,Setup.in,makesetup}: support shared
+	libraries.  Had to re-engineer rule production in makesetup
+	because sed was dumping core on the script fed to it -- now the
+	rules are always appended to the end of the Makefile.
+
+Fri Sep  9 11:35:28 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/uu.py: new module, does uuencode/uudecode (thanks to Lance)
+
+	* Grammar/Grammar: fewer #diagram:break hacks needed; removed
+	history from file
+
+Thu Sep  8 10:24:41 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Parser/grammar1.c (finddfa): massive speed up by using direct
+	addressing instead of searching
+
+Wed Sep  7 08:49:37 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Include/rename1.h: added PyArg_GetInt
+
+	* pythonrun.h: added Py_AtExit
+
+	* Doc/libsocket.tex, Modules/socketmodule.c: added Tommy
+	Burnette's setblocking() method
+
+	* Modules/signalmodule.c: adapted to new module style (Lance);
+	added {BGN,END}_SAVE around pause() call
+
+	* Objects/object.c (DELREF): must zap type pointer *before*
+	calling free() (or other destructor)
+
+Sat Sep  3 14:12:38 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/{Setup.in,tkintermodule.c,tkappinit.c}: moved tkinter
+	into the main Modules directory, and its Lib and Demo
+	subdirectories into the main Lib and Demo directories.  Moved
+	definition of STDWIN component and TK component of PYTHONPATH to
+	their respective sections so it's easier to remember to enable
+	them.
+
+	* Python/pythonrun.c (cleanup), Include/pythonrun.h: added
+	Py_AtExit() -- register cleanup functions for C modules
+
+Tue Aug 30 10:53:50 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/getmtime.c: Remove mac specifics (Mac subdirectory has
+	its own version now)
+
+	* Modules/Setup.in: uses .c instead of .o now; added curses
+
+	* Modules/{rotormodule,syslogmodule}.c: new naming conventions
+
+	* Modules/cursesmodule.c: new, interface to curses
+
+	* Modules/makesetup: bugfix: add objects from sources to OBJS
+
+	* Modules/cursesmodule.c: new contribution from Lance
+
+	* Python/bltinmodule.c (builtin_tuple): use pre-existing
+	listtuple(v) for lists
+
+Mon Aug 29 15:41:02 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Various places: merged THINK C 6.0 and MPW 3.2 mods: Python 1.1
+	should build flawlessly on the Mac using either compiler
+
+Fri Aug 26 10:18:05 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/tut.tex (subsection{Lambda Forms}): fix typo in lambda
+	example
+
+Thu Aug 25 12:30:11 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/importall.py: obsolete.
+
+	* Lib/{compileall,py_compile}.py: new modules for compiling .py
+	files.
+
+	* Modules/timemodule.c (floattime), Objects/longobject.c
+	(dgetlongvalue): add (double) casts for the benefit of the SCO C
+	compiler
+
+Tue Aug 23 00:52:32 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/Setup.*: removed all except Setup.in (huh?  I thought
+	I'd done that already?!); disable gdbm by default
+
+	* Modules/makesetup: support C++ files now; these should be given
+	as file.C or file.cc or file.c++; C files can be given as file.c
+	(instead of file.o, which is still supported)
+
+	* configure.in, */Makefile*.in: OPT can now be specified in the
+	env at configure time and will then be put in all Makefiles as
+	default
+
+	* Modules/config.c.in: change mac specific things
+
+	* Python/import.c: add lost NT-specific code back in
+
+	* Parser/tokenizer.c: backup over illegal newline in string
+	literal (for "completeness" test)
+
+	* Include/node.h: make some fields short to save space during
+	parsing
+
+	* Modules/posixmodule.c: some more NT changes
+
+	* Doc/libtime.tex: get rid of references to millitime() and
+	millisleep(); document clock()
+
+Mon Aug 22 10:53:59 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/linecache.py: don't crash on empty filename
+
+	* Lib/macpath.py: don't return trailing colon for dirname()
+	(XXX won't do for volume names -- but otherwise glob(':*:*.py')
+	loops forever)
+
+	* Lib/traceback.py: print SyntaxError correctly
+
+	* Modules/signalmodule.c: added pause().
+
+	* Python/pythonrun.c (print_error): added INCREF/DECREF pair --
+	the exception returned by a syntax error (when reported) would
+	contain an object with refcnt zero!
+
+Fri Aug 19 15:35:44 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* */Makefile*.in: remove lib*.a before adding to it
+
+	* Lib/urllib.py: fix caching bug (by disabling the cache)
+
+	* Lib/sgi/flp.py: fix caching bug (always write the whole file to
+	the cache!)
+
+	* Doc/ref6.tex (section{Assignment statements}): added warning
+	about overlaps in lhs of assignment (e.g. "i, x[i] = 1, 2")
+
+	* Python/errors.c (err_clear): clear interpreter stack trace
+
+Wed Aug 17 16:10:07 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Moved patchlevel.h from Python/ to Include/, moved all code from
+	version.c to config.c and removed version.c, and changed
+	Modules/Makefile(.pre.in) to add dependencies on $(MYLIBS) for
+	config.c (so the date in the version is always current).  Also
+	changed the format of PATCHLEVEL: it is now a string containing
+	the complete version number, e.g. "1.1".
+
+	* Grammar/Grammar: Added #diagram:... comments for Kees Blom's
+	railroad diagram generator
+
+	* Doc/libstring.tex (section{Standard Module \sectcode{string}}):
+	removed references to {ato{f,i,l},index}_error
+
+	* Lib/string.py: find/rfind is now the main implementation and
+	index/rindex is a wrapper that raises index_error (which is now
+	always ValueError)
+
+	* Modules/stropmodule.c: implement find/rfind instead of
+	index/rindex (raising and catching an exception is much more
+	expensive than returning and testing -1)
+
+	* Lib/os.py: do fake "import posix" for freeze.py script
+
+Tue Aug 16 23:58:30 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Parser/parsetok.c (parsetok): don't call strncpy(str, NULL, 0)
+
+	* Doc/libfuncs.tex (section{Built-in Functions}): added docs for
+	delattr()
+
+	* Python/bltinmodule.c: added delattr(x, 'attr'), equivalent to
+	del x.attr
+
+Fri Aug 12 15:00:20 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/libfuncs.tex: don't use $math$ in description of pow(x,y,z);
+	describe tuple()
+
+	* Doc/libposixfile.tex: use tableiii instead of tableii, so
+	partparse will work again (I know, chicken!)
+
+	* Doc/libthread.tex: Added get_ident(); updated text on module
+	availability
+
+	* Doc/myformat.perl: Added sub do_cmd_Cpp
+
+	* Python/compile.c (com_argdefs, com_arglist): avoid referencing
+	CHILD(n,i) for i >= NCH(n)
+
+	* Python/bltinmodule.c: added tuple() builtin
+
+Thu Aug 11 16:41:14 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Objects/classobject.c, Include/classobject.h: added __getattr__
+	and __setattr__ support to override getattr(x, name) and
+	setattr(x, name, value) for class instances.  This uses a special
+	hack whereby the class is supposed to be static: the __getattr__
+	and __setattr__ methods are looked up only once and saved in the
+	instance structure for speed.
+	(Later rewritten to also support __delattr__ and to store the
+	routines in the class instead of in the instance)
+
+Wed Aug 10 13:42:29 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* configure.in, Makefile.in: remove the AC_PREFIX() call -- it's
+	more trouble than it's worth at CWI and most other people seem to
+	install Python in the default (/usr/local) anway.  Changed comment
+	describing --prefix in Makefile.in
+
+	* Lib/urllib.py (ftpcache): remove debug print statement
+
+Tue Aug  9 14:32:45 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Objects/{int,long,float}object.c, Include/object.h,
+	Python/bltinmodule.c: mods by Andrew Kuchling to implement
+	pow(x,y,z) == pow(x,y)%z, but without incurring overflow
+
+	* Python/import.c: if initializing a module did not enter the
+	module into sys.modules, it may have raised an exception -- don't
+	override this exception.
+
+	* Include/rename1.h: added PyMethodDef and PyObject
+
+Mon Aug  8 09:51:08 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/{Makefile,*.tex}: Changes by Andrew Kuchling:
+	  * Added dependencies to the Makefile
+	  * Added \optional{} commands all over the place (possibly not
+	    finished yet)
+	  * Defined \optional and \Cpp in myformat.sty
+	  * Changed all occurrences of C++ to \Cpp{}, for nicely
+	    formatting the + signs.
+	  * Fixed typos, sentence structure in lots of places
+	  * Added documentation for the rotor module
+	  * Added a commented-out paragraph to libcrypto.tex that can be
+	    added once the Python Cryptography Kit is released.
+	  * Altered the table in libposixfile.tex a bit.
+	  * Documented socket.gethostname()
+	  * Started completely rewriting the Extending manual.
+
+	* Modules/{Setup.in, gdbmmodule.c}, Doc/{lib,libgdbm}.tex: added
+	Anthony Baxter's gdbm module (derived from Jack's dbm module)
+
+Fri Aug  5 11:43:16 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* BUGS: new file (merger of unofficial BUGS1.0.x files)
+
+	* Modules/{Setup.in,Makefile.pre.in}: renamed some modules to
+	shorter names (dropped the "module" from the name): sunaudiodev,
+	imgformat, audioop, imageop, imgfile
+
+	* Python/import.c: support *.o/*.so as alternative for
+	*module.o/*module.so
+
+	* Modules/stropmodule.c (strop_rindex): make rindex('abc', '') do
+	the right thing (i.e. return 3 instead of 0)
+
+	* Python/bltinmodule.c (builtin_vars): correct typo in error msg
+
+	* Doc/libsocket.tex (subsection{Socket Object Methods}):
+	documented gethostname() and a few misc things
+
+	* Modules/socketmodule.c: disabled allowbroadcast() socket method
+
+Mon Aug  1 01:28:29 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Makefile.in (TAGS): Call etags w/o -t option
+
+	* Lib/rfc822.py: fix two bugs: error in readheaders interpreting
+	regex.match() result, and wrong logic in getfirstmatchingheader()
+	when the same header occurs twice consecutively
+
+	* Lib/test/test_types.py (6.4.1): test for particular bug in
+	integer multiply
+
+Sat Jul 30 13:31:40 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/libsocket.tex, Modules/socketmodule.c: send() and sendto()
+	now return actual byte count (useful for sockets in non-blocking
+	mode)
+
+Tue Jul 26 14:21:17 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* configure.in: check for <limits.h>
+
+	* Objects/longobject.c (newlongobject): fix long(0x80000000) and
+	add warning that it isn't actually correct on 64-bit machines;
+	include <limits.h> if HAVE_LIMITS_H is defined
+
+	* Objects/intobject.c (int_mul): check int*int overflow without
+	resorting to double precision (many thanks to John Tromp)
+
+	* Modules/signalmodule.c (signal_alarm): interface to Posix alarm()
+
+	* Python/ceval.c (call_object): print message before abort()
+
+Mon Jul 25 11:30:56 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/libstring.tex (section{Standard Module \sectcode{string}}):
+	documented string.count()
+
+	* Lib/string.py: added count(s, sub, i=0), returns number of
+	occurrences of sub in s[i:]
+
+	* Doc/keywords.py: program to sort table of keywords in ref2.tex
+
+	* Doc/ref2.tex (subsection{Keywords}): add 'access' and 'lambda'
+	to list of reserved words
+
+Thu Jul 14 15:26:14 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* README, Misc/NEWS, Python/patchlevel.h,
+	Doc/{lib,ext,tut,ref}.tex: bump version to 1.0.3; in README, fewer
+	references to it elsewhere, nor to IP numbers.
+
+Wed Jul 13 18:51:36 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/mhlib.py (removefromallsequences): call putsequences with
+	proper argument
+
+Mon Jul 11 13:00:36 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/selectmodule.c: don't accept negative file descriptors;
+	changed error messages slightly
+
+Thu Jul  7 12:20:10 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/syslogmodule.c: new module by Lance
+
+	* configure.in: don't check for strtod!
+
+	* Python/import.c: undo Mac DL mods (temporarily) and install NeXT
+	dl mods by William Lewis instead.
+
+	* Modules/posixmodule.c (posix_popen): substitute pclose for
+	fclose (how did fclose ever creep into this?)
+
+Wed Jul  6 21:45:54 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/{bdb,cmd,pdb}.py: Mods by Rickard Westman: No longer barfs
+	on lambda:s (outputs "<lambda>" as the function name); "a(rgs)" in
+	pdb now works; help messages added to pdb (lifted from pdb.doc).
+	Also, "h pdb" calls pdb.help().  cmd.do_help() displays topics on
+	a nicer way (I think).  Also, topics for which there is a help_
+	method, but no do_method (like "pdb" above) are displayed in a
+	special way.  My own mod: fix break on function to also support
+	methods.
+
+Tue Jul  5 23:18:16 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/stropmodule.c (strop_rindex): change semantics of third
+	argument -- as in the original string.rindex, search to its right,
+	not to its left.  (Maybe both index and rindex need a 4th
+	parameter to restrict the search on the other end?
+
+Mon Jul  4 23:01:36 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/timemodule.c (sleep, floatsleep): don't use setjmp or
+	signal, rely on err_errno() or sigcheck() instead.
+
+	* Dos/{pcmodule,dosmodule}.c, Modules/posixmodule.c: don't include
+	<setjmp.h>
+
+Sat Jul  2 00:42:47 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/urllib.py: implemented new quoting rules; added splituser,
+	splitpasswd, splitattr, splitvalue; new ftp syntax (user:passwd,
+	cwd to each subdir, type={a,i,d})
+
+Fri Jul  1 17:32:51 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/traceback.c: add function name to traceback info
+
+	* Object/listobject.c, Modules/{array,mpz}module.c: include
+	<sys/types.h> for size_t
+
+Fri Jul  1 12:47:05 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Makefile.in (Makefile): add dependency on config.status
+
+	* configure.in: support --with-gcc[=value], --without-gcc
+
+	* configure.in, acconfig.h, config.h.in: check for clock_t
+
+	* Modules/{arraymodule,mpzmodule}.c: Include sys/types.h, for size_t
+
+	* Lib/test/test_types.py (6.5.1 Strings): test for nasty string
+	formatting bug
+
+	* Objects/stringobject.c (formatstring): fix nasty bug in resizing
+
+Wed Jun 29 10:01:17 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/ref3.tex (section{The standard type hierarchy}
+	\label{types}): fix typo
+
+	* Lib/packmail.py: applied patch from Lance to remove '.' and '..'
+
+Tue Jun 28 00:57:35 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/ref1.tex: grammar notation can use single or double quotes now
+
+	* configure.in (termcap): hack around conflict about clear() on
+	IRIX 5 in shared libraries gl and termcap
+
+	* Python/bltinmodule.c: added callable() predicate
+
+Wed May 18 15:01:13 1994  Donald Beaudry  (don@zippy.vicorp.com)
+
+	* modsupport.c (do_arg): Changed all of the int getting things to
+	just try to get and int, instead of explicitly checking for an int
+	first.
+
+	(do_arg): Added the "O&" option to allow using a user supplied
+	conversion function. 
+
+Wed May 18 14:10:49 1994  Donald Beaudry  (don@zippy.vicorp.com)
+
+	* intobject.c (getintvalue): Changed to allow automatic conversion
+	from any type that supports the nb_int method.
+
+	* floatobject.c (getfloatvalue): Changed to allow automatic
+	conversion from any numeric type that supports the nb_float
+	method.
+
+Wed May  4 22:56:15 1994  Donald Beaudry  (don@scooter.vicorp.com)
+
+	* object.h -- Added tp_call member to the typeobject struct
+	This along with a minor change to the ceval.c allows overloading
+	of the function call operator for any class.
+
+Wed May  4 22:23:48 1994  Donald Beaudry  (don@scooter.vicorp.com)
+
+	* modsupport.c -- replace the part of getargs that processes "O!",
+	it had a minor problem with comparing the types.
+
+	* ceval.c -- changed call_object to make use of the tp_call
+	field.
+
+Fri Jun 27 17:22:00 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/pythonmain.c: On MPW (3.2) unbuffered seems to hang, so
+	use setvbuf ... _IOLBF for -u option.
+
+	* Python/mystrtoul.c: MPW hack (overflow check doesn't seem to work)
+
+Thu Jun 23 14:46:34 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/Makefile.pre.in (clobber): delete config.c and glmodule.c
+
+Thu Jun 23 00:17:16 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Parser/tokenizer.c: if a triple-quoted string ends in a quote
+	followed by a newline (followed immediately by the terminating 3
+	quotes) then a syntax error or system error ensues (one-line fix)
+
+	* Doc/ref4.tex: clarify that global name space is almost always
+	containing module's name space
+
+	* Lib/profile.{py,doc}: totally new versions by James Roskind;
+	also edited source & doc to replace 'jprofile' by 'profile'
+
+	* Modules/posixmodule.c: don't mess with SIGPIPE any more -- this
+	is now done in Python/pythonrun.c (saves NT dependency here)
+
+	* Modules/Setup.*: removed all except Setup.in (keeping them up to
+	date was too much of a pain)
+
+	* Python/import.c: don't rely on three-line "dl.h", just copy the
+	contents.
+
+	* Doc/libtypes.tex (subsubsection{More String Operations.}):
+	clarified tuple vs non-tuple argument to format strings.
+
+Wed Jun 22 10:38:22 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/libsocket.tex: clarify the meaning of address for those
+	methods that or return addresses.
+
+	* Doc/libtypes.tex (subsubsection{File Objects.}): documented
+	writelines.
+
+Tue Jun 21 15:54:36 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/aifc.py: avoid calling read(0)
+
+	* Lib/sgi/cddp.py: added some functionality (Sjoerd)
+
+	* Include/modsupport.h: added decl for initmodule2().
+
+	* Parser/myreadline.c (my_readline): fixed typo in MPW-specific
+	hack; removed debug fprintfs; added two needed #includes.
+
+Mon Jun 20 23:46:04 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Objects/fileobject.c (file_read): test for negative read count
+	was misplaced.
+
+Mon Jun 18 11:20:00 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* acconfig.h: changed GETPGRP_HAVE_ARGS into GETPGRP_HAVE_ARG
+
+	* Lib/posixpath.py(walk): don't descend down symbolic links
+
+Thu Jun 16 16:20:12 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/imgformatmodule.c: new module for Jack by Jack
+
+Tue Jun 14 21:07:00 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Fix bug in 3quoted strings where string ends in quote followed
+	by newline
+
+Mon Jun 13 00:24:06 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/multifile.py: added readlines() and read() methods
+
+	* Lib/mimetools.py: added functions to encode/decode standard MIME
+	Content-transfer-encoding types (as well as uuencode)
+
+	* Lib/mhlib.py: new interface to MH folders and messages
+
+Sun Jun 12 17:38:31 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/socketmodule.c (sock_listen): fix typo (== instead of =)
+
+Thu Jun  9 23:33:33 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/compile.c (parsenumber), Python/marshal.c (r_object):
+	replace strtod() by atof()
+
+Tue Jun  7 11:41:05 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/lib.tex: added warning about lineii, libposixfile and partparse
+
+	* Lib/bdb.py (clear_all_breaks): this was defined with two
+	arguments that weren't used and shouldn't have been there
+
+Mon Jun  6 14:53:05 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/ceval.c (call_trace): Added call to fast_2_locals so
+	locals_2_fast won't zap locals if the trace function never looks
+	in f.f_locals; don't XDECREF(f->f_trace)
+
+Sun Jun  5 13:18:00 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/rfc822.py: Accept lines ending in CR LF as well
+
+Fri Jun  3 16:37:58 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/profile.py: unspecified improvements by Sjoerd
+
+	* Lib/{bdb,pwd,stdwin/wdb}.py: remove debugger overhead when
+	continuing with no breakpoints; add set_trace() method and
+	functions to forcibly enter the debugger
+
+	* Python/ceval.c(eval_code): give the name of the local variable
+	when LOAD_FAST or DELETE_FAST fails
+
+	* frameobject.[ch], ceval.c: made fast_2_locals and locals_2_fast
+	global and moved them to frameobject.c.  getattr(f, "f_locals")
+	now calls fast_2_locals and there are fewer other calls to it
+
+Thu Jun  2 13:50:11 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/ceval.c (call_trace): *p_trace can now be cleared by the
+	trace function!
+
+	* Modules/{{pwd,grp}module.c,Setup.in}: split pwdmodule.c into pwd
+	and grp modules (e.g. OS2 seems to have pwd but not grp)
+
+	* Modules/posixmodule.c: OS/2 mods: add #include <io.h>
+
+	* configure.in: test for existence of link, chown, setuid, setgid;
+	use std macros for output; require autoconf 1.8
+
+	* Python/sigcheck.c: sigcheck() for use without signalmodule.c
+
+	* Modules/signalmodule.c: added thread compatibility (only main
+	thread uses signals); much improved efficiency; intrcheck()
+	doesn't call sigcheck() but only tests and clears the SIGINT
+	tripped flag.
+
+	* Lots of places: replace intrcheck() by sigcheck() and remove
+	following err_set(KeyboardInterrupt).
+
+Wed Jun  1 11:33:34 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/regexmodule.c (reg_dealloc): remove bogus XDEL's.
+
+Tue May 31 11:22:47 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/intrcheck.c: removed sigcheck()
+
+	* Python/structmember.c (setmember): test for NULL value
+
+	* frameobject, Python/ceval.c (eval_code): moved trace variable to
+	frame object so debugging can be switched on later
+
+Mon May 23 14:44:46 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/newmodule.c: new module, create empty new objects (by
+	Tommy)
+
+Fri May 20 09:46:50 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/Makefile: add DVIPS variable with default "dvips -f"
+
+	* Parser/myreadline.c (my_fgets): Fix position of #endif EINTR
+
+Wed May 18 00:21:05 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/lib.tex: added libfcntl and libposixfile (by Jaap V)
+
+	* Objects/funcobject.c (func_compare): take argcount and argdefs
+	into account
+
+Wed May 17 00:00:00 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/import.c: bump MAGIC because of changes below
+
+	* Python/{ceval,compile}.c, Include/frameobject.h: changes to code
+	objects -- consts/names are tuples, RESERVE_LOCALS instruction
+	gets tuple of names instead of dictionary -- so code objects are
+	immutable and thus code and function objects are hashable
+
+	* Objects/listobject.c, Include/listobject.h: added listtuple() --
+	convert list to tuple
+
+Tue May 17 15:40:12 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/ceval.c (getframe): cast current_frame to (object *)
+
+	* Lib/ftplib.py (login): default user='' is translated explicitly
+	to 'anonymous'
+
+Wed May 11 10:29:22 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Parser/tokenizer.c (tok_nextc): fix inf loop when file does not
+	end in newline
+
+	* Modules/sybasemodule.c: new, interface to sybase (John Redford)
+
+	* Modules/signalmodule.c: new, catch unix signals (Lance)
+
+	* Parser/intrcheck.c, Python/ceval.c, Include/ceval.h,
+	Python/pythonrun.c: prepare for signalmodule.c; add sigcheck()
+	interface to intrcheck.c, add getframe() interface to ceval.c;
+	don't override signal handlers in pythonrun.c
+
+Tue May 10 09:01:06 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/import.c (get_module): print dlopen debug message only of
+	verbose
+
+Mon May  9 10:37:48 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* acconfig.h: added _POSIX_THREADS define
+
+	* configure.in: test for -lpthreads; add directory argument to
+	--with-thread to LIBS as -L option
+
+	* Python/thread.c: split in per-system files (thread.c includes
+	thread_foobar.h for foobar threads)
+
+	* Objects/stringobject.c (formatstring): don't DECREF result of
+	strobject() before using it
+
+	* Doc/libtypes.tex: fix typo in table of list methods; clarify
+	truncation behavior of floating point formatting
+
+	* Doc/ref3.tex: clarify defaults for __repr__, __cmp__ and
+	__str__; correct (some) descriptions of class constructors
+
+Fri May  6 11:25:26 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* various files: micro changes needed to compile on Mac;
+	Grouped more Mac-specific files in Mac subdirectory
+
+	* Lib/*.py: rewrote many functions to use default arguments
+	instead of arbitrary argument lists
+
+Thu May  5 12:33:31 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/{cryptmodule.c,Setup.in}: new crypt(3) interface (Steve M)
+
+	* Python/bltinmodule.c, Include/bltinmodule.h: new fn setbuiltin()
+	to set a built-in variable
+
+	* Python/ceval.c (eval_code): place '_' variable in __builtin__
+	instead of in local dictionary, to avoid endless recursion when
+	printing vars()
+
+========================================================================
+Release 1.0.3 (14 July 1994)
+========================================================================
+
+Thu Jul 14 14:38:11 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* copied FAQ 1.10 (which still references 1.0.2 by the way)
+
+Thu Jul  7 12:20:10 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* configure.in: don't check for strtod!
+
+Tue Jul  5 23:18:16 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/stropmodule.c (strop_rindex): change semantics of third
+	argument -- as in the original string.rindex, search to its right,
+	not to its left.  (Maybe both index and rindex need a 4th
+	parameter to restrict the search on the other end?
+
+Fri Jul  1 12:47:05 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* configure.in: support --with-gcc[=value], --without-gcc
+
+	* configure.in, acconfig.h, config.h.in: check for clock_t
+
+	* Objects/stringobject.c (formatstring): fix nasty bug in resizing
+
+Tue Jun 28 00:57:35 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* configure.in (termcap): hack around conflict about clear() on
+	IRIX 5 in shared libraries gl and termcap
+
+Thu Jun 23 00:17:16 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Parser/tokenizer.c: if a triple-quoted string ends in a quote
+	followed by a newline (followed immediately by the terminating 3
+	quotes) then a syntax error or system error ensues (one-line fix)
+
+Sun Jun 12 17:38:31 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/socketmodule.c (sock_listen): fix typo (== instead of =)
+
+Thu Jun  9 23:33:33 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/compile.c (parsenumber), Python/marshal.c (r_object):
+	replace strtod() by atof()
+
+Thu Jun  2 13:50:11 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* configure.in: test for existence of link, chown, setuid, setgid;
+	use std macros for output; require autoconf 1.8
+
+Wed Jun  1 11:33:34 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/regexmodule.c (reg_dealloc): remove bogus XDEL's.
+
+Tue May 31 11:22:47 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/structmember.c (setmember): test for NULL value
+
+Fri May 20 09:46:50 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Parser/myreadline.c (my_fgets): Fix position of #endif EINTR
+
+Wed May 11 10:29:22 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Parser/tokenizer.c (tok_nextc): fix inf loop when file does not
+	end in newline
+
+Tue May 10 09:01:06 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/import.c (get_module): print dlopen debug message only of
+	verbose
+
+Mon May  9 10:37:48 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* acconfig.h: added _POSIX_THREADS define
+
+	* configure.in: test for -lpthreads; add directory argument to
+	--with-thread to LIBS as -L option
+
+	* Objects/stringobject.c (formatstring): don't DECREF result of
+	strobject() before using it
+
+Fri May  6 11:25:26 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* various files: micro changes needed to compile on Mac;
+	Grouped more Mac-specific files in Mac subdirectory
+
+Thu May  5 12:33:31 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/bltinmodule.c, Include/bltinmodule.h: new fn setbuiltin()
+	to set a built-in variable
+
+	* Python/ceval.c (eval_code): place '_' variable in __builtin__
+	instead of in local dictionary, to avoid endless recursion when
+	printing vars()
+
+========================================================================
+Release 1.0.2 (4 May 1994)
+========================================================================
+
+Wed May  4 13:12:00 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* README: version 1.0.2
+
+	* Objects/fileobject.c (setfilebufsize): less error checking
+
+	* configure.in: test for withval != yes (autoconf 1.8 change)
+
+	* Makefile.in: don't remove config.status on "make clobber"
+
+	* Python/ceval.c (eval_code): removed last traces of killprint (-k
+	option)
+
+	* Doc/tut.tex: documented some more new stuff
+
+	* Added else clause to try-except.  Affected files:
+	Grammar/Grammar, Include/graminit.h, Python/graminit.c,
+	Python/compile.c, Doc/ref7.tex, Doc/tut.tex
+
+Tue May  3 15:21:47 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Misc/python.man: documented -u; undocumented -k
+
+	* Python/{python,frozen}main.c: got rid of -k option; added -u
+	option (unbuffered stdout/stderr); plus environment
+
+	* Python/import.c: Steven Majewski's mods for AIX
+
+	* Lib/lockfile.py: new module to lock files (using fcntl)
+
+	* Objects/fileobject.c, Include/fileobject.h: added setfilebufsize
+	function to set buffer size (call only from C when it's safe!)
+
+	* Python/bltinmodule.c (builtin_open): Added 3rd parameter to give
+	buffer size; default 2nd parameter to "r"
+
+Mon May  2 17:51:23 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/{al,cd,sv}module.c: added (method) casts to methodlist
+	initializers
+
+Thu Apr 28 15:01:50 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/ref2.tex: (section{Line structure}): documented line joining
+	without backslashes inside parens
+
+Wed Apr 27 13:15:42 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Misc/python-mode.el: version 1.09 from Tim (grand new
+	indentation scheme)
+
+	* configure.in: test for setvbuf
+
+	* Python/ceval.c (PRINT_EXPR): assign a non-None value to '_'
+	before printing it
+
+	* Python/compile.c: only call PRINT_EXPR for interactive code
+	(start symbol single_input), else call POP_TOP after evaluating an
+	expression
+
+Tue Apr 26 16:23:06 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/bltinmodule.c (builtin_reduce): added essential INCREF()
+	if a third argument is present
+
+	* Doc/tut.tex: added chapter "Recent Additions"
+
+Mon Apr 25 11:27:09 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/ref7.tex (section{Function definitions}): add missing '}'.
+
+	* Doc/ref2.tex (subsection{String literals}): documented triple
+	quotes and double quotes.
+
+	* Lib/test/test_grammar.py: added tests for triple-quoted strings
+	and strings continued with backslash-newline
+
+	* Objects/fileobject.c (writestring): don't do anything when
+	writing to a Python object while an error is already set
+
+	* Parser/tokenizer.c: added support for triple-quoted strings and
+	strings continued with backslash
+
+	* Parser/tokenizer.h: moved here from Include
+
+	* Python/compile.c (parsenumber): support triple-quoted strings.
+	Raise SyntaxError, not SystemError for bad number syntax
+
+Fri Apr 22 17:39:20 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Objects/{tuple,list,string,mapping}object.c,
+	Modules/arraymodule.c, Python/compile.c: use new
+	joinstring(_decref) interface for more compact code
+
+	* Objects/stringobject.c (joinstring): if error, DECREF and zero
+	result; added joinstring_decref() which XDECREFs its second
+	argument
+
+Thu Apr 21 10:59:04 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/libtypes.tex (subsubsection{More String Operations}):
+	documented new '%(key)s' % {...} formatting and more liberal %s
+	interpretation (applies str() first)
+
+	* Doc/libfuncs.tex (section{Built-in Functions}): documented new
+	vars() built-in function
+
+	* Objects/stringobject.c (formatstring): add Donald Beaudry's
+	patch (slightly changed) to allow '%(<key>)<format>' % {...} to
+	format dictionary entries by key.  Also changed %s format to
+	accept any type and convert it to a string using str()
+
+	* Python/bltinmodule.c: add new built-in function vars() which
+	returns variables (of which dir() returns the sorted keys())
+
+Mon Apr 18 11:00:54 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/libppath.tex (section{Standard Module
+	\sectcode{posixpath}}): describe for expandvars()
+
+	* Lib/posixpath.py (expandvars): do it using regular expressions
+	instead of forking of a shell
+
+	* Lib/urllib.py (open_http, open_gopher): diagnose missing
+	hostname
+
+Sun Apr 17 21:52:52 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/compile.c (com_atom), Grammar/Grammar (atom): string
+	literal concatenation -- "abc" 'def' is equivalent to 'abcdef'
+
+Thu Apr 14 12:36:25 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/test/test_thread.py: new module to test threads (very basic)
+
+	* Python/thread.c: remove #define DEBUG 1
+
+	* Demo/scripts/freeze.py: changes by Jaap V and my own to make it
+	work again
+
+	* Makefile.in (libainstall): install frozenmain.c
+
+	* Python/frozenmain.c: added getprogramname()
+
+	* Doc/ref7.tex (section{Function definitions}): describe default
+	parameter values
+
+	* Lib/test/test_grammar.py: added grammar variants for default
+	argument expressions
+
+	* Python/compile.c: compile default argument values (com_argdefs
+	plus related stuff)
+
+	* Python/bltinmodule.c (builtin_apply): require that the argument
+	list is a tuple
+
+	* Misc/python-mode.el: change by Donald Beaudry to
+	py-compute-indentation; and fix to that by Sjoerd
+
+Wed Apr 13 10:08:33 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/ceval.c (eval_code): implement SET_FUNC_ARGS opcode
+
+	* Include/opcode.h: added SET_FUNC_ARGS opcode
+
+	* Objects/funcobject.c (newfuncobject, func_memberlist): added
+	func_argcount and func_argdefs fields and {get,set}funcargstuff()
+	functions.
+
+	* Include/funcobject.h: Added func_argcount and func_argdefs
+	fields and {get,set}funcargstuff() functions.
+
+	* Python/import.c (init_builtin): Give error message if module's
+	initialization function is NULL (e.g. for 'sys').
+	(get_module): Give error message if reloading a dynamically
+	loadable module.
+	(reload_module): Give error message if reloading a built-in
+	module; correctly (I hope) reload a frozen module.
+
+	* Doc/ref6.tex (break and continue): rephrase definition of
+	restrictions on where these may occur; change rules for continue
+	to match implementation.
+
+	* Doc/ref4.tex (section{Code blocks, execution frames, and name
+	spaces}): fix definition of what's local to include deleted
+	targets; added footnote describing exec and from - import *
+	restriction.
+
+	* Lib/dis.py: added LOAD_GLOBALS and EXEC_STMT to list of opcodes.
+
+Tue Apr 12 10:27:19 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/ceval.c (eval_code): fix core dump on "raise ()" -- found
+	by Tim Peters
+
+Mon Apr 11 20:48:26 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/compile.c (optimize): added optimization for LOAD_NAME
+	suggested by Steve Majewski
+
+	* Python/ceval.c (eval_code: case DELETE_FAST): fix cut-paste
+	error (w should be x) found by Steve Majewski
+
+Tue Mar 22 15:37:06 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/profile.py: fix handle_return for exceptional case (fix
+	suggested by Jim Roskind)
+
+	* Lib/tzparse.py (tzprog): Fix typo in test for regex.match
+
+	* Lib/urlopen.py: renamed to Lib/urllib.py
+
+Thu Mar 17 01:24:29 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/urlopen.py: added quote() and unquote() functions
+
+Wed Mar 16 11:26:29 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Objects/mappingobject.c: allow dictionaries with more than
+	20,000 entries.
+
+Thu Mar 10 11:13:24 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/{pdb,profile,bdb,codehack,stdwin/wdb}.py:
+	codehack.getcodename() is obsolete now we have co.co_name; same
+	for getfuncname(): f.func_name.  Module codehack is still needed
+	for getlineno(), used in profile and pdb
+
+Tue Mar  8 10:37:21 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/modsupport.c (do_arg): Format "O!" means typechecked
+	object; pointer argument must be preceded by typeobject
+
+	* Modules/threadmodule.c: don't define exit_prog if NO_EXIT_PROG
+	is defined
+
+	* Python/thread.c: don't define [_]exit_prog if NO_EXIT_PROG is
+	defined; in the SGI version, don't use signals if exit_prog is
+	node defined defined; in the SGI version, waitpid() for exited
+	threads.
+
+	* Python/pythonrun.c: don't call [_]exit_prog if NO_EXIT_PROG is
+	defined
+
+	* Include/thread.h: define NO_EXIT_PROG and then don't define
+	[_]exit_prog
+
+	* Modules/dbmmodule.c: Add calls to dbm_clearerr() after error on
+	assignment (fix by Jack)
+
+Mon Mar  7 12:41:32 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/test/test_rgbimg.py: search test file along sys.path
+
+	* Lib/test/test_{b1,b2,grammar}.py: tests for indefinite sequences
+
+	* Python/{bltinmodule,ceval}.c: Changed implied and explicit loops
+	over sequences to allow for "indefinite" sequences a la Steve
+	Majewski.  Instead of iterating over 0, 1, 2, ..., len(a)-1, we
+	now iterate over 0, 1, 2, ..., until we get an IndexError
+	exception (other exceptions are still errors).  This affects the
+	semantics of the following language constructs: "for x in a: ...",
+	"x in a", "x not in a", and the following built-in functions:
+	filter(), map(), max(), min(), reduce().
+
+	* Doc/ref6.tex (section{Assignment statements}): clarify slice
+	assignment; (section{The {\tt break} statement}): fix typo
+
+	* Doc/ref5.tex (subsection{Identifiers (Names)}): clarify
+	difference between local and global
+
+	* Doc/ref2.tex (subsection{String literals}): fix typo in def of
+	escapeseq
+
+	* Lib/addpack.py: new module to add packages to sys.path
+
+	* Lib/urlopen.py: added basejoin() function
+
+Fri Mar  4 13:07:43 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/urlopen.py(open_ftp): avoid crash when no host given
+
+Wed Mar  2 10:33:39 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/ceval.c (eval_code): use sys.check_interval to reset the
+	ticker
+
+	* Lib/repr.py: added special case for class instances (which may
+	cause exceptions in their __repr__)
+
+	* Lib/pdb.{py,doc}: mod by Steve Kirsch to allow setting a break
+	on a function name
+
+Tue Mar  1 10:32:54 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/pythonrun.c (run_tty_1): Fix wrong (uninitialized) return
+	value
+
+	* Doc/ref4.tex (table 4.1): differentiated between exec stmt and
+	eval()
+
+Mon Feb 28 10:49:20 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/svmodule.c: correct wrong cast of svideo_getattr
+
+	* README: added Linux to list of supported systems.
+
+	* Doc/libsocket.tex: adapt to min value of 1 for listen() backlog
+	argument.
+
+	* Modules/socketmodule.c (sock_listen): ensure backlog argument is
+	at least 1.
+
+Fri Feb 25 14:25:30 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Include/osdefs.h, Modules/config.c.in: Added NT case (same as
+	MSDOS)
+
+Thu Feb 24 09:58:53 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/posixmodule.c: merged in NT changes by Jaap Vermeulen
+
+	* README: added Mac and PC platforms to blurb.
+
+	* Doc/libfuncs.tex (section{Built-in Functions}): documented
+	xrange()
+
+	* Doc/ref7.tex (section{Function definitions} added index entry
+	for second ref to lambda.
+
+	* Lib/{bdb.py,pdb.py,stdwin/wdb.py}: call linecache.checkcache()
+	in bdb.Bdb's reset method; remove it from the test() functions.
+
+Wed Feb 23 10:15:28 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/parsermodule.c (parser_parsefile): fix fatal typo in
+	NULL comparison
+
+	* Misc/python.man: fixed mess describing -d and -i options
+
+Tue Feb 22 09:08:22 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Demo2: added new subdirectory holmes, with Mark Lutz' expert
+	system shell
+
+	* Demo: added new subdirectory lutz, with Mark Lutz' examples
+	(e.g. psh.py, a nice enhanced Python shell!!!)
+
+	* Lib/os.py: added listdir for Windows NT
+
+	* Modules/timemodule.c, Parser/intrcheck.c: changes for Windows NT
+	by Jaap Vermeulen (#ifdef _M_IX86)
+
+	* Makefile.in (inclinstall): added variable INCLUDEPY to specify
+	where the include files are installed
+
+	* Modules/nismodule.c (nisproc_maplist_2): cast some args to
+	(caddr_t) as required on some systems
+
+	* Objects/mappingobject.c (getmappingitems): correct typo (called
+	_values instead of _items)
+
+Mon Feb 21 17:07:07 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/rfc822.py: added access as a dictionary
+
+	* Lib/urlopen.py: new module to access arbitrary files designated
+	by a URL (Universal Resource Locator)
+
+	* Lib/{httplib,gopherlib}.py: new modules to interface to HTTP
+	and gopher servers
+
+	* Lib/rfc822.py: moved _monthnames to where it is used; add some
+	blank lines
+
+Fri Feb 18 09:54:34 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/sgi/flp.py: avoid using time.milli{sleep,timer}
+
+	* Lib/stdwin/WindowSched.py: avoid using time.milli{sleep,timer}
+	-- still maintain time in milliseconds though
+
+	* Lib/sched.py: remove references to milli{timer,sleep} from comments
+
+	* Lib/os.py: made execvp more portable; added os.pathsep and
+	os.defpath
+
+Thu Feb 17 12:53:33 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/ftplib.py(FTP.makeport): call listen(1) instead of listen(0)
+	so it works on Solaris 2
+
+	* Modules/makesetup: reverse order of DEFS so first Setup file can
+	override; any non-cpp uppercase option is sent to the linker
+
+Wed Feb 16 10:26:59 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Objects/fileobject.c: add name, mode, softspace and closed
+	attributes (softspace is also writable).
+
+	* configure.in: in --verbose mode, don't hide compiler output
+
+========================================================================
+Release of 1.0.1 (Feb 15 1994)
+========================================================================
+
+Tue Feb 15 11:32:42 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/string.py (atof): force the result to be float
+
+	* Python/modsupport.c (do_arg): don't use a local object va --
+	this doesn't work on some compilers (e.g. WATCOM)
+
+Mon Feb 14 10:52:01 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/dospath.py: proper version by Jaap Vermeulen
+
+	* Makefile.in (Makefiles): add semicolon after ) which some Make
+	versions need
+
+	* Doc/libposix.tex: added doc for posix.fdopen
+
+	* README: add Sequent and NeXT to list of platforms; add
+	troubleshooting section; add hist about -Dindex for readline
+
+	* Lib/os.py: generalize to many os specific modules using a
+	dictionary
+
+	* Lib/ospath.py: now obsolete; use os.name to import the right one
+
+	* configure.in: change order of -lsocket and -lnsl and insert
+	-linet in between, so it works on Sequent (it still works on
+	Solaris 2 -- hope it still works elsewhere as well); add test for
+	_NEXT_SOURCE (then define _POSIX_SOURCE); remove test for dlopen;
+
+	* configure.in, acconfig.h, */modsupport.[ch]: rename
+	HAVE_VARARGS_PROTOTYPES to HAVE_STDARG_PROTOTYPES, to avoid
+	confusion
+
+	* Include/modsupport.h: no prototypes for getargs() and mkvalue()
+	in case no varargs prototypes
+
+	* Lib/test/test_grammar.py: don't import sleep from time, but time
+	(since sleep has portability problems)
+
+Fri Feb 11 23:47:46 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Parser/intrcheck.c: added QUICKWIN version (doesn't really
+	work); fixed MSDOS version to also set a SIGINT handler.
+
+	* Modules/timemodule.c (time_sleep): declare sigsave 'auto' hoping
+	this will avoid restoring its pre-setjmp value.  On non-threaded
+	systems declare it 'static' since at least Microsoft C still puts
+	the auto variable in a register causing a bug...  Also implement
+	the MSDOS version of floatsleep() using a busy-wait loop calling
+	intrcheck()
+
+Wed Feb  9 11:43:11 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Lib/rfc822.py: added parsedate() and parseaddr() utility
+	functions and getdate(), getaddr(), getaddrlist() methods; added
+	test code when run as script
+
+	* Include/pythonrun.h, Python/pythonrun.c: cleanup() is now
+	externally visible, for the benefits of embedded use.
+
+	* Lib/dospath.py: new module for dos stuff
+
+Mon Feb  7 09:50:16 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/makesetup: add -n option between Setup files (suppresses
+	making of .o files but keeps processing of libraries and module
+	names)
+
+	* Makefile.in (libainstall): install Setup, makesetup, config.c.in
+
+	* Modules/Setup*: added -lX11_s to line for gl module
+
+	* Demo/scripts/unbirthday.py: new script, print unbirthday count
+
+	* Modules/audioopmodule.c: removed hack for signed on sun
+	(there's now a test in the configure script); check that if
+	'signed' is defined away characters aren't unsigned
+
+	* Modules/posixmodule.c: include mytime.h (for clock_t on NeXT)
+
+	* acconfig.h: add entry for 'signed' keyword
+
+	* configure.in: remove const from check for exec prototypes; add
+	check for signed keyword and check for whether chars are unsigned
+
+Fri Feb  4 13:07:03 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/makesetup: added usage message, -c and -m options to
+	specify config.c.in and Makefile.pre input files, -s option to
+	specify source directory, added comments
+
+	* Modules/Setup.in: remove -lm from imgfile entry
+
+	* Modules/nismodule.c: only define YPPROC_MAPLIST, YPPROG and
+	YPVERS if not already defined
+
+	* configure.in, acconfig.h, Include/modsupport.h,
+	Python/modsupport.c: added separate check for varargs prototypes
+	(HAVE_VARARGS_PROTOTYPES)
+
+Thu Feb  3 11:00:26 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/bltinmodule.c (filterstring): fix core dump of func ==
+	None
+
+	* Lib/string.py: replace atoi_error, atof_error, atol_error by
+	ValueError when the strop versions are used
+
+	* Modules/stropmodule.c: added atol(), added optional base
+	argument to atoi() and atol()
+
+	* Objects/longobject.c, Include/longobject.h: added long_escan
+	(like long_scan but raises exception for bad base and stores end
+	of string into return argument)
+
+	* Objects/rangeobject.c (range_repr): repr must use "xrange..."
+
+Wed Feb  2 12:28:04 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/stropmodule.c: added atoi() and atof()
+
+	* Python/modsupport.c: use stdarg.h / varargs.h depending on
+	presence of prototypes
+
+	* Modules/timemodule.c (floattime): try ftime() or time() if
+	gettime() fails
+
+Tue Feb  1 14:41:04 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/Makefile (python-lib.info): change makeinfo option style
+	from +foo to --foo
+
+	* Doc/README: remove invalid reference to ../misc/FTP; update
+	description of making the info version
+
+	* Doc/{fix.el,fix_hack,whichlibs}: minor updates/corrections
+
+Mon Jan 31 11:16:38 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/import.c: only use shared libraries if HAVE_DLOPEN *and*
+	HAVE_DLFCN_H are defined; define symbol USE_SHLIB then
+
+	* Doc/tut.tex: lots of small changes by Tim Peters: typos,
+	out-of-date examples, restrictions lifted, new and better ways to
+	do some things...
+
+Fri Jan 28 10:59:48 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* README: added Minix note
+
+	* Lib/sunau.py: correct byte count calculation from frame rate
+
+	* Lib/aifc.py: rate should be an integer
+
+Thu Jan 27 12:55:17 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/ext.tex: removed obsolete reminder in line 1; correct typo
+
+	* Misc/FAQ: fixed some out of date info, added question on module
+	run as script
+
+	* Modules/rgbimgmodule.c (initrgbimg): exception string should
+	contain dot not comma
+
+	* Modules/md5module.c: fix compiler warnings about (unsigned) char
+
+	* Makefile.in: libinstall and maninstall should use $(srcdir)
+
+	* Lib/tzparse.py: don't run test() on import
+
+	* Lib/filewin.py: moved into Lib/stdwin
+
+	* Modules/cdmodule.c: fix wrong cast of cdparser_getattr
+
+========================================================================
+Release of 1.0.0 (Jan 26 1994)
+========================================================================
+
+Wed Jan 26 14:13:39 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/tut.tex: updated version number in invocation example
+
+	* Doc/Makefile: update destination of texi2html
+
+	* Misc/FAQ: updated for release 1.0.0
+
+	* Misc/NEWS: created -- all bits of news
+
+	* Misc/HISTORY: added (from old releases)
+
+	* Misc/README: documented some new files
+
+	* README: non-beta version and preface, don't ref TODO
+
+	* Makefile.in: got rid of references to TODO
+
+	* Python/version.c, Doc/???.tex: updated version and date
+
+Tue Jan 25 20:11:49 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/ext.tex: revamped, finally ready for release
+
+	* Doc/{Makefile,myformat.perl}: support latex2html (0.5.1)
+
+	* README: correct typo on DL_DIRECTORY
+
+========================================================================
+Release of 1.0.0 BETA 6 (Jan 24 1994)
+========================================================================
+
+Mon Jan 24 16:37:46 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Doc/ref?.tex: Change \verb\<stuff>\ into \verb@<stuff>@ so
+	latex2html doesn't crash
+
+Thu Jan 20 18:05:18 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Ext-dummy/, README, Makefile.in: Created new directory
+	Ext-dummy/.  Ext-dummy/ contains its own README and copies of
+	Extensions/mk{ext,mf}.py.
+
+Tue Jan 18 11:04:16 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/getmtime.c: Include config.h if we have it
+
+	* Modules/Setup.in: fixed comments about GMP version
+
+	* Modules/nismodule.c: define YPPROC_MAPLIST, YPPROG, YPVERS as
+	plain integer literals, to make it work on 64 bit machines
+
+	* Parser/grammar.c (translabel): remove redundant decl of strchr()
+	(which caused trouble on AIX)
+
+Sun Jan 16 14:13:13 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* configure.in: test for fcntl.h
+
+	* Modules/posixmodule.c: include fcntl.h if it exists
+
+Fri Jan 14 17:35:33 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* configure.in: check for sys/time.h; substitute and check for AR;
+	check for nice()
+
+	* Makefile.in: make python .PRECIOUS; define OPT=-O and pass it to
+	submakes
+
+	* */Makefile*in: set OPT=-O; set AR=@ar@
+
+	* Modules/Setup.minix: new
+
+	* Lib/audiodev.py: only import system specific modules if needed
+
+Thu Jan 13 16:40:28 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/flmodule.c: make type objects static
+
+	* Modules/almodule.c: make type objects static
+
+	* Makefile.in: add rule to build Makefile; add VPATH for that;
+	remove dependency on configure script (you can run 'make autoconf'
+	instead); add Lib/test to path for test target;
+
+	* Lib/test: new subdirectory, holds all test modules
+
+Wed Jan 12 10:17:41 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* acconfig.h: added HAVE_ALTZONE
+
+	* configure.in: test for altzone; check for working
+	termcap/termlib when --with-readline used; don't test for readline
+	function; send errors to stderr
+
+	* Lib/test_grammar.py: fix 64-bit int test for max negative int
+
+	* Python/import.c (get_module): call dlerror() when dlopen() fails
+	(also some layout changes)
+
+Tue Jan 11 10:56:00 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Python/import.c: use RTLD_NOW (define as 2 if undefined)
+
+	* Makefile.in: "make (local)clean" shouldn't bother about Include;
+	added .PRECIOUS: config.status
+
+	* Modules/md5.h: define PROTOTYES as 1 if HAVE_PROTOTYPES is
+	defined
+
+	* Modules/md5module.c: grand cleanup
+
+	* Modules/Setup.sgi: renamed to Setup.irix4
+
+	* Modules/Setup.sunos5: renamed to Setup.solaris2
+
+	* Modules/Setup.in: some makes (e.g. Ultrix) don't strip trailing
+	whitespace from variable definitions -- make sure there isn't any
+	in the defs used to generate PYTHONPATH
+
+	* Many modules and objects: use 'staticforward' where needed
+
+	* Include/object.h: added #define 'staticforward' as either static
+	or extern depending on BAD_STATIC_FORWARD
+
+	* acconfig.h: added BAD_STATIC_FORWARD
+
+	* configure.in: added test for bad static forward
+
+Mon Jan 10 10:35:21 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/md5module.c: SCO ODT 3.0 dependent fix
+
+	* Objects/xxobject.c: quote size fields as tp_basicsize instead of
+	(incorrectly) tp_size
+
+	* Objects/listobject.c (cmp): arguments must be const!!!
+
+	* Modules/imageopmodule.c: another attempt at casting away
+	warnings about changed semantics in ANSI C
+
+	* Modules/regexpr.c: cast away warning about changed semantics in
+	ANSI C
+
+	* Modules/Makefile.pre.in: add LIBC_S (shared version of -lc, to
+	be figured out by configure)
+
+	* README, Python/version.c: version 1.0.0 BETA 6
+
+	* README: fixed description of Setup (which was buried under the
+	SVR4 exception!); added description of --prefix, --exec-prefix,
+	--with-libm and --with-libc
+
+	* configure.in: added --with-libc=... and --with-libm=...
+
+	* Modules/Makefile.pre.in: Remove dependency of Setup on Setup.in,
+	so it is only copied when Setup does not exist at all; add
+	prefix=/usr/local so Setup can base default path on --prefix
+	option to toplevel configure script
+
+	* Modules/Setup.in: clarified build procedure in comments; don't
+	include GNN's timing module by default; use $(prefix) instead
+	requiring manual edit of DESTDIR
+
+	* Makefile.in: replace DESTDIR by prefix and exec_prefix and
+	updated affected targets; added inclinstall and libainstall
+	targets
+
+	* Objects/accessobject.c: removed (???) from comment to avoid
+	trigraph warning
+
+	* Makefile.in (libinstall): correct typo: (D)DESTDIR
+
+Fri Jan  7 10:34:43 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* README: describe --with-sgi-dl and --with-dl-dld
+
+	* Python/Makefile.in: compile import.c with -I$(DLINCLDIR)
+
+	* Python/import.c: check for WITH_SGI_DL and WITH_DL_DLD
+
+	* acconfig.h: added WITH_SGI_DL and WITH_DL_DLD
+
+	* configure.in: added --with-sgi-dl=DIR and
+	--with-dl-dld=DIR,DIR; now require --with-readline=DIR and test
+	for existing directory
+
+	* Lib/test_audioop.py: new module to test (you guessed it) audioop
+
+	* Modules/audioopmodule.c: got rid of adpcm32lin and lin2adpcm3 --
+	Jack says they're not useful
+
+========================================================================
+Release of 1.0.0 BETA 5 (Jan 6 1994)
+========================================================================
+
+Thu Jan  6 13:36:32 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* readline/Makefile: remove some cruft so it works with VPATH
+
+	* Lib/aifc.py: remove dependencies on AL (Sjoerd)
+
+	* README: describe new Setup procedure
+
+	* Modules/Makefile.pre.in: copy Setup from $9srcdir)/Setup.in so
+	it *really* works with VPATH
+
+	* Modules/Setup: renamed to Modules/Setup.in
+
+	* Python/pythonmain.c (realmain): fclose script file
+
+	* Python/import.c (get_module): fix important leak: close the .py
+	file after parsing!
+
+	* README, Python/version.c: version 1.0.0 BETA 5
+
+Wed Jan  5 16:42:35 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Modules/rgbimgmodule.c: Only include <unistd.h> if it exists
+
+	* Modules/timemodule.c: don't include sys/time.h on the Mac
+
+	* Modules/stdwinmodule.c (initstdwin): don't fuss with sys.argv on
+	the mac -- so {check,putback}stringlist aren't needed there
+
+	* Parser/intrcheck.c: Make sure <MacHeaders> is included before
+	any other include file
+
+	* Modules/audioopmodule.c: include math.h after allobjects.h (so
+	the latter can be a precompiled header file on the Mac)
+
+Wed Jan  5 15:34:26 1994  Guido van Rossum  (guido@poseidon.cwi.nl)
+
+	* Python/pythonrun.c (sighandler): only call kill(getpid()) if
+	getpid() exists; otherwise call exit(1)
+
+	* configure.in: added test for getpid()
+
+	* Modules/config.c.in: Changes for Macintosh: new default path,
+	call wargc() in main(); 1994 copyright
+
+	* Python/frozenmain.c: added declarations for getversion() and
+	getcopyright() (foei!); insert "Python " before version on banner
+
+	* Python/pythonmain.c: added declarations for getversion() and
+	getcopyright() (foei!); default startupfile to "PythonStartup" on
+	Macintosh; add fclose(fp) for startupfile; insert "Python " before
+	version on banner
+
+========================================================================
+Release of 1.0.0 BETA 4 (Jan 5 1994)
+========================================================================
+
+Wed Jan  5 01:21:59 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* README, version.c: bumped version to 1.0.0 BETA 4
+
+	* README: removed all references to --with-solaris; updated list
+	of files and directories
+
+	* Modules/sunaudiodevmodule.c: define SOLARIS if
+	HAVE_SYS_AUDIOIO_H is defined
+
+	* Python/thread.c: define SOLARIS if HAVE_THREAD_H is defined
+
+	* configure.in: added test for <thread.h> (SOLARIS thread
+	interface); remvoe test for --with-solaris
+
+========================================================================
+Release of 1.0.0 BETA 3 (Jan 5 1994)
+========================================================================
+
+Wed Jan  5 00:18:45 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* {Parser,Objects,Python,Makefile}/Makefile*in: made depend target
+	work with VPATH
+
+	* README: describe new build procedure; added section on building
+	for multiple architectures
+
+	* acconfig.h: fix (reversed!) comment for SYS_SELECT_WITH_SYS_TIME
+
+	* Modules/Makefile.pre.in: copy Setup from $(srcdir) if not
+	present, and use local Setup as input for makesetup script
+
+Tue Jan  4 12:32:16 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Note that there are no functional changes below -- just changes
+	to the build process and changes to avoid compiler warnings
+
+	* Modules/Setup: disable nis as well by default, change the
+	pertaining comments, and change the comments about the multimedia
+	modules to be default on
+
+	* fixed all warnings about function pointer initializations, and
+	miscellanous other warnings (e.g. about extern forward references
+	to static variables); touched random bits of code as a consequence
+
+	* changed configuration process and Makefiles to support VPATH;
+	for this, config.h(.in) now lives to the toplevel directory, the
+	toplevel Makefile is now created by configure as well, and various
+	improvements to it have been made (e.g. working tags and TAGS
+	targets), the makesetup script follows configure instead of
+	preceding it, it understands srcdir and has an exception for
+	glmodule.c, the intermediate file is called Makefile.pre, the
+	Makefiles don't use TOP any more and are much more careful about
+	the difference between .. and the toplevel directory, and I've
+	improved my understanding of how configure handles srcdir
+
+	* Modules/threadmodule.c: refuse to compile when WITH_THREAD is not
+	defined
+
+	* configure.in, acconfig.h, config.h.in, Include/ceval.h,
+	Modules/{stdwin,thread}module.c, Python/{ceval,pythonrun}.c:
+	renamed USE_THREAD to WITH_THREAD
+
+	* configure.in: add AC_PROG_INSTALL
+
+	* README, Python/version.c: version set to 1.0.0 BETA 3
+
+	* Demo, Include, Lib: added Makefile with clean/clobber targets
+
+	* README: added remarks on --with-svr4; unnumber special cases
+
+	* configure.in: only look for -lnsl and -lsocket if --with-svr4 is
+	specified, to avoid linking with them on IRIX 5
+
+========================================================================
+Release of 1.0.0 BETA 2 (Jan 3 1994)
+========================================================================
+
+Mon Jan  3 22:21:24 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* Include/myselect.h: fix typo in name of SYS_SELECT_WITH_SYS_TIME
+
+	* Parser/pgen.h: moved here from Include; removed extern
+	definition of 'gram'
+
+	* Parser/acceler.c: include node.h, now needed by parser.h
+
+	* README: added paragraph on testing
+
+	* Misc/python.man: changed date and add 1994 copyright
+
+	* Makefile: added test target
+
+	* Python/thread.c: include config.h if needed
+
+	* Parser/parser.h: remove references to struct _grammar and
+	similar things
+
+	* Modules/rotormodule.c (RTR_e_char, RTR_d_char): avoid warnings
+	by picky compilers about unsigned % signed
+
+	* README: added a section on building it for non-UNIX systems
+
+	* Makefile (configure): call autoheader when calling autoconf
+
+	* Include/config.h.in: now generated by autoheader
+
+	* acconfig.h: new file (input for autoheader)
+
+	* configure.in: added AC_REVISION call to top
+
+	* Modules/flmodule.c (form_setattr): one NULL should be 0
+
+	* Include/myselect.h: this now implies mytime.h and attempts to
+	work around systems where sys/select.h and sys/time.h can't be
+	included together
+
+	* Modules/socketmodule.c, Doc/libsocket.tex: remove socket avail()
+	method -- you can use select instead
+
+	* Modules/Setup: disable dbm, it is not truly portable
+
+	* Lib/sunau.py: incorporate one-line fix by Sjoerd
+
+	* Include/pgenheaders.h: include <stdlib.h> if its symbol
+	defined, not just on the mac
+
+	* Include/grammar.h: remove redundant structure tags
+
+	* Include/cgensupport.h: avoid possible macro argument
+	substitution inside string literal
+
+	* configure.in, Include/config.h.in: add test whether sys/select.h
+	and sys/times.h can be included by the same program
+
+	* Include/config.h.in: add lines for HAVE_SYS_UN_H and
+	HAVE_GETPEERNAME
+
+	* Extensions/mkext.py: copy change in library order from
+	Modules/Makefile.in.in
+
+	* Modules/Makefile.in.in: change library order subtly so -ltermcap
+	follows instead of precedes -lgl_s on SGI systems; this solves
+	(hides?) problems with clashing entry points
+
+	* configure.in: added sys/un.h to list of tested header files;
+	added getpeername to list of tested functions (both for
+	Modules/socketmodule.c)
+
+	* Modules/socketmodule.c: conditionally include sys/un.h and
+	change tests for AF_UNIX to tests for HAVE_SYS_UN_H; test for
+	HAVE_GETPEERNAME instead of NO_PEERNAME
+
+	* Modules/config.c.in: add marshal and __main__ built-in modules
+
+	* Python/sysmodule.c (list_builtin_module_names): sort the list
+
+	* Doc/Makefile: remove 'qua' from default targets
+
+	* Doc/README: add reference to ext.tex, change reference to
+	lib*.tex, explain that qua isn't built by default
+
+	* README: explain DESTDIR, clarify install procedure, add more
+	explanation to some options, add description of ChangeLog, add
+	wuarchive.wustl.edu to list of mirror sites
+
+	* Modules/socketmodule.c: make AF_UNIX code dependent on existence
+	of AF_UNIX (SCO ODT 3.0 doesn't support it -- let's hope it
+	doesn't define the symbol either)
+
+	* Makefile: attempt to fix install targets (added separate
+	libinstall and maninstall)
+
+	* Doc/libregex.tex: documented Tracy Tims' changes
+
+	* Modules/regexpr.c: redid Tracy Tims' changes to minimize diffs
+	(only two added lines now)
+
+	* Modules/regexmodule.c: fix core dump when asking a plain regex
+	object for a named group
+
+Sun Jan  2 23:10:44 1994  Guido van Rossum  (guido@voorn.cwi.nl)
+
+	* README, Python/version.c: changed version string to 1.0.0 BETA 2
+
+	* Modules/{regexpr.{c,h},regexmodule.c}: merged in Tracy Tims'
+	mods for named subexpressions
+
+	* Include/regexpr.h: moved to Modules/regexpr.h
+
+	* Modules/timingmodule.c: change tests for no arguments
+
+	* configure.in: remove strtoul from AC_REPLACE_FUNCS; remove
+	initial blank line (which got copied into configure so it wouldn't
+	start with #!/bin/sh as required)
+
+	* Python/compile.c: call mystrto(u)l instrad of strto(u)l
+
+	* Python/Makefile.in: add mystrtoul.c to OBJS
+
+	* Python/mystrtoul.c: renamed from strtol.c; renamed functions to
+	mystrto(u)l; this is now a standard source file (since some
+	systems have a strto(u)l that doesn't report errors properly)
+
+	* Modules/Setup: added entry for timing module
+
+	* Modules/{timing.h,timingmodule.c}: new files implementing GNN's
+	timing module
+
+========================================================================
+Release of 1.0.0 BETA (Jan 1 1994)
+========================================================================

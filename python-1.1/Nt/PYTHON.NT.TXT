@@ -1,0 +1,56 @@
+Notes on Python port to NT:
+
+3-June-94 - Mark Hammond - MHammond@cmutual.com.au
+
+Files included with NT source package:
+--------------------------------------
+.\config.h			config.h for NT.
+.\make.nt.in			included, common makefile for all
+				directories.
+.\make.nt.bat			Controls the build process.
+.\python.nt.txt			This file
+.\demo\dl.nt\mci\makefile.nt.mak Sample Dynamic Loading makefile
+.\demo\dl.nt\mci\mcimodule.c	Sample Dynamic Loading source file.
+.\demo\dl.nt\mci\readme.txt	Sample Dynamic Loading text file.
+.\demo\dl.nt\template\*		Generic "template" files for an NT DLL.
+.\modules\config.nt.c		NT version of Python's config.c
+.\modules\dl.nt.c		Startup source for Python DLL.
+.\modules\makefile.nt.mak	Modules directory makefile
+.\modules\python.nt.def		Linker Definitions file for Python.DLL
+.\objects\makefile.nt.mak	Objects directory makefile
+.\parser\makefile.nt.mak	Parser directory makefile
+.\python\makefile.nt.mak	Python directory makefile
+
+.\python\import.c		Modified to support dynamic loading in DLLs.
+.\modules\posixmodule.cpp	A few changes needed to this (which becomes NT module)
+.\include\*.h			Quite a few Python include files.  Most of
+				these are a single change in defn for their global
+				object data item.
+
+Build Process:
+--------------
+Hopefully, simply running MAKE_NT from the top-level Python directory will kick off a successful build.  However, before you start, please make sure:
+* Your compiler and linker etc are on your path.
+* Your compiler and linker know where to locate their header and library files.
+
+MAKE_NT is a batch file, which simply calls NMAKE on the lower level directories.  Most options passed to the batchfile are passed directly onto NMAKE.  Note that often Macro definitions must be passed in quotes.
+
+The lower level makefiles get a lot of functionality from winnt32.mak, which has been designed to allow single makefiles across all NT platforms.  As a result, many compile options are set by the facilities provided in the generic Winnt32.mak.  For example:
+make_nt "NODEBUG=1" will build an optimised version.  There are also flags to build version for performance profiling etc.  See winnt32.mak for descriptions of these.
+
+To save lots of warnings for Microsoft Visual C++ users, you should also pass "MSVC=1" to the MAKE_NT batchfile.
+
+Dynamic Loading:
+----------------
+Python supports dynamic loading of Python 'C' modules built as DLL's.  Note that any DLL's used for dynamic loading _must_ be on PYTHONPATH, and need not be on the PATH.  This is because Python itself searches for the file, and sends the fully qualified name to Windows.
+
+For an example of Dynamic Loading, see the "Demo/nt.dl" directory.
+
+Building Dynamically Loadable Modules:
+--------------------------------------
+In general, any Python extension 'C' module can be built as a DLL, with the following restriction: Any modules which define new Python data type _must_ be compiled by a C++ compiler.  This is because this sort of extension module must take the address of a data item from the main Python DLL, and place it into a static pointer.  The MSoft doco says this is because the C++ compiler guarantees the initialisation of this data, where the C compiler does not. (My guess is that this means that _code_ is required to initialise these vars, and not just a linker address resolution. Go figure!).
+Anyway, the practical reality of this is that the code must be ANSI 'C', to be passed by the C++ compiler.
+
+The file MAKE_NT.IN has some default rules for building extension DLL's, and the directory Demo/dl.nt" has a sample DLL.
+
+- eof -

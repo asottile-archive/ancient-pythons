@@ -1,0 +1,3 @@
+BASELIB=	../example/lib.a ../example2/lib.a
+BASESETUP=	../example/Setup ../example2/Setup
+zz zzmodule.o

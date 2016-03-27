@@ -1,0 +1,16 @@
+This directory contains a complete RSA public-key cryptosystem
+developed in Python.  NO GUARANTEES!
+
+This system requires that your Python interpreter is configured with
+the modules mpz and md5 (which in turn depend on the GNU MP library).
+
+For an idea of what the system can do, *read* the file rsademo.py (it
+comtains ample comments) and then run it: "python rsademo.py".  It
+will produce little output if all goes well.
+
+Read the other files in this directory (some are also well commented)
+to find out more about the implementation.
+
+This code was written by Jan-Hein B\"uhrman and Niels T. Ferguson.
+
+Copyright (c) 1992 by Jan-Hein B\"uhrman & Niels T. Ferguson.

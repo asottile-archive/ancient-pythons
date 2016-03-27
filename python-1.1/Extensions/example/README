@@ -1,0 +1,13 @@
+This directory is a trivial example of how to set up a new extension.
+
+Generally, Makefile.pre.in is the same for all extensions.  You edit
+it only to point to the installed version of Python that you want to
+use.  Everything that's dependent on the particular extension is in
+the file Setup -- which has the same format (and is processed by the
+same script) as the Modules/Setup file in the main Python
+distribution.  Read that file (actually, Setup.in there) for detailed
+instructions -- basically, you comment out lines for modules you don't
+want and you edit the -I, -l and -L options and variable definitions
+if necessary.
+
+Detailed build instructions are in Makefile.pre.in.

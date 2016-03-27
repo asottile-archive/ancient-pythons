@@ -1,0 +1,91 @@
+
+!include <ntwin32.mak>	# bring in platform specific stuff.
+
+#Fix a problem with ntwin32.mak and Visual C++
+# problem is .mak defines "link=link32" and "lib=lib32"
+# Problem is MSVC linker/library manager use these environment
+# variables as additional flags to link/lib
+# Consequently, link warns "link32.obj not found" and similarly lib.
+#   This has really p___ed me of.  It has been very hard to get right.
+#   The LIB variable is used by MSVC to locate system library files, and
+#	damn ntwin32.mak sets lib.  Now although NMAKE is case sensitive, the OS'
+#   environment vars arent.  Therefore /E option _must_ be specified for MSVC
+# nmake itself is also very average :-(
+#
+
+# Damn it.  Even with .DLL in the suffixes, nmake wont infer a line
+# mymodule.dll:
+# and run up the .c->.obj, .obj->.dll.  And with all debug turned on, all
+# it says is "dont know how to make .."  Damn it (probably me, but I gave up:)
+#.SUFFIXES :
+#.SUFFIXES : .exe .dll .obj .asm .c .cpp .cxx .bas .cbl .for .pas .res .rc
+
+linker=$(link)
+libmgr=$(implib)
+LINK=
+
+#cdebug = -Z7 -Od	# Z7 for win32s debugging
+
+# Note that srcdir is relative to the subdirs, not the top level.
+srcdir=..
+
+#
+# Additional common definitions
+#
+cinclude=/I$(srcdir)\Include /I$(srcdir)
+python_defs_lib=$(srcdir)\Modules\pythondefs.lib
+python_defs_exp=$(srcdir)\Modules\pythondefs.exp
+pythonopts=/DHAVE_CONFIG_H /DNT /nologo /MD /G3
+
+
+
+# Fine tune optimiser (platform (and realistically, compiler version) specific)
+!if "$(CPU)" != "i386"
+!else ifdef NODEBUG
+# for Intel processors
+cdebug=/Ob1 /Oi /Ot /Oy /Gs # This is /Ox minus /Og
+!endif
+
+!IFDEF MSVC
+# Although this is handled, it generates warning.  This is to avoid them
+cc=cl
+linker=link
+libmgr=lib
+!ENDIF
+
+!ifndef BUILD_DL
+.c.obj:
+	$(cc) $(cflags) $(ccustom) $(cdebug) $(cinclude) $(pythonopts) $*.c
+!else
+#
+# Useful stuff for building DL modules under NT.
+#
+
+#if you have a .DEF file, define HAVE_DEF
+# if you dont want precompiled headers, define PCH=0 (in your makefile, not here!)
+!ifndef PCH
+PCH=1
+!endif
+!if "$(PCH)"=="1"
+cpch=/YX
+!else
+cpch=
+!endif
+
+!ifdef HAVE_DEF
+export_statements=/DEF:$*.def 
+!else
+export_statements=/EXPORT:init$(*:module=) 
+!endif
+# Note for 'C', I use /Tp, to force as CPP - this will allow .C to define types.
+.c.obj:
+	@echo Warning - compiling as C++ file
+	$(cc) $(cflags) $(ccustom) $(cdebug) $(cinclude) $(cpch) $(pythonopts) /DUSE_DL_IMPORT /Tp $*.c
+
+.cpp.obj:
+	$(cc) $(cflags) $(ccustom) $(cdebug) $(cinclude) $(cpch) $(pythonopts) /DUSE_DL_IMPORT $*.cpp
+
+.obj.dll:
+	link -dll -out:$*.dll $*.obj $(ldebug) $(export_statements) $(lcustom) $(python_defs_lib)
+
+!endif

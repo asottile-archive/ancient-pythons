@@ -1,0 +1,24 @@
+
+all= accessobject.c.o ¶
+classobject.c.o ¶
+fileobject.c.o ¶
+floatobject.c.o ¶
+frameobject.c.o ¶
+funcobject.c.o ¶
+intobject.c.o ¶
+listobject.c.o ¶
+longobject.c.o ¶
+mappingobject.c.o ¶
+methodobject.c.o ¶
+moduleobject.c.o ¶
+object.c.o ¶
+rangeobject.c.o ¶
+stringobject.c.o ¶
+tupleobject.c.o ¶
+typeobject.c.o
+
+lib.o Ä {all}
+	lib -o lib.o -sn Main=unixemu {all}
+
+clean Ä
+	Delete -i {all}

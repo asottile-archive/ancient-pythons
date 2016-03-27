@@ -1,0 +1,374 @@
+(*) 2 specific leaks: 1 PYTHONPATH; 2 reading code from .pyc
+
+(-) if __getattr__ prints something, calling repr(x) from cmd line
+forgets a newline
+
+(-) improve performance of list.append/insert etc. by keeping high/low
+watermark instead of realloc'ing each time?
+
+(-) findmethod should cache (also findmember?)
+
+(-) sysget("check_interval") is called before each method call which
+breaks dictlookup caching
+
+(*) core dump on import of ridiculously long module name
+
+(-) core dump on repr / print of deeply nested or recursive object
+
+(*) parsing from string should calculate line numbers
+
+(-) whrandom doc needs update
+
+(-) mpz power is still binary insterad of ternary
+
+(*) design interface to call arbitrary asynchronous routines
+
+(*) whrandom.set...(0,0,0) doesn't generate random numbers
+
+(*) Lance's latest curses additions
+
+(-) Jack's new code:
+	(*) new xxmodule.c
+	(*) mac has type for .pyc files
+	(*) should run .pyc files when passed as command line argument
+
+(*) all new all singing all dancing freeze script
+
+(*) make clean should remove *.so and not Makefile.pre
+
+(-) fix signalmodule.c to re-establish SIGC[H]LD handler
+
+(-) try out Kees Blom's railroad diagram generator
+
+(-) redesign error handling (cf. Donald's mail)
+
+(*) do MPW and THINK still not support sys_errlist?  Indeed not (neither).
+
+(-) does MPW 3.2 need the MPW_881_BUG defined in Parser/acceler.c
+
+(-) rename MPW_3_1 define (which really means 3.x)
+
+(*) incorporate urlparse.py, uu.py
+
+(*) rewrite instance __getattr__ etc. to store ptr in class instead of
+instance -- also have separate __delattr__
+
+(-) add warning to docs about sys.exc_traceback and sys.last_traceback.
+
+(-) Some stdwin wishes:
+
+    (-) stdwinmodule should keep track of textedit rec's per window
+	(in a chain) so it can unlink them when the window is closed
+	before the te rec
+
+    (-) textedit flashes at return or backspace
+
+    (-) there's no way to show the text caret after a multi-line paste?
+
+(*) termios module
+
+(*) put signal patches out separately
+
+(-) latex docs for signal module
+
+(*) More MPW and Mac changes
+
+(*) Sjoerd's compileall script
+
+(-) systematically create /usr/local/lib/python/<machine>-<os>/
+    subdirectories, with a lib/ subdirectory containing the lib*.a
+    files etc.
+
+(-) need newer DOS binary (16 bit version doesn't do default args)
+
+(*) support for dynamically loadable libraries in makesetup and Extensions.
+    e.g. add a make rule to build .so files (unfortunately need to figure
+    out what ld option is needed) (more appropriate for makesetup
+    script?)
+
+(*) Move tkinter into the standard Modules directory; Tkinter c.s. to
+    Lib/tkinter etc. (???)
+
+(-) document Tk
+
+(-) class browser
+
+(-) interactive Python GUI (a la NT thingie)
+
+(*) speedup finddfa (and classify?)
+
+(-) more stuff under CVS (demo, extensions)
+
+(*) Mac port of 1.1
+
+(*) Mac port of STDWIN 0.9.9 to THINK C 6.0
+
+(-) use const for char * parameters (and many more) where possible
+
+(-) The Great Renaming!
+
+(-) redo __xxx__ operators for class instances
+
+(-) document __getattr__, __setattr__
+
+(-) add __delattr__ to class instances
+
+(-) many things that take strings should also take arrays of chars
+
+(-) add list of existing extensions to FAQ
+
+(-) update "recent additions" chapter in tutorial
+
+(-) rewrite "output formatting" chapter in tutorial
+
+(*) pass OPT from environment via configure to Makefile
+
+(*) version.c should be recompiled for each link
+
+(*) stropmodule should export find/rfind instead of index/rindex
+
+(*) add __getattr__, __setattr__ to class instances
+
+(*) fix pow(x, y, z) for integers
+
+(*) add tuple(seq) to turn any sequence into a tuple
+
+(*) Win32s for PC
+
+(*) integrate NT changes
+
+(*) write a script and add a "Make" rule (perhaps) that changes
+    #!/usr/local/bin/python to something else in all scripts around.
+
+(*) int*int overflow check shouldn't doubles on alpha (cf. John Tromp's mail)
+
+(*) add signal.alarm()
+
+(*) when abort()ing because of unexpected exception, print a message
+    first (Jack)
+
+----------------------------------------------------------------------
+(from BUGS1.0.1)
+----------------------------------------------------------------------
+(-) document addpack, urllib, ...
+
+(*) import.c from JaapV
+
+(*) document os.exec*
+
+(*) name sunaudiodevmodule.c is too long
+
+(*) play with / include SUIT interface
+
+(-) make regsub.[g]sub() optionally case insensitive
+
+======================================================================
+
+(*) ought to use features from autoconf 1.8
+
+(*) errors in __repr__() are handled wrong when called from format
+
+(*) long(0x80000000) has wrong value!
+
+(-) hex(0x80000000) shouldn't have sign (?)
+
+(*) need way to set buffering at file open time
+
+(*) need way to force stdout unbuffered
+
+(*) restart CVS tree
+
+(?) build shared libs for SunOS 4.1.3
+
+(-) dynamic linking on the Mac (is this a dream?)
+
+(*) X patches from Adrian Phillips
+
+(*) Jaap's freeze script
+
+(-) Incorporate with contrib status:
+    - additions to glmodule by rg3h
+    (*) Jaap's posixfile module (with locking)
+    (*) pthreads interface
+
+(-) Later:
+    - put the offending object in IOError and posix.error
+    - make module marshal work with user-defined file-like objects
+    - built-in help?
+    - hierarchical module names?
+
+Big plans:
+
+- allow separate interpreters (a la Xt's Applocation Contexts, and Tcl)
+- great renaming
+- complete reflexive nature of the language, e.g. have interfaces et
+create any kind of object
+(*) GUI interface a la Tk
+
+
+======================================================================
+For FAQ:
+
+(*) why don't strings (numbers, tuples, ...) have methods / attributes
+
+(*) why are strings / numbers / tuples immutable
+
+why don't list methods return self
+
+======================================================================
+PM/TODO list after Egypt (from mailing list):
+
+make .pyc files executable (how?)
+
+thread status and improvements (lock stmt; signal/wait)
+
+optional optimizations
+
+pthread migration
+
+(*) test/incorporate new SUIT
+
+shorten excessively long filenames (sunaudiodevmodule.c)
+
+(*) default parameter values
+
+multiple interpreter objects
+
+(*) import shlib bug (irix5.2) (reload, dlclose)
+
+(*) addpack.py
+
+(*) newmodule.c (or other hacks to create new modules, classes, functions
+    etc. from their components)
+
+persistency
+
+new Dbhash.py, dbhash library
+
+(-) reraise; or raise 3rd param for traceback?
+    -or- except type, value, tbackobjec
+
+(-) redesign exceptions from scratch?
+
+(-) dbm objects miss items(), values() methods
+
+(*) jar's new profile
+
+(-) answer q about coerce()
+
+(*) reconsider pass [expression] ??? -or- don't print non-interactive
+    exprs -or- option to suppress printing non-None expressions
+
+(*) should be able to hash code objs (add fns to convert between lists/tuples)
+
+(-) describe() ?
+
+(-) distribute demo2 with Holmes
+
+(*) re-reply on try-continue
+
+(-) classes are too slow
+
+(-) add += etc. ?
+
+optimize tuple = tuple
+
+allow (a, b) = [1, 2] and [1, 2] = (1, 2) ???
+
+wustl is not un the northwest of the US?
+
+(*) MPW doesn't like \000 in string literals?
+
+MPW patches, unixemu patches
+
+prepare tar files with
+	- mac think projects (*)
+	- mpw makefiles
+	- dos makefiles
+	- mac unixemu lib
+
+explain rules about == vs. 'is' for strings (* by others on the list)
+
+(*) bug in ceval.c DELETE_FAST
+
+(*) possible optimize LOAD_NAME -> LOAD_GLOBAL
+
+get dos python with suit (inesc)
+
+(*) docs for try/continue are wrong and unclear
+
+better hashing fn?
+
+(*) add improved nested indent to python-mode.el
+
+(*) add a section to tutorial on "new" features
+
+rewrite section on formatting in tutorial
+
+======================================================================
+TODO-TOO list:
+
+test for overflow when converting python long to float
+
+lift restrictions on tuple or list in many cases
+
+(*) allow long ints with sensible values for getargs "i"
+
+(*) multiline string literals
+
+what to do about 64-bit int literals (on 64-bit machines) in .pyc
+files?  (Currently truncated w/o warning!)
+
+DOCUMENTATION UPDATE!  E.g. ref.tex doesn't describe:
+(*)	- line joins w/o backslash
+(*)	- double-quoted strings; \" in strings
+	- more?
+Should double-check all changes with docs!
+
+(?) Interrupting output still sometimes doesn't call clearerr() properly
+
+sometimes ghost errors when interrupting during debugging in
+'continue' mode?
+
+typing a comment to a primary prompt shouldn't issue a secondary prompt
+
+readline: add hooks to recognize Python syntax and to expand Python
+commands and names
+
+should have absolute pathnames in function objects
+
+in general check that all the exceptions are modernized and that the
+messages aren't giving the same error twice (e.g., stdwinmodule.c!)
+
+- check read/write allowed for file objects
+
+- introduce macros to set/inspect errno for syscalls, to support things
+  like getoserr()
+
+======================================================================
+DOS/Windows Python
+
+(???) command line options?
+
+(*) os.system()
+
+(???) interrupts
+
+(???) wrap
+
+(*) pc module
+
+(*) dospath.py
+
+DOS/Windows Python -- TO DO
+
+(*) memtest from config.h
+
+(*) copy sources back
+
+(*) build DOS version
+
+(*) distribute 386 version
+
+(*) Mac 1.0.1 release?
+======================================================================

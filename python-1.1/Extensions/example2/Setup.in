@@ -1,0 +1,4 @@
+# Example of "extension chaining"
+BASELIB=	../example/lib.a
+BASESETUP=	../example/Setup
+yy yymodule.o
