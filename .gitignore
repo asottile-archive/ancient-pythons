@@ -2,6 +2,8 @@
 *.o
 *.pyc
 
+/bin
+
 /*/buildno
 /*/Grammar/Makefile
 /*/Grammar/graminit.c

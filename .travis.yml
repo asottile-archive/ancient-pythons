@@ -1,0 +1,11 @@
+language: python
+python: 3.5
+env:
+    - ARGS='python1.0.1 --needs-lib'
+    - ARGS='python1.2 --needs-lib'
+    - ARGS='python1.3 --needs-lib'
+    - ARGS='python1.4 --needs-lib'
+    - ARGS=python1.5.2
+    - ARGS=python1.6
+    - ARGS=python2.0
+script: ./make.py $ARGS
