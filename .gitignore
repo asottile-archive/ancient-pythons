@@ -2,15 +2,22 @@
 *.o
 *.pyc
 
+/*/buildno
 /*/Makefile
+/*/Modules/add2lib
+/*/Modules/hassignal
 /*/Modules/Makefile
 /*/Modules/Makefile.pre
 /*/Modules/Setup
 /*/Modules/Setup.local
+/*/Modules/Setup.thread
 /*/Modules/config.c
+/*/Objects/add2lib
 /*/Objects/Makefile
+/*/Parser/add2lib
 /*/Parser/Makefile
 /*/Parser/pgen
+/*/Python/add2lib
 /*/Python/Makefile
 /*/config.h
 /*/config.cache
