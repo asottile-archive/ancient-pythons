@@ -1,0 +1,105 @@
+[See end for tips.]
+
+Click on the dotted line at the top of a menu to "tear it off": a
+separate window containing the menu is created.
+
+File menu:
+	(This should speak for itself.)
+
+Edit menu:
+
+	Undo -- Undo last change to current window (max 1000 changes)
+	Redo -- Redo last undone change to current window
+	---
+	Cut -- Copy selection into system-wide clipboard; then delete selection
+	Copy -- Copy selection into system-wide clipboard
+	Paste -- Insert system-wide clipboard into window
+	Select All -- Select the entire contents of the edit buffer
+	---
+	Find... -- Open a search dialog box with many options
+	Find again -- Repeat last search
+	Find selection -- Search for the string in the selection
+	Find in Files... -- Open a search dialog box for searching files
+	Replace... -- Open a search-and-replace dialog box
+	Go to line -- Ask for a line number and show that line
+	---
+	Indent region -- Shift selected lines right 4 spaces
+	Dedent region -- Shift selected lines left 4 spaces
+	Comment out region -- Insert ## in front of selected lines
+	Uncomment region -- Remove leading # or ## from selected lines
+	Tabify region -- Turns *leading* stretches of spaces into tabs
+	Untabify region -- Turn *all* tabs into the right number of spaces
+	Expand word -- Expand the word you have typed to match another
+		word in the same buffer; repeat to get a different expansion
+	Format Paragraph -- Reformat the current blank-line-separated paragraph
+	---
+	Run module -- Import or reload the current module
+	Debug module -- Ditto, under debugger control
+
+Windows menu:
+
+	Zoom Height -- toggles the window between normal size (24x80)
+	and maximum height.
+	---
+	The rest of this menu lists the names of all open windows;
+	select one to bring it to the foreground (deiconifying it if
+	necessary).
+
+Debug menu (in the Python Shell window only):
+
+	Go to file/line -- look around the insert point for a filename
+		and linenumber, open the file, and show the line
+	Open stack viewer -- show the stack traceback of the last exception
+	Debugger toggle -- Run commands in the shell under the debugger
+	JIT Stack viewer toggle -- Open stack viewer on traceback
+
+Basic editing and navigation:
+
+	Backspace deletes to the left; DEL deletes to the right
+	Arrow keys and Page Up/Down to move around
+	Home/End go to begin/end of line
+	Control-Home/End go to begin/end of file
+	Some Emacs bindings may also work, e.g. ^B/^P/^A/^E/^D/^L
+
+Automatic indentation:
+
+	After a block-opening statement, the next line is indented by
+	4 spaces (in the Python Shell window by one tab).  In leading
+	indentation, Backspace deletes 4 spaces if they are there.
+	Also see the indent/dedent region commands.
+
+Python Shell window:
+
+	^C interrupts executing command
+	^D sends end-of-file; closes window if typed at >>> prompt
+
+    Command history:
+
+	Alt-p retrieves previous command matching what you have typed
+	Alt-n retrieves next
+	Return while on any previous command retrieves that command
+	Alt-/ (Expand word) is also useful here
+
+Python syntax colors: the coloring is applied in the background.
+
+	Keywords	orange
+	Strings		green
+	Comments	red
+	Definitions	blue
+
+Shell colors:
+
+	Console output	brown
+	stdout		blue
+	stderr		dark green
+	stdin		black
+
+Tips:
+	To change the font on Windows, open EditorWindow.py and change
+	    text['font'] = ("verdana", 8)
+	to, e.g.,
+	    text['font'] = ("courier new", 10)
+
+	To change the Python syntax colors, edit the tagdefs table in
+	ColorDelegator.py; to change the shell colors, edit the tagdefs
+	table in PyShell.py.
