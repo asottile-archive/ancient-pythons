@@ -424,7 +424,7 @@ file_read(f, args)
 */
 
 static object *
-getline(f, n)
+py_getline(f, n)
 	fileobject *f;
 	int n;
 {
@@ -545,7 +545,7 @@ filegetline(f, n)
 	}
 	if (((fileobject*)f)->f_fp == NULL)
 		return err_closed();
-	return getline((fileobject *)f, n);
+	return py_getline((fileobject *)f, n);
 }
 
 /* Python method */
@@ -570,7 +570,7 @@ file_readline(f, args)
 			n = 0;
 	}
 
-	return getline(f, n);
+	return py_getline(f, n);
 }
 
 static object *
@@ -588,7 +588,7 @@ file_readlines(f, args)
 	if ((list = newlistobject(0)) == NULL)
 		return NULL;
 	for (;;) {
-		line = getline(f, 0);
+		line = py_getline(f, 0);
 		if (line != NULL && getstringsize(line) == 0) {
 			DECREF(line);
 			break;
