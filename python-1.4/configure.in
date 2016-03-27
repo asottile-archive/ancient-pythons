@@ -445,6 +445,9 @@ AC_MSG_RESULT($va_list_is_array)
 # Linux requires this for correct f.p. operations
 AC_CHECK_LIB(ieee, __fpu_control)
 
+# Needed for crypt
+AC_CHECK_LIB(crypt, crypt)
+
 # check for --with-libm=...
 AC_SUBST(LIBM)
 case $ac_sys_system in
