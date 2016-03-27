@@ -1,0 +1,234 @@
+\section{Standard Module \sectcode{string}}
+
+\stmodindex{string}
+
+This module defines some constants useful for checking character
+classes and some useful string functions.  See the modules
+\code{regex} and \code{regsub} for string functions based on regular
+expressions.
+
+The constants defined in this module are are:
+
+\renewcommand{\indexsubitem}{(data in module string)}
+\begin{datadesc}{digits}
+  The string \code{'0123456789'}.
+\end{datadesc}
+
+\begin{datadesc}{hexdigits}
+  The string \code{'0123456789abcdefABCDEF'}.
+\end{datadesc}
+
+\begin{datadesc}{letters}
+  The concatenation of the strings \code{lowercase} and
+  \code{uppercase} described below.
+\end{datadesc}
+
+\begin{datadesc}{lowercase}
+  A string containing all the characters that are considered lowercase
+  letters.  On most systems this is the string
+  \code{'abcdefghijklmnopqrstuvwxyz'}.  Do not change its definition ---
+  the effect on the routines \code{upper} and \code{swapcase} is
+  undefined.
+\end{datadesc}
+
+\begin{datadesc}{octdigits}
+  The string \code{'01234567'}.
+\end{datadesc}
+
+\begin{datadesc}{uppercase}
+  A string containing all the characters that are considered uppercase
+  letters.  On most systems this is the string
+  \code{'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}.  Do not change its definition ---
+  the effect on the routines \code{lower} and \code{swapcase} is
+  undefined.
+\end{datadesc}
+
+\begin{datadesc}{whitespace}
+  A string containing all characters that are considered whitespace.
+  On most systems this includes the characters space, tab, linefeed,
+  return, formfeed, and vertical tab.  Do not change its definition ---
+  the effect on the routines \code{strip} and \code{split} is
+  undefined.
+\end{datadesc}
+
+The functions defined in this module are:
+
+\renewcommand{\indexsubitem}{(in module string)}
+
+\begin{funcdesc}{atof}{s}
+Convert a string to a floating point number.  The string must have
+the standard syntax for a floating point literal in Python, optionally
+preceded by a sign (\samp{+} or \samp{-}).
+\end{funcdesc}
+
+\begin{funcdesc}{atoi}{s\optional{\, base}}
+Convert string \var{s} to an integer in the given \var{base}.  The
+string must consist of one or more digits, optionally preceded by a
+sign (\samp{+} or \samp{-}).  The \var{base} defaults to 10.  If it is
+0, a default base is chosen depending on the leading characters of the
+string (after stripping the sign): \samp{0x} or \samp{0X} means 16,
+\samp{0} means 8, anything else means 10.  If \var{base} is 16, a
+leading \samp{0x} or \samp{0X} is always accepted.  (Note: for a more
+flexible interpretation of numeric literals, use the built-in function
+\code{eval()}.)
+\bifuncindex{eval}
+\end{funcdesc}
+
+\begin{funcdesc}{atol}{s\optional{\, base}}
+Convert string \var{s} to a long integer in the given \var{base}.  The
+string must consist of one or more digits, optionally preceded by a
+sign (\samp{+} or \samp{-}).  The \var{base} argument has the same
+meaning as for \code{atoi()}.  A trailing \samp{l} or \samp{L} is not
+allowed, except if the base is 0.
+\end{funcdesc}
+
+\begin{funcdesc}{capitalize}{word}
+Capitalize the first character of the argument.
+\end{funcdesc}
+
+\begin{funcdesc}{capwords}{s}
+Split the argument into words using \code{split}, capitalize each word
+using \code{capitalize}, and join the capitalized words using
+\code{join}.  Note that this replaces runs of whitespace characters by
+a single space.  (See also \code{regsub.capwords()} for a version
+that doesn't change the delimiters, and lets you specify a word
+separator.)
+\end{funcdesc}
+
+\begin{funcdesc}{expandtabs}{s\, tabsize}
+Expand tabs in a string, i.e.\ replace them by one or more spaces,
+depending on the current column and the given tab size.  The column
+number is reset to zero after each newline occurring in the string.
+This doesn't understand other non-printing characters or escape
+sequences.
+\end{funcdesc}
+
+\begin{funcdesc}{find}{s\, sub\optional{\, start}}
+Return the lowest index in \var{s} not smaller than \var{start} where the
+substring \var{sub} is found.  Return \code{-1} when \var{sub}
+does not occur as a substring of \var{s} with index at least \var{start}.
+If \var{start} is omitted, it defaults to \code{0}.  If \var{start} is
+negative, \code{len(\var{s})} is added.
+\end{funcdesc}
+
+\begin{funcdesc}{rfind}{s\, sub\optional{\, start}}
+Like \code{find} but find the highest index.
+\end{funcdesc}
+
+\begin{funcdesc}{index}{s\, sub\optional{\, start}}
+Like \code{find} but raise \code{ValueError} when the substring is
+not found.
+\end{funcdesc}
+
+\begin{funcdesc}{rindex}{s\, sub\optional{\, start}}
+Like \code{rfind} but raise \code{ValueError} when the substring is
+not found.
+\end{funcdesc}
+
+\begin{funcdesc}{count}{s\, sub\optional{\, start}}
+Return the number of (non-overlapping) occurrences of substring
+\var{sub} in string \var{s} with index at least \var{start}.
+If \var{start} is omitted, it defaults to \code{0}.  If \var{start} is
+negative, \code{len(\var{s})} is added.
+\end{funcdesc}
+
+\begin{funcdesc}{lower}{s}
+Convert letters to lower case.
+\end{funcdesc}
+
+\begin{funcdesc}{maketrans}{from, to}
+Return a translation table suitable for passing to \code{string.translate}
+or \code{regex.compile}, that will map each character in \var{from} 
+into the character at the same position in \var{to}; \var{from} and
+\var{to} must have the same length. 
+\end{funcdesc}
+
+\begin{funcdesc}{split}{s\optional{\, sep\optional{\, maxsplit}}}
+Return a list of the words of the string \var{s}.  If the optional
+second argument \var{sep} is absent or \code{None}, the words are
+separated by arbitrary strings of whitespace characters (space, tab,
+newline, return, formfeed).  If the second argument \var{sep} is
+present and not \code{None}, it specifies a string to be used as the
+word separator.  The returned list will then have one more items than
+the number of non-overlapping occurrences of the separator in the
+string.  The optional third argument \var{maxsplit} defaults to 0.  If
+it is nonzero, at most \var{maxsplit} number of splits occur, and the
+remainder of the string is returned as the final element of the list
+(thus, the list will have at most \code{\var{maxsplit}+1} elements).
+(See also \code{regsub.split()} for a version that allows specifying a
+regular expression as the separator.)
+\end{funcdesc}
+
+\begin{funcdesc}{splitfields}{s\optional{\, sep\optional{\, maxsplit}}}
+This function behaves identical to \code{split}.  (In the past,
+\code{split} was only used with one argument, while \code{splitfields}
+was only used with two arguments.)
+\end{funcdesc}
+
+\begin{funcdesc}{join}{words\optional{\, sep}}
+Concatenate a list or tuple of words with intervening occurrences of
+\var{sep}.  The default value for \var{sep} is a single space character.
+It is always true that
+\code{string.join(string.split(\var{s}, \var{sep}), \var{sep})}
+equals \var{s}.
+\end{funcdesc}
+
+\begin{funcdesc}{joinfields}{words\optional{\, sep}}
+This function behaves identical to \code{join}.  (In the past,
+\code{join} was only used with one argument, while \code{joinfields}
+was only used with two arguments.)
+\end{funcdesc}
+
+\begin{funcdesc}{lstrip}{s}
+Remove leading whitespace from the string \var{s}.
+\end{funcdesc}
+
+\begin{funcdesc}{rstrip}{s}
+Remove trailing whitespace from the string \var{s}.
+\end{funcdesc}
+
+\begin{funcdesc}{strip}{s}
+Remove leading and trailing whitespace from the string \var{s}.
+\end{funcdesc}
+
+\begin{funcdesc}{swapcase}{s}
+Convert lower case letters to upper case and vice versa.
+\end{funcdesc}
+
+\begin{funcdesc}{translate}{s, table\optional{, deletechars}}
+Delete all characters from \var{s} that are in \var{deletechars} (if present), and 
+then translate the characters using \var{table}, which must be
+a 256-character string giving the translation for each character
+value, indexed by its ordinal.  
+\end{funcdesc}
+
+\begin{funcdesc}{upper}{s}
+Convert letters to upper case.
+\end{funcdesc}
+
+\begin{funcdesc}{ljust}{s\, width}
+\funcline{rjust}{s\, width}
+\funcline{center}{s\, width}
+These functions respectively left-justify, right-justify and center a
+string in a field of given width.
+They return a string that is at least
+\var{width}
+characters wide, created by padding the string
+\var{s}
+with spaces until the given width on the right, left or both sides.
+The string is never truncated.
+\end{funcdesc}
+
+\begin{funcdesc}{zfill}{s\, width}
+Pad a numeric string on the left with zero digits until the given
+width is reached.  Strings starting with a sign are handled correctly.
+\end{funcdesc}
+
+This module is implemented in Python.  Much of its functionality has
+been reimplemented in the built-in module \code{strop}.  However, you
+should \emph{never} import the latter module directly.  When
+\code{string} discovers that \code{strop} exists, it transparently
+replaces parts of itself with the implementation from \code{strop}.
+After initialization, there is \emph{no} overhead in using
+\code{string} instead of \code{strop}.
+\bimodindex{strop}

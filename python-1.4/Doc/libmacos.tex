@@ -1,0 +1,103 @@
+\section{Built-in Module \sectcode{MacOS}}
+\bimodindex{MacOS}
+
+\renewcommand{\indexsubitem}{(in module MacOS)}
+
+This module provides access to MacOS specific functionality in the
+python interpreter, such as how the interpreter eventloop functions
+and the like. Use with care.
+
+Note the capitalisation of the module name, this is a historical
+artefact.
+
+\begin{excdesc}{Error}
+This exception is raised on MacOS generated errors, either from
+functions in this module or from other mac-specific modules like the
+toolbox interfaces. The arguments are the integer error code (the
+\var{OSErr} value) and a textual description of the error code.
+Symbolic names for all known error codes are defined in the standard
+module \var{macerrors}.
+\end{excdesc}
+
+\begin{funcdesc}{SetHighLevelEventHandler}{handler}
+Pass a python function that will be called upon reception of a
+high-level event. The previous handler is returned. The handler
+function is called with the event as argument.
+
+Note that your event handler is currently only called dependably if
+your main event loop is in \var{stdwin}.
+\end{funcdesc}
+
+\begin{funcdesc}{AcceptHighLevelEvent}{}
+Read a high-level event. The return value is a tuple \code{(sender,
+refcon, data)}.
+\end{funcdesc}
+
+\begin{funcdesc}{SetScheduleTimes}{fgi\, fgy \optional{\, bgi\, bgy}}
+Controls how often the interpreter checks the event queue and how
+long it will yield the processor to other processes. \var{fgi}
+specifies after how many clicks (one click is one 60th of a second)
+the interpreter should check the event queue, and \var{fgy} specifies
+for how many clicks the CPU should be yielded when in the
+foreground. The optional \var{bgi} and \var{bgy} allow you to specify
+different values to use when python runs in the background, otherwise
+the background values will be set the the same as the foreground
+values. The function returns nothing.
+
+The default values, which are based on minimal empirical testing, are 12, 1, 6
+and 2 respectively.
+\end{funcdesc}
+
+\begin{funcdesc}{EnableAppswitch}{onoff}
+Enable or disable the python event loop, based on the value of
+\var{onoff}. The old value is returned. If the event loop is disabled
+no time is granted to other applications, checking for command-period
+is not performed and it is impossible to switch applications. This
+should only be used by programs providing their own complete event
+loop.
+
+Note that based on the compiler used to build python it is still
+possible to loose events even with the python event loop disabled. If
+you have a \code{sys.stdout} window its handler will often also look
+in the event queue. Making sure nothing is ever printed works around
+this.
+\end{funcdesc}
+
+\begin{funcdesc}{HandleEvent}{ev}
+Pass the event record \code{ev} back to the python event loop, or
+possibly to the handler for the \code{sys.stdout} window (based on the
+compiler used to build python). This allows python programs that do
+their own event handling to still have some command-period and
+window-switching capability.
+\end{funcdesc}
+
+\begin{funcdesc}{GetErrorString}{errno}
+Return the textual description of MacOS error code \var{errno}.
+\end{funcdesc}
+
+\begin{funcdesc}{splash}{resid}
+This function will put a splash window
+on-screen, with the contents of the DLOG resource specified by
+\code{resid}. Calling with a zero argument will remove the splash
+screen. This function is useful if you want an applet to post a splash screen
+early in initialization without first having to load numerous
+extension modules.
+\end{funcdesc}
+
+\begin{funcdesc}{DebugStr}{message \optional{\, object}}
+Drop to the low-level debugger with message \var{message}. The
+optional \var{object} argument is not used, but can easily be
+inspected from the debugger.
+
+Note that you should use this function with extreme care: if no
+low-level debugger like MacsBug is installed this call will crash your
+system. It is intended mainly for developers of Python extension
+modules.
+\end{funcdesc}
+
+\begin{funcdesc}{openrf}{name \optional{\, mode}}
+Open the resource fork of a file. Arguments are the same as for the
+builtin function \code{open}. The object returned has file-like
+semantics, but it is not a python file object, so there may be subtle
+differences.
+\end{funcdesc}
