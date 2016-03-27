@@ -7,7 +7,7 @@ import subprocess
 
 
 def output_on_failure(cmd, cwd):
-    print('cd {} && {}'.format(cwd, cmd))
+    print('$ cd {} && {}'.format(cwd, cmd))
     ret = subprocess.run(
         cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cwd,
     )
@@ -19,7 +19,7 @@ def output_on_failure(cmd, cwd):
 
 def run_test(bin_path, test):
     print('*' * 79)
-    print('{} -c {}'.format(shlex.quote(bin_path), shlex.quote(test)))
+    print('$ {} -c {}'.format(shlex.quote(bin_path), shlex.quote(test)))
     subprocess.check_call((bin_path, '-c', test))
 
 
@@ -52,8 +52,11 @@ def main():
             original_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH,
         )
     else:
+        if os.path.exists(bin_path):
+            os.remove(bin_path)
         os.symlink(python_abspath, bin_path)
 
+    run_test(bin_path, 'import sys; print(sys.version)')
     run_test(bin_path, 'print("hello world!")')
     run_test(bin_path, 'import os; print(os.path.join("foo", "bar"))')
 
