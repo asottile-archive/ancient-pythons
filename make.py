@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3
 import argparse
 import os
 import shlex
@@ -7,7 +7,7 @@ import subprocess
 
 
 def output_on_failure(cmd, cwd):
-    print('$ cd {} && {}'.format(cwd, cmd))
+    print(f'$ cd {cwd} && {cmd}')
     ret = subprocess.run(
         cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cwd,
     )
@@ -19,7 +19,7 @@ def output_on_failure(cmd, cwd):
 
 def run_test(bin_path, test):
     print('*' * 79)
-    print('$ {} -c {}'.format(shlex.quote(bin_path), shlex.quote(test)))
+    print(f'$ {shlex.quote(bin_path)} -c {shlex.quote(test)}')
     subprocess.check_call((bin_path, '-c', test))
 
 
@@ -42,9 +42,9 @@ def main():
         lib_abspath = os.path.abspath(os.path.join(args.python, 'Lib'))
         with open(bin_path, 'w') as exe:
             exe.write(
-                '#!/usr/bin/env bash\n'
-                "export PYTHONPATH='{}'\n"
-                "exec '{}' \"$@\"\n".format(lib_abspath, python_abspath)
+                f'#!/usr/bin/env bash\n'
+                f"export PYTHONPATH='{lib_abspath}'\n"
+                f"exec '{python_abspath}' \"$@\"\n",
             )
         original_mode = os.stat(bin_path).st_mode
         os.chmod(
