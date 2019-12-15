@@ -243,6 +243,18 @@ static struct s foo = { 1, 2 };
 main() { exit(foobar()); }
 ], , AC_DEFINE(BAD_STATIC_FORWARD))
 
+va_list_is_array=no
+AC_MSG_CHECKING(whether va_list is an array)
+AC_TRY_COMPILE([
+#ifdef HAVE_STDARG_PROTOTYPES
+#include <stdarg.h>
+#else
+#include <varargs.h>
+#endif
+], [va_list list1, list2; list1 = list2;], , 
+AC_DEFINE(VA_LIST_IS_ARRAY) va_list_is_array=yes)
+AC_MSG_RESULT($va_list_is_array)
+
 # checks for system services
 # (none yet)
 

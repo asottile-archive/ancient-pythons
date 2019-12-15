@@ -1,6 +1,6 @@
 /***********************************************************
-Copyright 1991, 1992, 1993, 1994 by Stichting Mathematisch Centrum,
-Amsterdam, The Netherlands.
+Copyright 1991-1995 by Stichting Mathematisch Centrum, Amsterdam,
+The Netherlands.
 
                         All Rights Reserved
 
@@ -29,6 +29,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
    XXX Python source (or in an extension) uses ridiculously long names
    XXX or riduculously deep nesting in format strings. */
 
+#include <ctype.h>
 #include "allobjects.h"
 
 
@@ -38,7 +39,7 @@ int vgetargs PROTO((object *, char *, va_list));
 
 
 /* Forward */
-static int vgetargs1 PROTO((object *, char *, va_list, int));
+static int vgetargs1 PROTO((object *, char *, va_list *, int));
 static void seterror PROTO((int, char *, int *, char *, char *));
 static char *convertitem PROTO((object *, char **, va_list *, int *, char *));
 static char *converttuple PROTO((object *, char **, va_list *,
@@ -68,7 +69,7 @@ int getargs(va_alist) va_dcl
 	args = va_arg(va, object *);
 	format = va_arg(va, char *);
 #endif
-	retval = vgetargs1(args, format, va, 1);
+	retval = vgetargs1(args, format, &va, 1);
 	va_end(va);
 	return retval;
 }
@@ -95,7 +96,7 @@ int newgetargs(va_alist) va_dcl
 	args = va_arg(va, object *);
 	format = va_arg(va, char *);
 #endif
-	retval = vgetargs1(args, format, va, 0);
+	retval = vgetargs1(args, format, &va, 0);
 	va_end(va);
 	return retval;
 }
@@ -107,15 +108,23 @@ vgetargs(args, format, va)
 	char *format;
 	va_list va;
 {
-	return vgetargs1(args, format, va, 0);
+	va_list lva;
+
+#ifdef VA_LIST_IS_ARRAY
+	memcpy(lva, va, sizeof(va_list));
+#else
+	lva = va;
+#endif
+
+	return vgetargs1(args, format, &lva, 0);
 }
 
 
 static int
-vgetargs1(args, format, va, compat)
+vgetargs1(args, format, p_va, compat)
 	object *args;
 	char *format;
-	va_list va;
+	va_list *p_va;
 	int compat;
 {
 	char msgbuf[256];
@@ -179,7 +188,14 @@ vgetargs1(args, format, va, compat)
 			return 0;
 		}
 		else if (min == 1 && max == 1) {
-			msg = convertitem(args, &format, &va, levels, msgbuf);
+			if (args == NULL) {
+				sprintf(msgbuf,
+					"%s requires at least one argument",
+					fname==NULL ? "function" : fname);
+				err_setstr(TypeError, msgbuf);
+				return 0;
+			}
+			msg = convertitem(args, &format, p_va, levels, msgbuf);
 			if (msg == NULL)
 				return 1;
 			seterror(levels[0], msg, levels+1, fname, message);
@@ -219,7 +235,7 @@ vgetargs1(args, format, va, compat)
 	for (i = 0; i < len; i++) {
 		if (*format == '|')
 			format++;
-		msg = convertitem(gettupleitem(args, i), &format, &va,
+		msg = convertitem(gettupleitem(args, i), &format, p_va,
 				 levels, msgbuf);
 		if (msg) {
 			seterror(i+1, msg, levels, fname, message);
@@ -244,6 +260,8 @@ seterror(iarg, msg, levels, fname, message)
 	int i;
 	char *p = buf;
 
+	if (err_occurred())
+		return;
 	if (iarg == 0 && message == NULL)
 		message = msg;
 	else if (message == NULL) {
@@ -568,7 +586,7 @@ convertsimple1(arg, p_format, p_va)
 				void *addr = va_arg(*p_va, void *);
 				format++;
 				if (! (*convert)(arg, addr))
-					return "";
+					return "(unspecified)";
 			}
 			else {
 				p = va_arg(*p_va, object **);
