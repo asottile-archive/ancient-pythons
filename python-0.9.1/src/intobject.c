@@ -189,16 +189,12 @@ int_mul(v, w)
        register object *w;
 {
        register long a, b;
-       double x;
        if (!is_intobject(w)) {
                err_badarg();
                return NULL;
        }
        a = v->ob_ival;
        b = ((intobject *)w) -> ob_ival;
-       x = (double)a * (double)b;
-       if (x > 0x7fffffff || x < (double) (long) 0x80000000)
-               return err_ovf();
        return newintobject(a * b);
 }
 
