@@ -1,0 +1,40 @@
+name: main
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [
+          py-0-9-1, py-1-0-1, py-1-1, py-1-2, py-1-2, py-1-3, py-1-4, py-1-5-2,
+          py-1-6, py-2-0,
+        ]
+        include:
+        - name: py-0-9-1
+          script: ./make0x.py python-0.9.1
+        - name: py-1-0-1
+          script: ./make.py python-1.0.1 --needs-lib
+        - name: py-1-1
+          script: ./make.py python-1.1 --needs-lib
+        - name: py-1-2
+          script: ./make.py python-1.2 --needs-lib
+        - name: py-1-3
+          script: ./make.py python-1.3 --needs-lib
+        - name: py-1-4
+          script: ./make.py python-1.4 --needs-lib
+        - name: py-1-5-2
+          script: ./make.py python-1.5.2
+        - name: py-1-6
+          script: ./make.py python-1.6
+        - name: py-2-0
+          script: ./make.py python-2.0
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+    - run: ${{ matrix.script }}
