@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/asottile/ancient-pythons/workflows/pre-commit/badge.svg)](https://github.com/asottile/ancient-pythons/actions)
+[![Build Status](https://github.com/asottile/ancient-pythons/workflows/main/badge.svg)](https://github.com/asottile/ancient-pythons/actions)
 
 ancient-pythons
 ===============
