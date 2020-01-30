@@ -1,0 +1,27 @@
+name: main
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        script:
+        - ./make0x.py python-0.9.1
+        - ./make.py python-1.0.1 --needs-lib
+        - ./make.py python-1.1 --needs-lib
+        - ./make.py python-1.2 --needs-lib
+        - ./make.py python-1.3 --needs-lib
+        - ./make.py python-1.4 --needs-lib
+        - ./make.py python-1.5.2
+        - ./make.py python-1.6
+        - ./make.py python-2.0
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+    - run: ${{ matrix.script }}

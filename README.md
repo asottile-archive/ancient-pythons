@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/asottile/ancient-pythons.svg?branch=master)](https://travis-ci.org/asottile/ancient-pythons)
+[![Build Status](https://github.com/asottile/ancient-pythons/workflows/pre-commit/badge.svg)](https://github.com/asottile/ancient-pythons/actions)
 
 ancient-pythons
 ===============
