@@ -188,14 +188,17 @@ int_mul(v, w)
        intobject *v;
        register object *w;
 {
-       register long a, b;
+       register long a, b, x;
        if (!is_intobject(w)) {
                err_badarg();
                return NULL;
        }
        a = v->ob_ival;
        b = ((intobject *)w) -> ob_ival;
-       return newintobject(a * b);
+       x = a * b;
+       if ( a != 0 && x / a != b)
+               return err_ovf();
+       return newintobject(x);
 }
 
 static object *
