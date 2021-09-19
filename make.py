@@ -8,13 +8,10 @@ import subprocess
 
 def output_on_failure(cmd, cwd):
     print(f'$ cd {cwd} && {cmd}')
-    ret = subprocess.run(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cwd,
+    subprocess.run(
+        cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        check=True,
     )
-    if ret.returncode:
-        raise AssertionError('Command {!r} returned {}!\nOutput:\n{}'.format(
-            cmd, ret.returncode, ret.stdout,
-        ))
 
 
 def run_test(bin_path, test):
